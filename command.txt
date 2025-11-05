@@ -1,0 +1,14 @@
+git checkout main 
+/* switch to main to get the new update */
+
+git remote add upstream https://github.com/zelalem888/car-rental-v2.git
+/* update the local from the github repo*/
+
+git checkout -b /branch name/
+/* create new branch and switch to it*/
+
+git add .
+git commit 
+git push origin /branch name/
+
+create a PR
