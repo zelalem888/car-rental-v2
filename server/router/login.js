@@ -35,7 +35,7 @@ router.post("/user/login", async (req, res) => {
 // ====================user register api====================
 
 const userSchema = z.object({
-  fullName: z.string().min(3).max(20),
+  fullName: z.string().min(3).max(100),
   email: z.string().email(),
   password: z.string().min(8),
   phoneNumber: z
