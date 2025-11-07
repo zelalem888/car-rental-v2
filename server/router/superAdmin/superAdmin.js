@@ -54,7 +54,7 @@ router.post("/admin/register", async (req, res) => {
 });
 
 
-// ==================update vehicle info api=====================
+// ==================update admin info api=====================
 
 router.put("/admin/update/:id", async (req, res) => {
   const paramID = req.params.id;
@@ -99,7 +99,7 @@ router.put("/admin/update/:id", async (req, res) => {
 
 
 
-// ================vehicle delete api =============================
+// ================admin delete api =============================
 
 router.delete("/admin/delete/:id", async (req, res) => {
   const paramID = req.params.id;

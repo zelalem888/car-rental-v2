@@ -4,7 +4,7 @@ const z = require("zod");
 
 const router = express.Router();
 
-// ================user login api===========================
+// ==================user login api===========================
 
 router.post("/admin/login", async (req, res) => {
   const loginData = req.body;
