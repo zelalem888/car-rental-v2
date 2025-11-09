@@ -1,9 +1,13 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const vehicle = require('./router/vehicle/vehicle');
-const login = require('./router/user/auth.user');
-const vehicleReservation = require('./router/user/vehicleReservation')
-const confirmReservation = require("./router/admin/conformReserve")
+const vehicleRoute = require('./router/vehicle/vehicle.route');
+const userAuthRoute = require('./router/user/auth.user.route');
+const vehicleReservationRoute = require('./router/user/vehicle.reservation.route')
+const superAdminRoute = require('./router/admin/super.admin.route')
+const adminAuthRoute = require("./router/admin/auth.admin.route")
+const adminConfirmReservation = require("./router/admin/confirm.reserve.route")
+const adminVehicleCRUDRoute = require("./router/admin/vehicle.CRUD.route")
+const userInfoRoute = require("./router/user/user.route")
 const bodyParser = require('body-parser');
 
 dotenv.config()
@@ -12,11 +16,20 @@ const app = express()
 app.use(bodyParser.urlencoded())
 app.use(express.json())
 const port = 4000
+// ======superAdmin=====
+app.use('/api',superAdminRoute)
 
-app.use('/api', login)
-app.use('/api', vehicle)
-app.use('/api', vehicleReservation)
-app.use('/api', confirmReservation)
+// =======admin=========
+app.use('/api', adminAuthRoute)
+app.use('/api', adminConfirmReservation)
+app.use('/api',adminVehicleCRUDRoute )
+
+// =======user==========
+
+app.use('/api', userAuthRoute)
+app.use('/api',userInfoRoute)
+app.use('/api', vehicleReservationRoute)
+app.use('/api', vehicleRoute)
 
 app.listen(port , (req , res )=>{
     console.log(`backend is running on port ${port}`)
