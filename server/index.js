@@ -1,13 +1,13 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const vehicleRoute = require('./router/vehicle/vehicle.route');
-const userAuthRoute = require('./router/user/auth.user.route');
-const vehicleReservationRoute = require('./router/user/vehicle.reservation.route')
 const superAdminRoute = require('./router/admin/super.admin.route')
 const adminAuthRoute = require("./router/admin/auth.admin.route")
 const adminConfirmReservation = require("./router/admin/confirm.reserve.route")
 const adminVehicleCRUDRoute = require("./router/admin/vehicle.CRUD.route")
+const userAuthRoute = require('./router/user/auth.user.route');
 const userInfoRoute = require("./router/user/user.route")
+const vehicleReservationRoute = require('./router/user/vehicle.reservation.route')
+const vehicleRoute = require('./router/vehicle/vehicle.route');
 const bodyParser = require('body-parser');
 
 dotenv.config()

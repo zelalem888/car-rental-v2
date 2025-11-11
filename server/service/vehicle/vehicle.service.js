@@ -2,7 +2,6 @@ const db = require("../../db/config");
 
 exports.allVehicleInfoService = async () => {
   const [allVehicles] = await db.query("SELECT * FROM vehicle");
-
   return allVehicles;
 };
 // =======================================

@@ -2,7 +2,6 @@ const db = require("../../db/config");
 
 exports.usersInfoService = async (id) => {
   const paramID = id;
-
   const [findID] = await db.query(
     "SELECT * FROM customer WHERE C_ID = ?",
     paramID

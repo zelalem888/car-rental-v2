@@ -19,9 +19,9 @@ exports.confirmReservationController = async(req, res) => {
   try {
     const reservation = await confirmReservationService(req.params)
 
-      res.send({ message: "rented Success." , ReservationID : reservation}).status(200)
+      res.send({ message: "rented Success."}).status(200)
   } catch (error) {
-    res.send({ message: error });
+    res.send({ error: error.message });
   }
   
 }

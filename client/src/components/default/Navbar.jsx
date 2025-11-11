@@ -10,8 +10,6 @@ import {
   Car,
   ChevronDown,
 } from "lucide-react";
-// import { auth } from "../Auth/Firebase.js";
-// import { signOut } from "firebase/auth";
 // import useAuthStore from "../../store/store.js";
 
 const Navbar = () => {
@@ -124,7 +122,7 @@ const Navbar = () => {
                         exit={{ opacity: 0, y: 10 }}
                         className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 border border-gray-100">
                         <button
-                          onClick={handleLogout}
+                          // onClick={handleLogout}
                           className="w-full px-4 py-2 text-left text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors flex items-center space-x-2">
                           <LogOut className="w-4 h-4" />
                           <span>Logout</span>
@@ -193,7 +191,7 @@ const Navbar = () => {
                 <div className="flex flex-col space-y-2 pt-4 border-t">
                   {user ? (
                     <button
-                      onClick={handleLogout}
+                      // onClick={handleLogout}
                       className="flex items-center justify-center space-x-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all">
                       <LogOut className="w-4 h-4" />
                       <span>Logout</span>
@@ -202,14 +200,14 @@ const Navbar = () => {
                     <>
                       <Link
                         to="/login"
-                        onClick={() => setIsOpen(false)}
+                        // onClick={() => setIsOpen(false)}
                         className="flex items-center justify-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all">
                         <LogIn className="w-4 h-4" />
                         <span>Login</span>
                       </Link>
                       <Link
                         to="/register"
-                        onClick={() => setIsOpen(false)}
+                        // onClick={() => setIsOpen(false)}
                         className="flex items-center justify-center space-x-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all">
                         <UserPlus className="w-4 h-4" />
                         <span>Sign Up</span>

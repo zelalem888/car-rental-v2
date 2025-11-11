@@ -1,17 +1,21 @@
 const db = require("../../db/config");
+const { v4 : uuidv4 } = require('uuid')
 
 exports.vehicleReservationService = async ({ reservationData,userId, vehicleId}) => {
   const status = "pending";
+  const uuid = uuidv4()
   const values = [
     userId,
     vehicleId,
     reservationData.pickUpDate,
     reservationData.returnDate,
     status,
+    uuid
+    
   ];
 
   const [rows] = await db.query(
-    "INSERT INTO reservation (C_ID, V_ID, Pickup_Date, Return_Date, Status) VALUES(?,?,?,?,?) ",
+    "INSERT INTO reservation (C_ID, V_ID, Pickup_Date, Return_Date, Status,Confirmation_Number) VALUES(?,?,?,?,?,?) ",
     values
   );
   return rows;
