@@ -9,13 +9,16 @@ const userInfoRoute = require("./router/user/user.route")
 const vehicleReservationRoute = require('./router/user/vehicle.reservation.route')
 const vehicleRoute = require('./router/vehicle/vehicle.route');
 const bodyParser = require('body-parser');
+const cors = require("cors");
+
 
 dotenv.config()
 
 const app = express()
+app.use(cors());
 app.use(bodyParser.urlencoded())
 app.use(express.json())
-const port = 4000
+const port = process.env.PORT || 4000
 // ======superAdmin=====
 app.use('/api',superAdminRoute)
 

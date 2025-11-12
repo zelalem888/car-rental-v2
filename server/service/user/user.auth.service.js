@@ -21,7 +21,7 @@ const userSchema = z.object({
   // Important: Use coerce.date() to convert the input string to a Date object
   dateOfBirth: z.string().pipe(z.coerce.date()),
   nationality: z.string().min(2),
-  address: z.string().min(5),
+  // address: z.string().min(5),
   city: z.string().min(2),
 });
 
@@ -36,7 +36,7 @@ exports.userRegisterService = async (body) => {
     validateRegister.phoneNumber,
     validateRegister.dateOfBirth,
     validateRegister.nationality,
-    validateRegister.address,
+    // validateRegister.address,
     validateRegister.city,
     date,
   ];
@@ -53,7 +53,7 @@ exports.userRegisterService = async (body) => {
   }
 
   const [data] = await db.query(
-    "INSERT INTO customer (FullName , Email, Password, PhoneNumber, DoB,Nationality, Address, City,Update_Date) VALUES (?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO customer (FullName , Email, Password, PhoneNumber, DoB,Nationality, City,Update_Date) VALUES (?,?,?,?,?,?,?,?)",
     result
   );
 

@@ -3,6 +3,7 @@ import { AnimatePresence } from "framer-motion";
 import Home from "./Pages/Home";
 import About from "./Pages/About";
 import Models from "./Pages/Models";
+import SingleModel from "./Pages/singleModel";
 import Services from "./Pages/Services"
 import Testimonials from "./Pages/Testimonials";
 import Booking from "./Pages/Booking";
@@ -37,20 +38,21 @@ function App() {
             <Route index path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/models" element={<Models />} />
+            <Route path="/singlemodel/:name/:id" element={<SingleModel />} />
             <Route path="/testimonials" element={<Testimonials />} />
             <Route path="/team" element={<Team />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/services" element={<Services />} />
             <Route path="/learnmore" element={<LearnMore />} />
             <Route path="*" element={<Errorpage />} />
-            {/* <Route
+            <Route
               path="/booking/:id"
               element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                 <Booking />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               }
-            /> */}
+            />
           </Route>
         </Routes>
       </AnimatePresence>

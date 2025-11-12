@@ -27,20 +27,23 @@ const Register = () => {
     fullName: "",
     email: "",
     password: "",
-    confirmPassword: "",
     phoneNumber: "",
     dateOfBirth: "",
     nationality: "Ethiopian",
     city: "Addis Ababa",
   });
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
+  const [confirmPassword, setConfirmPassword] = useState({
+    confirmPassworder: "",
+  });
+  // useEffect(() => {
+  //   console.log(formData);
+  // }, [formData]);
 
   const [showPassword, setShowPassword] = useState({
     password: false,
     confirmPassword: false,
   });
+  const [emailError, setEmailError] = useState(null)
   const [passwordError, setPasswordError] = useState(null);
   const [phoneError, setPhoneError] = useState(null);
   // const [dateError, setDateError] = useState(null);
@@ -50,7 +53,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.password !== confirmPassword.confirmPassworder) {
       setPasswordError("Passwords do not match!");
       return;
     }
@@ -58,14 +61,34 @@ const Register = () => {
       setPasswordError("length must be greeter than 8 characters.");
       return;
     }
-    if (String(formData.phoneNumber).length != 12 && String(formData.phoneNumber).length != 10) {
+    if (
+      String(formData.phoneNumber).length != 12 &&
+      String(formData.phoneNumber).length != 10
+    ) {
       setPhoneError("phone number incorrect. ex:- 0912345678 or +251912345678");
       return;
     }
 
     try {
-      alert("registered");
-    } catch (error) {}
+      const response = await fetch("http://localhost:3000/api/user/register", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setEmailError(errorData.error)
+        throw new Error(errorData.error);
+      }
+      const result = response.json();
+      console.log(result);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -248,6 +271,19 @@ const Register = () => {
               </div>
             </div>
 
+            {/* ============email already created error================ */}
+
+             {emailError && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg"
+              >
+                <AlertCircle className="w-5 h-5" />
+                <p className="text-sm">{emailError}</p>
+              </motion.div>
+            )}
+
             {/* ==================password========================== */}
 
             <div className="space-y-2">
@@ -295,11 +331,10 @@ const Register = () => {
               <div className="relative">
                 <input
                   type={showPassword.confirmPassword ? "text" : "password"}
-                  value={formData.confirmPassword}
+                  value={confirmPassword.confirmPassworder}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      confirmPassword: e.target.value,
+                    setConfirmPassword({
+                      confirmPassworder: e.target.value,
                     })
                   }
                   required

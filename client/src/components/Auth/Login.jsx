@@ -37,9 +37,6 @@ const Login = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-   
-  };
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-white to-gray-50 flex">

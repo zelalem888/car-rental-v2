@@ -26,8 +26,8 @@ exports.userRegisterController = async (req, res) => {
   try {
     const result = await userRegisterService(req.body)
     
-    res.send(result + " registered!").status(200);
+    res.status(201).json({ message : result + " registered!"});
   } catch (error) {
-    res.send({ error: error.message });
+    res.status(400).json({ error: error.message })
   }
 };
