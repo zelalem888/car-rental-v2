@@ -18,9 +18,9 @@ exports.adminVehicleRegisterController = async (req, res) => {
   try {
     await adminVehicleRegisterService(req.body);
 
-    res.send({ message: "vehicle add successfully." });
+    res.status(201).json({ message: "vehicle add successfully." });
   } catch (error) {
-    res.send({ error: error.message });
+    res.status(404).json({ error: error.message });
   }
 };
 

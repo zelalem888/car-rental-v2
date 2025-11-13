@@ -18,7 +18,12 @@ const vehicleSchema = z.object({
 });
 
 exports.adminVehicleRegisterService = async (body) => {
-  const vehicleBody = body;
+  const vehicleBody = {
+    ...body,
+    pricePerDay: parseFloat(body.pricePerDay),
+    modelYear: parseFloat(body.modelYear),
+    seatCapacity: parseFloat(body.seatCapacity),
+  };
   const vehicleData = vehicleSchema.parse(vehicleBody);
   const date = new Date().toLocaleString();
   const VehicleResult = [

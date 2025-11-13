@@ -14,7 +14,7 @@ router.get("/admin/vehicles", adminAllVehiclesController);
 
 // ============register vehicle api===================
 
-router.post("/admin/registerVehicle", adminVehicleRegisterController);
+router.post("/admin/registervehicle", adminVehicleRegisterController);
 
 // ==================update vehicle info api=====================
 

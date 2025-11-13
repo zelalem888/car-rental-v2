@@ -4,7 +4,7 @@ import Home from "./Pages/Home";
 import About from "./Pages/About";
 import Models from "./Pages/Models";
 import SingleModel from "./Pages/singleModel";
-import Services from "./Pages/Services"
+import Services from "./Pages/Services";
 import Testimonials from "./Pages/Testimonials";
 import Booking from "./Pages/Booking";
 import Team from "./Pages/Team";
@@ -16,8 +16,12 @@ import LearnMore from "./Pages/LearnMore";
 // import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import { MainLayout } from "./layout/MainLayout";
 import { AuthLayout } from "./layout/AuthLayout";
+import { AdminLayout } from "./layout/AdminLayout";
+import { AuthAdminLayout } from "./layout/AuthAdminLayout";
 import { MouseTrail } from "@stichiboi/react-elegant-mouse-trail";
-
+import LoginForm from "./components/Auth/admin/admin.login";
+import AdminVehicle from "./Pages/admin/Vehicles";
+import AddVehicle from "./Pages/admin/AddVehicle";
 
 function App() {
   return (
@@ -25,7 +29,6 @@ function App() {
       <MouseTrail strokeColor="#F97316" lineWidthStart={30} />
       <AnimatePresence mode="wait">
         <Routes>
-
           {/* Auth routes without Navbar and Footer */}
 
           <Route element={<AuthLayout />}>
@@ -53,6 +56,19 @@ function App() {
                 // </ProtectedRoute>
               }
             />
+          </Route>
+
+          {/* Admin Auth Layout */}
+          <Route element={<AuthAdminLayout />}>
+            <Route path="/admin/login" element={<LoginForm />} />
+          </Route>
+
+
+          {/* admin Main layout */}
+          <Route element={<AdminLayout />}>
+            <Route path="/admin/:id" element={<AdminVehicle />} />
+            <Route path="/admin/add/:id" element={<AddVehicle />} />
+          
           </Route>
         </Routes>
       </AnimatePresence>
