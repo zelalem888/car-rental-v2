@@ -4,9 +4,9 @@ exports.usersInfoController = async (req, res) => {
   try {
     const result = await usersInfoService(req.params.id)
 
-    res.status(200).send(result)
+    res.status(200).json(result)
   } catch (error) {
-    res.send({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
 } 
 
@@ -17,9 +17,9 @@ exports.usersInfoUpdateController = async (req, res) => {
   try {
     const result = await usersInfoUpdateService({paramID :req.params.id, updatingData: req.body})
     
-      res.send({ message: "Update Success." });
+      res.status(201).json({ message: "Update Success." });
   } catch (error) {
-    res.send({ message: error });
+    res.status(400).json({ message: error });
   }
 }
 
@@ -30,9 +30,9 @@ exports.usersInfoDeleteController =  async (req, res) => {
   try {
     const result = await usersInfoDeleteService(req.params.id)
    
-      res.send({ message: "Deleted successfully." , ID : result});
+      res.status(200).json({ message: "Deleted successfully." , ID : result});
     
   } catch (error) {
-    res.send({ message: error });
+    res.status(400).json({ message: error });
   }
 }

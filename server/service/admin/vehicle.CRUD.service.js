@@ -8,6 +8,7 @@ exports.adminAllVehiclesService = async () => {
 
 // ====================================================
 const vehicleSchema = z.object({
+  A_ID : z.number() ,
   vehicleName: z.string(),
   plateNumber: z.string().startsWith("ET", "et"),
   brandName: z.string(),
@@ -20,6 +21,7 @@ const vehicleSchema = z.object({
 exports.adminVehicleRegisterService = async (body) => {
   const vehicleBody = {
     ...body,
+    A_ID : parseInt(body.A_ID),
     pricePerDay: parseFloat(body.pricePerDay),
     modelYear: parseFloat(body.modelYear),
     seatCapacity: parseFloat(body.seatCapacity),
@@ -27,6 +29,7 @@ exports.adminVehicleRegisterService = async (body) => {
   const vehicleData = vehicleSchema.parse(vehicleBody);
   const date = new Date().toLocaleString();
   const VehicleResult = [
+    vehicleData.A_ID,
     vehicleData.vehicleName,
     vehicleData.plateNumber,
     vehicleData.brandName,
@@ -46,7 +49,7 @@ exports.adminVehicleRegisterService = async (body) => {
   }
 
   await db.query(
-    "INSERT INTO vehicle (V_Name,Plate_Number,Brand_Name,Price_Per_Day,Model_Year, Seating_Capacity, Fuel_Type,Updation_Date) VALUES (?,?,?,?,?,?,?,?)",
+    "INSERT INTO vehicle (A_ID, V_Name,Plate_Number,Brand_Name,Price_Per_Day,Model_Year, Seating_Capacity, Fuel_Type,Updation_Date) VALUES (?,?,?,?,?,?,?,?,?)",
     VehicleResult
   );
 };

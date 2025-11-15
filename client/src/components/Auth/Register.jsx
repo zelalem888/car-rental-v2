@@ -83,7 +83,8 @@ const Register = () => {
         setEmailError(errorData.error)
         throw new Error(errorData.error);
       }
-      const result = response.json();
+      const result = await response.json();
+      localStorage.setItem("jwt-token", result)
       console.log(result);
       navigate("/");
     } catch (error) {

@@ -46,6 +46,26 @@ useEffect( ()=>{
   fetchData()
 },[])
 
+
+  const booking = async(V_ID)=>{
+   const token = localStorage.getItem("jwt-token");
+        const responseVerify = await fetch(
+          "http://localhost:3000/api/user/verify",
+          {
+            method: "POST",
+            headers: {
+              "jwt-token": token,
+            },
+          }
+        );
+        if(!responseVerify.ok){
+          navigate("/login")
+          return
+        }
+        const resultVerify = await responseVerify.json();
+        navigate(`/booking/${resultVerify.id}/${V_ID}`)
+  }
+
 const filteredVehicles = result.filter((car)=>{
   const filtered = car.V_Name.toLowerCase().includes(searchQuery.toLowerCase())
   return filtered;
@@ -169,7 +189,7 @@ const filteredVehicles = result.filter((car)=>{
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => navigate(`/booking/${car.V_ID}`)}
+                        onClick={() => booking(car.V_ID)}
                         className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 
                                  transition-colors">
                         Book Now

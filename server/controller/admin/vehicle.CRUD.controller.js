@@ -39,8 +39,8 @@ exports.adminVehicleUpdateController = async (req, res) => {
 exports.adminVehicleDeleteController = async (req, res) => {
   try {
     await adminVehicleDeleteService(req.params.id);
-    res.send({ message: "Vehicle Deleted successfully."});
+    res.status(200).json({ message: "Vehicle Deleted successfully."});
   } catch (error) {
-    res.send({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };

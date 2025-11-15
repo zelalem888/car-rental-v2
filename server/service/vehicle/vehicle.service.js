@@ -28,3 +28,17 @@ exports.oneVehicleSearchService = async({paramsId , paramsName})=>{
 
         return searchedVehicle
 }
+// =============================================
+exports.vehicleByIdService = async ({ paramsId }) => {
+  const [searchedVehicle] = await db.query(
+    "SELECT V_Name,Plate_Number,Brand_Name,Price_Per_Day,Model_Year,Seating_Capacity,Fuel_Type FROM vehicle WHERE V_ID = ? ",
+    paramsId
+  );
+
+  if (searchedVehicle.length < 1) {
+    throw new Error(`there is no vehicle by this ID: ${paramsId}`);
+  }
+  return searchedVehicle
+};
+
+

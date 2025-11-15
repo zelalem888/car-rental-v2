@@ -1,5 +1,5 @@
 const express = require('express');
-const { allVehicleInfoController,vehicleSearchController,oneVehicleInfoController } = require('../../controller/vehicle/vehicle.controller');
+const { allVehicleInfoController,vehicleSearchController,oneVehicleInfoController,vehicleByIdController } = require('../../controller/vehicle/vehicle.controller');
 
 const router = express.Router()
 
@@ -15,6 +15,7 @@ router.get("/vehicles/:name",vehicleSearchController)
  
 router.get('/vehicle/:name/:id', oneVehicleInfoController)
 
-
+// ============search vehicle info by id only===========================
+router.get('/vehicle/:id', vehicleByIdController)
 
 module.exports = router

@@ -1,24 +1,31 @@
-const { userAuthService, userRegisterService } = require("../../service/user/user.auth.service");
+const { userAuthService, userRegisterService,userVerifyService } = require("../../service/user/user.auth.service");
 
 exports.userAuthController = async (req, res) => {
   try {
     const rows = await userAuthService(req.body);
-
-    if (rows.length === 1) {
-      return res.status(200).json({
-        message: `Login successful for ${rows[0].Email}`,
-        customer: rows[0],
-      });
+    console.log(rows)
+    if (rows.rows.length > 0) {
+    
+      // console.log(rows)
+      return res.status(200).json(rows.token);
     } else {
-      return res.status(401).json({ message: "Invalid email or password." });
+      return res.status(401).json("Invalid email or password.");
     }
   } catch (error) {
-    console.error("Database error during login:", error);
-    return res
-      .status(500)
-      .json({ message: "An internal server error occurred." });
+    return res.status(500).json(error);
   }
 };
+// ==============================================================
+
+exports.userVerifyController = async(req, res)=>{
+ try {
+    const result = await userVerifyService(req.headers["jwt-token"])
+    
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json(error.message)
+  }
+}
 
 // ==============================================================
 
@@ -26,7 +33,7 @@ exports.userRegisterController = async (req, res) => {
   try {
     const result = await userRegisterService(req.body)
     
-    res.status(201).json({ message : result + " registered!"});
+    res.status(201).json(res);
   } catch (error) {
     res.status(400).json({ error: error.message })
   }

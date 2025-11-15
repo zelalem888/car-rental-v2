@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ForgotPassword from "./ForgotPassword";
-// import useAuthStore from "../../store/store.js";
 import { Link } from "react-router-dom";
 
 const Login = () => {
@@ -26,14 +25,27 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  // const setUser = useAuthStore((state) => state.setUser);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-     
+      const response = await fetch("http://localhost:3000/api/user/login",{
+        method : "POST",
+        headers:{
+          'content-type': 'application/json'
+        },
+        body:JSON.stringify(formData)
+      })
+      if(!response.ok){
+        setError("Invalid Email or Password.")
+       return
+      }
+      const result = await response.json()
+      localStorage.setItem('jwt-token', result)
+      navigate("/")
     } catch (error) {
-     
+    console.log("Invalid DataType")
     }
   };
 
@@ -185,6 +197,7 @@ const Login = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
+                  autoComplete="off"
                   required
                   className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
                            focus:border-transparent transition-all"

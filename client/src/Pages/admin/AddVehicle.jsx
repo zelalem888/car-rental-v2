@@ -5,6 +5,7 @@ const AddVehicle = () => {
     const {id} = useParams()
     const navigate = useNavigate()
   const [formData, setFormdata] = useState({
+    A_ID: id,
     vehicleName: "",
     plateNumber: "",
     brandName: "",

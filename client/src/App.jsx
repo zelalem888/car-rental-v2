@@ -13,6 +13,7 @@ import Errorpage from "./Pages/Errorpage";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import LearnMore from "./Pages/LearnMore";
+import UpdateVehicle from "./Pages/admin/UpdateVehicle";
 // import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import { MainLayout } from "./layout/MainLayout";
 import { AuthLayout } from "./layout/AuthLayout";
@@ -22,6 +23,7 @@ import { MouseTrail } from "@stichiboi/react-elegant-mouse-trail";
 import LoginForm from "./components/Auth/admin/admin.login";
 import AdminVehicle from "./Pages/admin/Vehicles";
 import AddVehicle from "./Pages/admin/AddVehicle";
+import PendingReserve from "./Pages/admin/pendingReserve";
 
 function App() {
   return (
@@ -47,16 +49,10 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/services" element={<Services />} />
             <Route path="/learnmore" element={<LearnMore />} />
+            <Route path="/booking/:cid/:id" element={<Booking />}/>
+          </Route> 
+
             <Route path="*" element={<Errorpage />} />
-            <Route
-              path="/booking/:id"
-              element={
-                // <ProtectedRoute>
-                <Booking />
-                // </ProtectedRoute>
-              }
-            />
-          </Route>
 
           {/* Admin Auth Layout */}
           <Route element={<AuthAdminLayout />}>
@@ -68,6 +64,8 @@ function App() {
           <Route element={<AdminLayout />}>
             <Route path="/admin/:id" element={<AdminVehicle />} />
             <Route path="/admin/add/:id" element={<AddVehicle />} />
+            <Route path="/admin/update/:aid/:vname/:vid" element={<UpdateVehicle />} />
+            <Route path="/admin/:id/pending" element={<PendingReserve />} />
           
           </Route>
         </Routes>

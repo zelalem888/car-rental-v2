@@ -1,13 +1,50 @@
 const db = require("../../db/config");
 const z = require("zod");
+const jwt = require("jsonwebtoken");
 
 exports.userAuthService = async (loginData) => {
   const values = [loginData.email, loginData.password];
   const [rows] = await db.query(
-    "SELECT C_ID, Email, Password FROM customer WHERE Email = ? AND Password = ?",
+    "SELECT C_ID, FullName, Email FROM customer WHERE Email = ? AND Password = ?",
     values
   );
-  return rows;
+  // console.log(rows)
+  const JWTSecretKey = process.env.JWT_SECRET;
+  // console.log(JWTSecretKey)
+  
+  const email = rows[0].email;
+  const id = rows[0].C_ID;
+  const name = rows[0].FullName;
+
+  const jwtData = {
+    signInTime: Date.now(),
+    email,
+    id,
+    name,
+  };
+
+  const token = jwt.sign(jwtData, JWTSecretKey);
+  const response = { rows, token };
+  return response;
+};
+
+// ============================================================
+
+exports.userVerifyService = async (tokenKey) => {
+  const tokenHeaderKey = "jwt-token";
+  const jwtSecretKey = process.env.JWT_SECRET;
+  const token = tokenKey;
+  try {
+    const verified = jwt.verify(token, jwtSecretKey);
+    if (verified) {
+      console.log(verified);
+      return verified;
+    } else {
+      throw new Error("Token is Not verified.");
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 // ============================================================
@@ -57,5 +94,25 @@ exports.userRegisterService = async (body) => {
     result
   );
 
-  return validateRegister.fullName
+  const [getIdForToken] = await db.query(
+    "SELECT C_ID,FullName,Email FROM customer WHERE Email = ?",
+    validateRegister.email
+  );
+
+  console.log(getIdForToken);
+  const JWTSecretKey = process.env.JWT_SECRET;
+  const email = getIdForToken[0].email;
+  const id = getIdForToken[0].C_ID;
+  const name = getIdForToken[0].FullName;
+
+  const jwtData = {
+    signInTime: Date.now(),
+    email,
+    id,
+    name,
+  };
+
+  const token = jwt.sign(jwtData, JWTSecretKey);
+
+  return token;
 };

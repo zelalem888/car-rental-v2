@@ -5,9 +5,9 @@ const { allReservationService,confirmReservationService } = require("../../servi
 exports.allReservationController= async(req, res) =>{
     try{
         const allReservation = await allReservationService()
-        res.send(allReservation)
+        res.status(200).json(allReservation)
     }catch(error){
-        res.send({message : error})
+        res.status(400).json({message : error})
     }
 }
 
@@ -19,9 +19,9 @@ exports.confirmReservationController = async(req, res) => {
   try {
     const reservation = await confirmReservationService(req.params)
 
-      res.send({ message: "rented Success."}).status(200)
+      res.status(200).json({ message: "rented Success."})
   } catch (error) {
-    res.send({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
   
 }

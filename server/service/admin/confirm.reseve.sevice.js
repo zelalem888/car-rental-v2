@@ -1,7 +1,7 @@
 const db = require("../../db/config");
 
 exports.allReservationService = async () => {
-  const [rows] = await db.query("SELECT * FROM reservation");
+  const [rows] = await db.query("SELECT * FROM reservation WHERE status = ? ", "pending");
   return rows;
 };
 

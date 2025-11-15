@@ -15,11 +15,13 @@ import {
   MapPin,
   CalendarCheck,
 } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const SingleModel = () => {
   const [fetchedData, setFetchedData] = useState();
   const { name, id } = useParams();
+  const [tokenId , setTokenId] = useState()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,15 +33,34 @@ const SingleModel = () => {
           const errorData = await response.json();
           throw new Error(errorData.message);
         }
+
         const waitedDate = await response.json();
         setFetchedData(waitedDate);
-        console.log(waitedDate);
       } catch (e) {
         throw new Error(e);
       }
     };
     fetchData();
   }, [name, id]);
+
+  const booking = async()=>{
+   const token = localStorage.getItem("jwt-token");
+        const responseVerify = await fetch(
+          "http://localhost:3000/api/user/verify",
+          {
+            method: "POST",
+            headers: {
+              "jwt-token": token,
+            },
+          }
+        );
+        if(!responseVerify.ok){
+          navigate("/login")
+          return
+        }
+        const resultVerify = await responseVerify.json();
+        navigate(`/booking/${resultVerify.id}/${fetchedData[0].V_ID}`)
+  }
 
   return (
     <div>
@@ -121,9 +142,7 @@ const SingleModel = () => {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() =>
-                          navigate(`/booking/${fetchedData[0].V_ID}`)
-                        }
+                        onClick={booking}
                         className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 
                                          transition-colors"
                       >
