@@ -4,24 +4,20 @@ import {
   UserPlus,
   Mail,
   Lock,
-  ChevronRight,
   Car,
-  Star,
-  Shield,
   Eye,
   EyeOff,
   AlertCircle,
-  Users,
   SquareUser,
   Phone,
   Calendar,
   Globe,
-  Map,
   MapPinHouse,
+  Trash,
 } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
-
-const Register = () => {
+import { useNavigate, Link, useParams } from "react-router-dom";
+const UserAccount = () => {
+    const { id } = useParams()
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -35,41 +31,60 @@ const Register = () => {
     confirmPassworder: "",
   });
 
-
   const [showPassword, setShowPassword] = useState({
     password: false,
     confirmPassword: false,
   });
-  const [emailError, setEmailError] = useState(null)
+  const [deletePopUp,setDeletePopUp] = useState(false)
+  const [emailError, setEmailError] = useState(null);
+  const [emailCheck , setEmailCheck] = useState()
   const [passwordError, setPasswordError] = useState(null);
   const [phoneError, setPhoneError] = useState(null);
   const navigate = useNavigate();
 
- useEffect(()=>{
-       const fetchData = async () => {
-        try {
-          const token = localStorage.getItem("jwt-token");
-  
-          const responseVerify = await fetch(
-            "http://localhost:3000/api/user/verify",
-            {
-              method: "POST",
-              headers: {
-                "jwt-token": token,
-              },
-            }
-          );
-  
-         if (!responseVerify.ok) {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("jwt-token");
+
+        const responseVerify = await fetch(
+          "http://localhost:3000/api/user/verify",
+          {
+            method: "POST",
+            headers: {
+              "jwt-token": token,
+            },
+          }
+        );
+
+        if (!responseVerify.ok) {
+          navigate(`/`);
           return;
         }
-        navigate(`/`);
-        } catch (e) {
-         
+        const result = await responseVerify.json();
+        const response = await fetch(
+          `http://localhost:3000/api/user/${result.id}`
+        );
+        if (!response.ok) {
+          console.log("can not get the user info");
+          return;
         }
-      };
-      fetchData();
-    },[])
+
+        const userResult = await response.json();
+        // console.log(userResult);
+        setFormData({
+          fullName: userResult[0].FullName,
+          email: userResult[0].Email,
+          password: userResult[0].Password,
+          phoneNumber: userResult[0].PhoneNumber,
+          dateOfBirth: userResult[0].DoB.slice(0, 10),
+          nationality: userResult[0].Nationality,
+          city: userResult[0].City,
+        });
+      } catch (e) {}
+    };
+    fetchData();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,8 +105,8 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/user/register", {
-        method: "POST",
+      const response = await fetch(`http://localhost:3000/api/user/update/${id}`, {
+        method: "PUT",
         headers: {
           "content-type": "application/json",
         },
@@ -99,125 +114,37 @@ const Register = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        setEmailError(errorData.error)
-        throw new Error(errorData.error);
+        const errorData = await response.text();
+        setEmailCheck("Email already existed")
+        return
       }
       const result = await response.json();
-      localStorage.setItem("jwt-token", result)
-      console.log(result);
+      localStorage.setItem("jwt-token", result);
       navigate("/");
     } catch (error) {
-      console.log(error);
+      console.log("network error",error);
     }
   };
 
+  
+  const deleteHandler = async ()=>{
+
+    try{
+         const response = await fetch(`http://localhost:3000/api/user/delete/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        console.log("delete unsuccessful")
+        return
+      }
+      localStorage.removeItem("jwt-token")
+      navigate('/')
+    }catch(error){
+        console.log("network error", error)
+    }
+  }
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-white to-gray-50 flex">
-      {/* Left Section: Content */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6 }}
-        className="hidden lg:flex w-1/2 relative overflow-hidden"
-      >
-        {/* Background with gradient and pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0)`,
-              backgroundSize: "32px 32px",
-            }}
-          ></div>
-
-          {/* Floating shapes */}
-          <div className="absolute top-20 right-20 w-64 h-64 bg-orange-400/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-40 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
-        </div>
-
-        {/* Content Container */}
-        <div className="relative w-full p-12 flex flex-col justify-between z-10">
-          {/* Top Section */}
-          <div>
-            <Link
-              to="/"
-              className="flex items-center gap-2 text-white mb-16 group"
-            >
-              <div className="bg-white/10 p-2 rounded-lg backdrop-blur-sm group-hover:bg-white/20 transition-all">
-                <Car className="w-8 h-8" />
-              </div>
-              <span className="text-2xl font-bold">CarRental</span>
-            </Link>
-
-            <div className="space-y-8">
-              <div>
-                <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
-                  Start Your
-                  <br />
-                  Journey Today
-                </h1>
-                <p className="text-orange-50/90 text-lg leading-relaxed max-w-md">
-                  Join thousands of satisfied customers and experience our
-                  premium car rental services.
-                </p>
-              </div>
-
-              {/* Feature Cards */}
-              <div className="grid grid-cols-2 gap-4 mt-12">
-                {[
-                  {
-                    icon: Users,
-                    title: "Easy Sign Up",
-                    desc: "Quick registration process",
-                  },
-                  {
-                    icon: Shield,
-                    title: "Secure Account",
-                    desc: "Protected personal data",
-                  },
-                ].map((feature, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 + index * 0.1 }}
-                    className="bg-white/10 backdrop-blur-sm p-4 rounded-xl hover:bg-white/20 transition-all"
-                  >
-                    <feature.icon className="w-6 h-6 text-white mb-3" />
-                    <h3 className="text-white font-semibold mb-1">
-                      {feature.title}
-                    </h3>
-                    <p className="text-orange-50/80 text-sm">{feature.desc}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="bg-white/10 backdrop-blur-sm rounded-2xl p-6"
-          >
-            <div className="flex items-center gap-4">
-              <Star className="w-8 h-8 text-white" />
-              <div>
-                <h4 className="text-white font-semibold">
-                  Trusted by Thousands
-                </h4>
-                <p className="text-orange-50/80 text-sm">
-                  Join our growing community of car renters
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </motion.div>
-
-      {/* Right Section: Register Form */}
+    <>
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -229,7 +156,7 @@ const Register = () => {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="lg:hidden flex flex-col items-center gap-4 mb-8"
+            className=" flex flex-col items-center gap-4 mb-8"
           >
             <Link to="/" className="flex items-center gap-2 group">
               <div className="bg-orange-50 p-2 rounded-lg group-hover:bg-orange-100 transition-all">
@@ -243,10 +170,7 @@ const Register = () => {
           </motion.div>
 
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-2">Create Your Account</h2>
-            <p className="text-gray-600">
-              Join us for the best car rental experience
-            </p>
+            <h2 className="text-3xl font-bold mb-2">Account Details</h2>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -256,6 +180,7 @@ const Register = () => {
               <label className="text-sm font-medium text-gray-700">
                 Full Name
               </label>
+
               <div className="relative">
                 <input
                   type="text"
@@ -294,14 +219,14 @@ const Register = () => {
 
             {/* ============email already created error================ */}
 
-             {emailError && (
+            {(emailError || emailCheck) && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg"
               >
                 <AlertCircle className="w-5 h-5" />
-                <p className="text-sm">{emailError}</p>
+                <p className="text-sm"> {emailError || emailCheck}</p>
               </motion.div>
             )}
 
@@ -473,7 +398,7 @@ const Register = () => {
                   </option>
                   <option value={"Non-Ethiopian"}>Non-Ethiopian</option>
                 </select>
-              
+
                 <Globe className="w-5 h-5 text-gray-400 absolute left-4 top-3.5" />
               </div>
             </div>
@@ -517,7 +442,7 @@ const Register = () => {
                   <option value={"Adama"}>Adama</option>
                   <option value={"Mekelle"}>Mekelle</option>
                 </select>
-               
+
                 <MapPinHouse className="w-5 h-5 text-gray-400 absolute left-4 top-3.5" />
               </div>
             </div>
@@ -530,26 +455,52 @@ const Register = () => {
                        hover:bg-orange-600 transition-colors flex items-center justify-center gap-2"
             >
               <UserPlus className="w-5 h-5" />
-              Create Account
+              Update Account
             </motion.button>
           </form>
 
           <p className="mt-8 text-center text-gray-600">
-            Already have an account?{" "}
-            <motion.a
-              whileHover={{ scale: 1.05 }}
-              href="/login"
+            Do you wanna Delete your account?{" "}
+            <button
               className="text-orange-500 font-semibold hover:text-orange-600 transition-colors 
                        inline-flex items-center gap-1"
+                       onClick={()=>{setDeletePopUp(true)}}
             >
-              Sign in
-              <ChevronRight className="w-4 h-4" />
-            </motion.a>
+              Delete Account
+              <Trash className="w-4 h-4" />
+            </button>
+            {( deletePopUp &&
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="bg-white rounded-lg shadow-lg p-6 w-80">
+                          <h2 className="text-lg font-semibold mb-4 text-gray-800">
+                            Confirm Deletion
+                          </h2>
+                          <p className="text-gray-600 mb-6">
+                            Are you sure you want to delete this item? This
+                            action cannot be undone. 
+                          </p>
+                          <div className="flex justify-end space-x-3">
+                            <button
+                              onClick={()=>{setDeletePopUp(false)}}
+                              className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={deleteHandler}
+                              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md"
+                            >
+                              Yes, Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      )}
           </p>
         </div>
       </motion.div>
-    </div>
+    </>
   );
 };
 
-export default Register;
+export default UserAccount;

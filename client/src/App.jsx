@@ -24,6 +24,8 @@ import LoginForm from "./components/Auth/admin/admin.login";
 import AdminVehicle from "./Pages/admin/Vehicles";
 import AddVehicle from "./Pages/admin/AddVehicle";
 import PendingReserve from "./Pages/admin/pendingReserve";
+import UserAccount from "./Pages/UserAccount";
+import MyReservation from "./Pages/MyReservation";
 
 function App() {
   return (
@@ -36,6 +38,7 @@ function App() {
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/account/:id" element={<UserAccount />} />
           </Route>
 
           {/* Main routes with Navbar and Footer */}
@@ -50,6 +53,7 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/learnmore" element={<LearnMore />} />
             <Route path="/booking/:cid/:id" element={<Booking />}/>
+            <Route path="/myreservation/:id" element={<MyReservation />} />
           </Route> 
 
             <Route path="*" element={<Errorpage />} />

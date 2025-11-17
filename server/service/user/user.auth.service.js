@@ -101,7 +101,7 @@ exports.userRegisterService = async (body) => {
 
   console.log(getIdForToken);
   const JWTSecretKey = process.env.JWT_SECRET;
-  const email = getIdForToken[0].email;
+  const email = getIdForToken[0].Email;
   const id = getIdForToken[0].C_ID;
   const name = getIdForToken[0].FullName;
 

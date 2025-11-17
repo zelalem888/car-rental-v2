@@ -1,5 +1,18 @@
-const { vehicleReservationService,vehicleReservationUpdateService, vehicleReservationDeleteService} = require("../../service/user/vehicle.reservation.service");
+const { vehicleReservationService,vehicleReservationUpdateService, vehicleReservationDeleteService,allVehicleReservationService} = require("../../service/user/vehicle.reservation.service");
 
+
+
+
+exports.allVehicleReservationController = async (req, res)=>{
+   try {
+    const result = await allVehicleReservationService({id :req.params.id})
+      res.status(200).json(result);
+  } catch (error) {
+    res.json({ message: error });
+  }
+}
+
+// =====================================================================
 exports.vehicleReservationController = async (req, res) => {
   try {
     const result = await vehicleReservationService({reservationData: req.body, userId: req.params.id, vehicleId: req.params.vehicleid,

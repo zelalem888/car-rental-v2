@@ -17,9 +17,9 @@ exports.usersInfoUpdateController = async (req, res) => {
   try {
     const result = await usersInfoUpdateService({paramID :req.params.id, updatingData: req.body})
     
-      res.status(201).json({ message: "Update Success." });
+      res.status(201).json(result);
   } catch (error) {
-    res.status(400).json({ message: error });
+    res.status(400).json({message : error.message});
   }
 }
 

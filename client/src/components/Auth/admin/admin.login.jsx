@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
@@ -8,10 +8,36 @@ function LoginForm() {
     password: ""
   });
   const [error , setError] = useState(null)
+  useEffect(()=>{
+     const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("jwt-token");
+
+        const responseVerify = await fetch(
+          "http://localhost:3000/api/admin/verify",
+          {
+            method: "POST",
+            headers: {
+              "jwt-token": token,
+            },
+          }
+        );
+
+       if (!responseVerify.ok) {
+        return;
+      }
+
+      const result = await responseVerify.json();
+      navigate(`/admin/${result.id}`);
+      } catch (e) {
+       
+      }
+    };
+    fetchData();
+  },[])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(JSON.stringify(formData))
     try{
       const response = await fetch("http://localhost:3000/api/admin/login",{
         method: "POST",
@@ -22,12 +48,14 @@ function LoginForm() {
       })
 
       if(!response.ok){
-        const errorData = await response.json()
-        setError(errorData.message)
-        throw new Error(errorData.message)
+        setError("Invalid username or password.")
       }
-      const data = await response.json()
-      const dataId = data.data[0].A_ID
+
+       const data = await response.json();
+
+    
+      localStorage.setItem('jwt-token', data.token)
+      const dataId = data.rows[0].A_ID
       navigate(`/admin/${dataId}`)
     }catch(e){
       throw new Error(e)
@@ -65,8 +93,8 @@ function LoginForm() {
           </svg>
           <input
             type="text"
-            name="email"
-            placeholder="Email"
+            name="username"
+            placeholder="Username"
             className="border-none outline-none ring-0"
             value={formData.username}
             onChange={(e)=>{

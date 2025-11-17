@@ -26,6 +26,32 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+   useEffect(()=>{
+       const fetchData = async () => {
+        try {
+          const token = localStorage.getItem("jwt-token");
+  
+          const responseVerify = await fetch(
+            "http://localhost:3000/api/user/verify",
+            {
+              method: "POST",
+              headers: {
+                "jwt-token": token,
+              },
+            }
+          );
+  
+         if (!responseVerify.ok) {
+          return;
+        }
+        navigate(`/`);
+        } catch (e) {
+         
+        }
+      };
+      fetchData();
+    },[])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 

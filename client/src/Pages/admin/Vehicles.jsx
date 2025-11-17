@@ -15,6 +15,23 @@ const AdminVehicle = () => {
   useEffect(() => {
     const fetchAdmin = async () => {
       try {
+
+         const token = localStorage.getItem("jwt-token");
+        const responseVerify = await fetch(
+          "http://localhost:3000/api/admin/verify",
+          {
+            method: "POST",
+            headers: {
+              "jwt-token": token,
+            },
+          }
+        );
+
+        if (!responseVerify.ok) {
+          navigate("/admin/login");
+          return
+        }
+
         const response = await fetch(`http://localhost:3000/api/admin/${id}`);
 
         if (!response.ok) {
@@ -24,7 +41,6 @@ const AdminVehicle = () => {
 
         const data = await response.json();
         setAdminData(data);
-        console.log(data);
 
         const allVehicle = await fetch(`http://localhost:3000/api/vehicles`);
 
@@ -34,7 +50,6 @@ const AdminVehicle = () => {
         }
         const vehicleData = await allVehicle.json();
         setAllVehicle(vehicleData);
-        console.log(vehicleData);
       } catch (e) {
         throw new Error(e);
       }

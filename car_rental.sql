@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 14, 2025 at 10:15 PM
+-- Generation Time: Nov 15, 2025 at 05:01 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.14
 
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `customer` (
   `Register_Date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `Update_Date` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`C_ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `customer`
@@ -97,7 +97,15 @@ INSERT INTO `customer` (`C_ID`, `FullName`, `Email`, `Password`, `PhoneNumber`, 
 (34, 'Zelalem Legesse Reda', 'zlegsseeeb9@gmail.com', '12345678', 931260113, '2007-11-06', 'Ethiopian', NULL, 'Addis Ababa', '2025-11-12 07:42:42', '11/12/2025, 10:42:42 AM'),
 (35, 'Zelalem Legesse Reda', 'zlegesddsse9@gmail.com', '12345678', 931260114, '2007-10-31', 'Ethiopian', NULL, 'Addis Ababa', '2025-11-12 07:53:20', '11/12/2025, 10:53:20 AM'),
 (36, 'Zelalem Legesse Reda', 'zlegesse93@gmail.com', '12345678', 931260114, '2007-11-08', 'Ethiopian', NULL, 'Addis Ababa', '2025-11-12 08:07:16', '11/12/2025, 11:07:16 AM'),
-(37, 'Zelalem Legesse Reda', 'zleegesse9@gmail.com', '12345678', 931260114, '2007-11-01', 'Ethiopian', NULL, 'Addis Ababa', '2025-11-12 08:08:50', '11/12/2025, 11:08:50 AM');
+(37, 'Zelalem Legesse Reda', 'zleegesse9@gmail.com', '12345678', 931260114, '2007-11-01', 'Ethiopian', NULL, 'Addis Ababa', '2025-11-12 08:08:50', '11/12/2025, 11:08:50 AM'),
+(38, 'tenagne Legesse', 'tenagne12@gmail.com', '11111111', 931260114, '2007-10-30', 'Ethiopian', NULL, 'Addis Ababa', '2025-11-15 13:06:29', '11/15/2025, 4:06:28 PM'),
+(39, 'tenagne Legesse', 'tenagn2@gmail.com', '11111111', 931260114, '2007-10-30', 'Ethiopian', NULL, 'Addis Ababa', '2025-11-15 13:07:42', '11/15/2025, 4:07:42 PM'),
+(40, 'tenagne Legesse', 'tenagne2@gmail.com', '11111111', 931260114, '2007-10-30', 'Ethiopian', NULL, 'Addis Ababa', '2025-11-15 13:09:23', '11/15/2025, 4:09:23 PM'),
+(41, 'Zelalem Legesse Reda', 'zlegesddse9@gmail.com', '11111111', 931260114, '2007-10-29', 'Ethiopian', NULL, 'Addis Ababa', '2025-11-15 13:10:00', '11/15/2025, 4:10:00 PM'),
+(42, 'Zelalem Legesse Reda', 'zlegesse9@gmails.com', '11111111', 931260114, '2007-10-31', 'Ethiopian', NULL, 'Addis Ababa', '2025-11-15 13:16:14', '11/15/2025, 4:16:14 PM'),
+(43, 'Zelalem Legesse Reda', 'zleges33se9@gmail.com', '11111111', 931260114, '2007-11-01', 'Ethiopian', NULL, 'Addis Ababa', '2025-11-15 13:18:04', '11/15/2025, 4:18:04 PM'),
+(44, 'Zelalem Legesse Reda', 'zlegesssse9@gmail.com', '11111111', 931260114, '2007-10-30', 'Ethiopian', NULL, 'Addis Ababa', '2025-11-15 13:19:59', '11/15/2025, 4:19:59 PM'),
+(45, 'Zelalem Legesse Reda', 'zlssegesse9@gmail.com', '11111111', 931260114, '2007-11-08', 'Ethiopian', NULL, 'Addis Ababa', '2025-11-15 13:22:47', '11/15/2025, 4:22:46 PM');
 
 -- --------------------------------------------------------
 
@@ -127,13 +135,14 @@ CREATE TABLE IF NOT EXISTS `rent` (
   KEY `FK_Rent_Customer` (`C_ID`),
   KEY `FK_Rent_Vehicle` (`V_ID`),
   KEY `FK_Rent_Admin` (`A_ID`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `rent`
 --
 
 INSERT INTO `rent` (`Rent_ID`, `C_ID`, `V_ID`, `A_ID`, `Reservation_R_ID`, `Pickup_Date`, `Return_Date`, `Total_Rent_Day`, `Daily_Fee`, `over-payment`, `Fule_Charged`, `Down_Payment`, `Total_Paid`, `Refund`, `Confirmation_Number`) VALUES
+(17, '11', '245', '1', '24', '2025-11-12', '2025-11-28', 16, 33.5, NULL, NULL, NULL, 536, NULL, '45b110c8-8f4e-46b3-ba04-e84c0891204c'),
 (16, '12', '245', '1', '19', '2025-11-11', '2025-11-12', 1, 33.5, NULL, NULL, NULL, 33.5, NULL, '8f535f53-e774-4748-b967-4daaf0e17b41');
 
 -- --------------------------------------------------------
@@ -155,15 +164,20 @@ CREATE TABLE IF NOT EXISTS `reservation` (
   PRIMARY KEY (`R_ID`),
   KEY `FK_Reservation_Customer` (`C_ID`),
   KEY `FK_Reservation_Vehicle` (`V_ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `reservation`
 --
 
 INSERT INTO `reservation` (`R_ID`, `C_ID`, `V_ID`, `Pickup_Date`, `Return_Date`, `Status`, `Confirmation_Number`, `Posting_Date`) VALUES
+(20, '11', '259', '2025-11-21', NULL, 'pending', 'afe41fab-a979-4e67-a1f1-1439e32a342a', '2025-11-15 16:10:41'),
 (19, '12', '245', '2025-11-11', '2025-11-12', 'confirmed', '8f535f53-e774-4748-b967-4daaf0e17b41', '2025-11-09 19:52:17'),
-(18, '12', '246', '2025-11-11', '2025-11-12', 'pending', '8f535f53-e774-4748-b967-4daaf0e17b41', '2025-11-09 19:52:17');
+(18, '12', '246', '2025-11-11', '2025-11-12', 'pending', '8f535f53-e774-4748-b967-4daaf0e17b41', '2025-11-09 19:52:17'),
+(21, '11', '259', '2025-11-04', '0000-00-00', 'pending', '8fecd08a-0b2c-49f7-95e2-eaef5400af2a', '2025-11-15 16:12:35'),
+(22, '11', '259', '2025-11-02', '2025-11-20', 'pending', '2aa854ab-e941-46d3-8b22-458a3dd55a7b', '2025-11-15 16:14:04'),
+(23, '11', '259', '2025-11-02', '2025-11-20', 'pending', 'fbd8ed13-374c-4821-ac6d-c3f94c6c5b5b', '2025-11-15 16:29:22'),
+(24, '11', '245', '2025-11-12', '2025-11-28', 'confirmed', '45b110c8-8f4e-46b3-ba04-e84c0891204c', '2025-11-15 16:33:01');
 
 -- --------------------------------------------------------
 

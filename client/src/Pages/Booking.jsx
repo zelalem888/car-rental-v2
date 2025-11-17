@@ -79,11 +79,11 @@ const CarDetailPage = () => {
 
       const result = await response.json();
       console.log(result);
-      alert("rented made.")
+    alert("Booking confirmed!");
+    navigate("/")
     } catch (e) {
       throw new Error(e);
     }
-    alert("Booking confirmed!");
   };
 
   return selectedCar ? (

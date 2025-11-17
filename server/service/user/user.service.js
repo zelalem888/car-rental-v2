@@ -1,4 +1,5 @@
 const db = require("../../db/config");
+const jwt = require("jsonwebtoken")
 
 exports.usersInfoService = async (id) => {
   const paramID = id;
@@ -37,11 +38,40 @@ exports.usersInfoUpdateService = async ({ paramID, updatingData }) => {
   if (findID.length === 0) {
     throw new Error("there is no user in this ID to update.");
   }
+  const [FindEmail] = await db.query(
+  "SELECT Email FROM customer WHERE C_ID != ?",
+  [paramID]
+);
+
+for (let i = 0; i < FindEmail.length; i++) {
+  if (FindEmail[i].Email === updatingData.email) {
+    throw new Error("This Email already exists.");
+  }
+}
+
 
   await db.query(
     "UPDATE customer SET FullName=? , Email=? , Password=? , PhoneNumber=? , DoB=? , Nationality=? , Address=?, City=? , Update_Date=? WHERE C_ID = ?",
     result
   );
+
+  // console.log(findID);
+  const JWTSecretKey = process.env.JWT_SECRET;
+  const email = findID[0].Email;
+  const id = findID[0].C_ID;
+  const name = findID[0].FullName;
+
+const jwtData = {
+    signInTime: Date.now(),
+    email,
+    id,
+    name,
+  };
+
+  const token = jwt.sign(jwtData, JWTSecretKey);
+
+  return token;
+
 };
 
 // =============================================================

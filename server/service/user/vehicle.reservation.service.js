@@ -1,6 +1,17 @@
 const db = require("../../db/config");
 const { v4 : uuidv4 } = require('uuid')
 
+
+exports.allVehicleReservationService = async({id}) =>{
+const [rows] = await db.query(
+      "SELECT * FROM reservation WHERE C_ID = ?",
+      id
+    );
+    return rows
+}
+
+// ================================================================================
+
 exports.vehicleReservationService = async ({ reservationData,userId, vehicleId}) => {
   const status = "pending";
   const uuid = uuidv4()

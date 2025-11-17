@@ -20,7 +20,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   // const location = useLocation();
   // const [user ,setUser] = useState(null)
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState();
 
   useEffect(
     () => {
@@ -37,15 +37,16 @@ const Navbar = () => {
               });
 
             if(!response.ok){
-              setUserData(null)
-            console.log("Token Invalid")
+            // console.log("Token Invalid")
+            return
             }
             
             const result = await response.json()
             setUserData(result)
+            // console.log(result)
 
           } catch (e) {
-            throw new Error(e)
+            // throw new Error(e)
           }
         }
       };
@@ -149,6 +150,18 @@ const Navbar = () => {
                         >
                           <span>{userData.name}</span>
                         </button>
+                         <Link
+                          className="w-full px-4 py-2 text-left text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors flex items-center space-x-2"
+                          to={`/myreservation/${userData.id}`}
+                        >
+                          <span>My Reservation</span>
+                        </Link>
+                        <Link
+                          className="w-full px-4 py-2 text-left text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors flex items-center space-x-2"
+                          to={`/account/${userData.id}`}
+                        >
+                          <span>Account</span>
+                        </Link>
 
                         <button
                           onClick={handleLogout}

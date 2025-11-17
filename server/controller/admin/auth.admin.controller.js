@@ -1,23 +1,35 @@
 const express = require('express')
-const {adminLoginService,adminPageService} = require('../../service/admin/auth.admin.service')
+const {adminLoginService,adminPageService,adminVerifyService} = require('../../service/admin/auth.admin.service')
 
 exports.adminLoginController = async (req, res)=>{
   try {
     const rows = await adminLoginService(req.body)
 
-    if (rows.length > 0) {
-      return res.status(200).json({message:`Login successful.`, data: rows});
+    if (rows.rows.length > 0) {
+    
+      // console.log(rows)
+      return res.status(200).json(rows);
     } else {
-      return res.status(401).json({ message: "Invalid email or password." });
+      return res.status(401).json("Invalid email or password.");
     }
   } catch (error) {
-    console.error("Database error during login:", error);
     return res
       .status(500)
       .json({ message: "An internal server error occurred." });
   }
 }
 
+// ==================================================
+
+exports.adminVerifyController = async(req, res)=>{
+ try {
+    const result = await adminVerifyService(req.headers["jwt-token"])
+    
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400)
+  }
+}
 // ==================================================
 
 exports.adminPageController = async(req , res)=>{
