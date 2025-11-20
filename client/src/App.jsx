@@ -26,6 +26,7 @@ import AddVehicle from "./Pages/admin/AddVehicle";
 import PendingReserve from "./Pages/admin/pendingReserve";
 import UserAccount from "./Pages/UserAccount";
 import MyReservation from "./Pages/MyReservation";
+import UpdateBooking from "./Pages/UpdateBooking";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
             <Route path="/learnmore" element={<LearnMore />} />
             <Route path="/booking/:cid/:id" element={<Booking />}/>
             <Route path="/myreservation/:id" element={<MyReservation />} />
+            <Route path="/booking/update/:rid" element={<UpdateBooking />} />
           </Route> 
 
             <Route path="*" element={<Errorpage />} />

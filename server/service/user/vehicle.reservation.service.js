@@ -2,17 +2,18 @@ const db = require("../../db/config");
 const { v4 : uuidv4 } = require('uuid')
 
 
-exports.allVehicleReservationService = async({id}) =>{
-const [rows] = await db.query(
-      "SELECT * FROM reservation WHERE C_ID = ?",
-      id
-    );
-    return rows
-}
+exports.allVehicleReservationService = async ({ id }) => {
+  const [rows] = await db.query(
+    "SELECT * FROM reservation WHERE C_ID = ? ",
+    [id]
+  );
+  return rows;
+};
+
 
 // ================================================================================
 
-exports.vehicleReservationService = async ({ reservationData,userId, vehicleId}) => {
+exports.vehicleReservationService = async ({ reservationData, userId, vehicleId}) => {
   const status = "pending";
   const uuid = uuidv4()
   const values = [
@@ -68,4 +69,21 @@ exports.vehicleReservationDeleteService = async({reservationID})=>{
     }
 
       await db.query("DELETE FROM reservation WHERE R_ID = ?" , reservationID);
+}
+
+// ===============================================================
+exports.SingleVehicleReservationService = async({reservationID}) =>{
+const [rows] = await db.query(
+      "SELECT * FROM reservation WHERE R_ID = ?",
+      reservationID
+    );
+    return rows
+}
+//  ============================================================
+exports.rentedVehicleService =  async({reservationID}) =>{
+const [rows] = await db.query(
+      "SELECT * FROM rent WHERE Reservation_R_ID  = ?",
+      reservationID
+    );
+    return rows
 }

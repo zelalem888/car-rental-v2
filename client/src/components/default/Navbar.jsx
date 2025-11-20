@@ -154,13 +154,13 @@ const Navbar = () => {
                           className="w-full px-4 py-2 text-left text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors flex items-center space-x-2"
                           to={`/myreservation/${userData.id}`}
                         >
-                          <span>My Reservation</span>
+                          <span>My Reservations</span>
                         </Link>
                         <Link
                           className="w-full px-4 py-2 text-left text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors flex items-center space-x-2"
                           to={`/account/${userData.id}`}
                         >
-                          <span>Account</span>
+                          <span>Profile</span>
                         </Link>
 
                         <button

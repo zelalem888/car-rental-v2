@@ -1,0 +1,47 @@
+/* Hide everything except the print area */
+@media print {
+  body * {
+    visibility: hidden; /* Hide all page content */
+  }
+
+  .print-area, .print-area * {
+    visibility: visible; /* Only show print-area */
+  }
+
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-size: 12pt;
+    border: none;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    page-break-inside: avoid; /* Prevent table from splitting */
+  }
+
+  th, td {
+    border: 1px solid #f97316; /* orange border for print */
+    padding: 6px;
+    text-align: left;
+    font-weight: normal;
+  }
+
+  th {
+    background-color: #fef3c7; /* light orange */
+    font-weight: bold;
+  }
+
+  button {
+    display: none; /* hide buttons in print */
+  }
+
+  .p-6 {
+    padding: 0; /* remove extra padding if needed */
+  }
+}

@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { DayPicker as EthiopicDayPicker } from 'react-day-picker/ethiopic';
+import { DayPicker as USDayPicker } from "react-day-picker";
+import "react-day-picker/style.css";
+
 
 const CarDetailPage = () => {
   const { cid , id } = useParams();
   const [selectedCar, setSelectedCar] = useState();
   const [userData, setUserData] = useState({});
   const navigate = useNavigate();
+  const [selected, setSelected] = useState();
+  const [error ,setError] = useState()
+  const year = new Date().getFullYear()
+  const month = new Date().getMonth()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,17 +61,13 @@ const CarDetailPage = () => {
     returnDate: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setRentalDetails((prevDetails) => ({
-      ...prevDetails,
-      [name]: value,
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
+    if(rentalDetails.pickUpDate=== "" || rentalDetails.returnDate===""){
+      setError("invalid date.")
+      return
+    }
     try {
       const response = await fetch(`http://localhost:3000/api/user/reservation/${cid}/${id}`, {
         method : "POST",
@@ -79,13 +83,23 @@ const CarDetailPage = () => {
 
       const result = await response.json();
       console.log(result);
-    alert("Booking confirmed!");
-    navigate("/")
+      alert("Booking confirmed!. redirecting to home page.")
+      setTimeout(()=>{
+        navigate('/models')
+      },1000)
+    
     } catch (e) {
       throw new Error(e);
     }
   };
 
+  const selectHandler = (range)=>{
+    setSelected(range)
+    setRentalDetails({
+      pickUpDate : range.from.toISOString(),
+      returnDate : range.to.toISOString()
+    })
+  }
   return selectedCar ? (
     <div className="container mx-auto p-6 mt-20">
       <div className="flex flex-col md:flex-row md:space-x-10">
@@ -138,32 +152,33 @@ const CarDetailPage = () => {
           <form onSubmit={handleSubmit}>
             <div className="space-y-6">
               <div className="flex flex-col">
-                <label htmlFor="pickUpDate" className="text-sm text-gray-600">
-                  Pick-up Date
-                </label>
-                <input
-                  type="date"
-                  name="pickUpDate"
-                  value={rentalDetails.pickUpDate}
-                  onChange={handleChange}
-                  className="p-3 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  required
-                />
-              </div>
-
-              <div className="flex flex-col">
                 <label htmlFor="dropOffDate" className="text-sm text-gray-600">
-                  Drop-off Date
+                  Pick a Date
                 </label>
-                <input
-                  type="date"
-                  name="returnDate"
-                  value={rentalDetails.returnDate}
-                  onChange={handleChange}
-                  className="p-3 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  required
-                />
+                <p className="bg-green-400 w-fit px-2 rounded-md">Ethiopian </p>
+                  <EthiopicDayPicker
+                    mode="range"
+                    selected={selected}
+                    onSelect={selectHandler}
+                    startMonth={new Date(year, month)}
+                    numerals="latn"
+                    disabled={{before : new Date()}}
+                  />
+                <p className="bg-green-400 w-fit px-2 rounded-md">Gregorian </p>
+                   <USDayPicker
+                    mode="range"
+                    selected={selected}
+                    onSelect={selectHandler}
+                    startMonth={new Date(year, month)}
+                    numerals="latn"
+                    disabled={{before : new Date()}}
+                  />
               </div>
+              {error && (
+                <div>
+                  <p className="text-red-400">{error} </p>
+                </div>
+              )}
 
               <div className="flex flex-col">
                 <label htmlFor="location" className="text-sm text-gray-600">
@@ -173,7 +188,6 @@ const CarDetailPage = () => {
                   type="text"
                   name="location"
                   value="Main Office"
-                  onChange={handleChange}
                   className="p-3 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   disabled
                 />
