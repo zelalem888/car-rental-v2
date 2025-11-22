@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { DayPicker as EthiopicDayPicker } from 'react-day-picker/ethiopic';
+import { DayPicker as EthiopicDayPicker } from "react-day-picker/ethiopic";
 import { DayPicker as USDayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 
-
 const CarDetailPage = () => {
-  const { cid , id } = useParams();
+  const { id } = useParams();
   const [selectedCar, setSelectedCar] = useState();
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState();
   const navigate = useNavigate();
   const [selected, setSelected] = useState();
-  const [error ,setError] = useState()
-  const year = new Date().getFullYear()
-  const month = new Date().getMonth()
+  const [error, setError] = useState();
+  const year = new Date().getFullYear();
+  const month = new Date().getMonth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,12 +37,15 @@ const CarDetailPage = () => {
         const resultVerify = await responseVerify.json();
         setUserData(resultVerify);
 
-        console.log(resultVerify)
+        console.log(resultVerify);
 
-        const response = await fetch(`http://localhost:3000/api/vehicle/${id}`);
+        const response = await fetch(
+          `http://localhost:3000/api/vehicle/${id}`
+        );
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData);
+          console.log(errorData)
+          throw new Error(errorData.message || "Something went wrong");
         }
 
         const result = await response.json();
@@ -63,19 +65,22 @@ const CarDetailPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if(rentalDetails.pickUpDate=== "" || rentalDetails.returnDate===""){
-      setError("invalid date.")
-      return
+
+    if (rentalDetails.pickUpDate === "" || rentalDetails.returnDate === "") {
+      setError("invalid date.");
+      return;
     }
     try {
-      const response = await fetch(`http://localhost:3000/api/user/reservation/${cid}/${id}`, {
-        method : "POST",
-        headers:{
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify(rentalDetails)
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/user/reservation/${userData.id}/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(rentalDetails),
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData);
@@ -83,23 +88,22 @@ const CarDetailPage = () => {
 
       const result = await response.json();
       console.log(result);
-      alert("Booking confirmed!. redirecting to home page.")
-      setTimeout(()=>{
-        navigate('/models')
-      },1000)
-    
+      alert("Booking confirmed!. redirecting to home page.");
+      setTimeout(() => {
+        navigate("/models");
+      }, 1000);
     } catch (e) {
       throw new Error(e);
     }
   };
 
-  const selectHandler = (range)=>{
-    setSelected(range)
+  const selectHandler = (range) => {
+    setSelected(range);
     setRentalDetails({
-      pickUpDate : range.from.toISOString(),
-      returnDate : range.to.toISOString()
-    })
-  }
+      pickUpDate: range.from.toISOString(),
+      returnDate: range.to.toISOString(),
+    });
+  };
   return selectedCar ? (
     <div className="container mx-auto p-6 mt-20">
       <div className="flex flex-col md:flex-row md:space-x-10">
@@ -156,23 +160,23 @@ const CarDetailPage = () => {
                   Pick a Date
                 </label>
                 <p className="bg-green-400 w-fit px-2 rounded-md">Ethiopian </p>
-                  <EthiopicDayPicker
-                    mode="range"
-                    selected={selected}
-                    onSelect={selectHandler}
-                    startMonth={new Date(year, month)}
-                    numerals="latn"
-                    disabled={{before : new Date()}}
-                  />
+                <EthiopicDayPicker
+                  mode="range"
+                  selected={selected}
+                  onSelect={selectHandler}
+                  startMonth={new Date(year, month)}
+                  numerals="latn"
+                  disabled={{ before: new Date() }}
+                />
                 <p className="bg-green-400 w-fit px-2 rounded-md">Gregorian </p>
-                   <USDayPicker
-                    mode="range"
-                    selected={selected}
-                    onSelect={selectHandler}
-                    startMonth={new Date(year, month)}
-                    numerals="latn"
-                    disabled={{before : new Date()}}
-                  />
+                <USDayPicker
+                  mode="range"
+                  selected={selected}
+                  onSelect={selectHandler}
+                  startMonth={new Date(year, month)}
+                  numerals="latn"
+                  disabled={{ before: new Date() }}
+                />
               </div>
               {error && (
                 <div>

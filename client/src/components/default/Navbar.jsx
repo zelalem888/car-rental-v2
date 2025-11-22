@@ -95,8 +95,8 @@ const Navbar = () => {
             className="flex items-center space-x-2 text-2xl font-bold group"
           >
             <Car className="w-8 h-8 text-orange-500 transform group-hover:scale-110 transition-transform" />
-            <span className="text-gray-900">Car</span>
-            <span className="text-orange-500">Rental</span>
+            <span className="text-gray-900">Sami</span>
+            <span className="text-orange-500">Car Rental</span>
           </Link>
 
           {/* Desktop Navigation */}

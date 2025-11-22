@@ -7,6 +7,7 @@ exports.usersInfoService = async (id) => {
     "SELECT * FROM customer WHERE C_ID = ?",
     paramID
   );
+  console.log(paramID)
   if (findID.length === 0) {
     throw new Error("there is no user in this ID.");
   }

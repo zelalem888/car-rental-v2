@@ -56,7 +56,7 @@ function LoginForm() {
     
       localStorage.setItem('jwt-token', data.token)
       const dataId = data.rows[0].A_ID
-      navigate(`/admin/${dataId}`)
+      navigate(`/admin/`)
     }catch(e){
       throw new Error(e)
     }

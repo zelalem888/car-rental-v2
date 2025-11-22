@@ -1,12 +1,17 @@
 const express = require("express");
 const z = require("zod");
-const { usersInfoController, usersInfoUpdateController, usersInfoDeleteController } = require("../../controller/user/user.controller");
+const { usersInfoController, usersInfoUpdateController, usersInfoDeleteController,usersInfoAdminController } = require("../../controller/user/user.controller");
+const { verifyToken } = require("../../middleware/auth");
 
 const router = express.Router();
 
 // ========================user get full info api==========================
 
-router.get("/user/:id", usersInfoController );
+router.get("/user/:id", verifyToken, usersInfoController );
+
+// ========================user get full info for admin api==========================
+
+router.get("/user/admin/:id", usersInfoAdminController );
 
 // ======================user update account info api===========================
 

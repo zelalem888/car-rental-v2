@@ -1,10 +1,19 @@
 const db = require("../../db/config");
 
 exports.allReservationService = async () => {
+  const [rows] = await db.query("SELECT * FROM reservation");
+  return rows;
+};
+// ===============================================================
+exports.pendingReservationService = async () => {
   const [rows] = await db.query("SELECT * FROM reservation WHERE status = ? ", "pending");
   return rows;
 };
-
+// ==============================================================
+exports.confirmedReservationService = async () => {
+  const [rows] = await db.query("SELECT * FROM reservation WHERE status = ? ", "confirmed");
+  return rows;
+};
 // ===============================================================
 
 exports.confirmReservationService = async (params) => {

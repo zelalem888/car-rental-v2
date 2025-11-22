@@ -59,7 +59,7 @@ const SingleModel = () => {
           return
         }
         const resultVerify = await responseVerify.json();
-        navigate(`/booking/${resultVerify.id}/${fetchedData[0].V_ID}`)
+        navigate(`/booking/${fetchedData[0].V_ID}`)
   }
 
   return (

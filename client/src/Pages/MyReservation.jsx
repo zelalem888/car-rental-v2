@@ -6,6 +6,7 @@ import "./MyReservation.css"
 const MyReservation = () => {
   const { id } = useParams();
   const [userData, setUserData] = useState();
+  const [tokenId, setTokenId] = useState()
   const [popup, setPopup] = useState(false);
   const [rent , setRent] = useState()
   const navigate = useNavigate();
@@ -30,20 +31,30 @@ const MyReservation = () => {
             return;
           }
           const result = await response.json();
+          setTokenId(result)
         } catch (e) {
           console.log("network Error", e);
         }
       }
     };
     fetchUser();
-
+  },[navigate])
+useEffect(()=>{
+    if (!tokenId) return;
     const fetchData = async () => {
+        const token = localStorage.getItem("jwt-token");
+
       try {
         const response = await fetch(
-          `http://localhost:3000/api/user/reservation/${id}`
+          `http://localhost:3000/api/user/reservation/${id}`,{
+            headers:{
+              "authorization" : `Bearer ${token}`
+            }
+          }
         );
         if (!response.ok) {
-          console.log("there is no reservation.");
+          console.log("there is no reservation." , tokenId);
+          navigate(`/myreservation/${tokenId.id}`)
         }
 
         const result = await response.json();
@@ -54,7 +65,7 @@ const MyReservation = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [tokenId, id, navigate]);
 
   const popupHandler = async (id)=>{
     setPopup(true)
@@ -94,7 +105,7 @@ const MyReservation = () => {
             </thead>
 
             <tbody>
-              {userData &&
+              {Array.isArray(userData) && userData.length > 0 ?
                 userData.map((item) => (
                   <tr
                     key={item.R_ID}
@@ -262,13 +273,15 @@ const MyReservation = () => {
                       )}
                     </td>
                   </tr>
-                ))}
+                )):(
+                    <p className="text-lg">No reservations found.</p>
+                )}
             </tbody>
           </table>
         </div>
       </div>
     </>
-  );
+  )
 };
 
 export default MyReservation;

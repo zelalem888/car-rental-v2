@@ -9,21 +9,34 @@ const {
 
 exports.allVehicleReservationController = async (req, res) => {
   try {
+    const user = req.user
+    const paramsId = req.params.id
+    console.log(user, paramsId)
+    if(user.id != paramsId){
+      res.status(403).json({message : "SOME ONE CHANGED THE LINK."})
+    }
     const result = await allVehicleReservationService({ id: req.params.id });
     res.status(200).json(result);
   } catch (error) {
-    res.json({ message: error });
+        console.error("Error in allVehicleReservationController:", error);
+    res.status(500).json({ message: error.message || "Server error" });
   }
 };
 
 // =====================================================================
 exports.vehicleReservationController = async (req, res) => {
+    const userId = req.user.id;
   try {
     const result = await vehicleReservationService({
       reservationData: req.body,
       userId: req.params.id,
       vehicleId: req.params.vehicleid,
     });
+
+    console.log(result)
+     if (result[0].C_ID && result[0].C_ID !== userId) {
+        return res.status(403).json({ message: "Forbidden" });
+    }
 
     if (result) {
       return res.status(200).json({

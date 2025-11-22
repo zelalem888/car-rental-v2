@@ -6,10 +6,11 @@ const {SingleVehicleReservationController,
      ,allVehicleReservationController
      ,rentedVehicleController
      } = require("../../controller/user/vehicle.reservation.controller");
+const { verifyToken } = require("../../middleware/auth");
 const router = express.Router();
 
 // ==================all reserved for user====================
-router.get("/user/reservation/:id" , allVehicleReservationController)
+router.get("/user/reservation/:id" ,verifyToken, allVehicleReservationController)
 
 // ==================reservation api===========================
 

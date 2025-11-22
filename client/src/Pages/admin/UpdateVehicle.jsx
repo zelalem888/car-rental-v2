@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const UpdateVehicle = () => {
-  const { aid, vname, vid } = useParams();
+  const {vname, vid } = useParams();
   const navigate = useNavigate();
   const [formData, setFormdata] = useState({
-    A_ID: "",
+    A_ID: null,
     vehicleName: "",
     plateNumber: "",
     brandName: "",
@@ -15,16 +15,38 @@ const UpdateVehicle = () => {
     fuelType: "",
   });
   const [plateError, setPlateError] = useState(null);
-
   useEffect(() => {
     const fetchData = async () => {
-      console.log(aid, vid, vname);
       try {
+         const token = localStorage.getItem("jwt-token");
+           if(!token){
+            navigate("/admin/login");
+            return
+           }
+          const responseVerify = await fetch(
+            "http://localhost:3000/api/admin/verify",
+            {
+              method: "POST",
+              headers: {
+                "jwt-token": token,
+              },
+            }
+          );
+  
+          if (!responseVerify.ok) {
+            localStorage.removeItem("jwt-token")
+            navigate("/admin/login");
+            return
+          }
+          const data = await responseVerify.json()
+
+          setFormdata({...formData, A_ID : data.id})
         const response = await fetch(
           `http://localhost:3000/api/vehicle/${vname}/${vid}`
         );
         if (!response.ok) {
           const errorData = await response.json();
+          navigate("/admin")
           throw new Error(errorData.message);
         }
         const waitedDate = await response.json();
@@ -74,7 +96,7 @@ const UpdateVehicle = () => {
       }
       const successData = await response.json();
       alert(successData.message);
-      navigate(`/admin/${aid}`);
+      navigate(`/admin`);
     } catch (e) {
       alert(e);
       throw new Error(e);

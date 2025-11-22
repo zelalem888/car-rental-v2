@@ -63,7 +63,7 @@ useEffect( ()=>{
           return
         }
         const resultVerify = await responseVerify.json();
-        navigate(`/booking/${resultVerify.id}/${V_ID}`)
+        navigate(`/booking/${V_ID}`)
   }
 
 const filteredVehicles = result.filter((car)=>{

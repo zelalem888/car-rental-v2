@@ -63,11 +63,16 @@ const UserAccount = () => {
         }
         const result = await responseVerify.json();
         const response = await fetch(
-          `http://localhost:3000/api/user/${result.id}`
-        );
+          `http://localhost:3000/api/user/${id}`
+        ,{
+          method:"GET",
+          headers:{
+            "authorization": `Bearer ${token}`
+          }
+        });
         if (!response.ok) {
-          console.log("can not get the user info");
-          return;
+          navigate(`/account/${result.id}`)
+          return
         }
 
         const userResult = await response.json();
@@ -84,7 +89,7 @@ const UserAccount = () => {
       } catch (e) {}
     };
     fetchData();
-  }, []);
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

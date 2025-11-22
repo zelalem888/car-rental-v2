@@ -27,6 +27,7 @@ import PendingReserve from "./Pages/admin/pendingReserve";
 import UserAccount from "./Pages/UserAccount";
 import MyReservation from "./Pages/MyReservation";
 import UpdateBooking from "./Pages/UpdateBooking";
+import ConfirmedReservations from "./Pages/admin/confirmedReservations";
 
 function App() {
   return (
@@ -53,7 +54,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/services" element={<Services />} />
             <Route path="/learnmore" element={<LearnMore />} />
-            <Route path="/booking/:cid/:id" element={<Booking />}/>
+            <Route path="/booking/:id" element={<Booking />}/>
             <Route path="/myreservation/:id" element={<MyReservation />} />
             <Route path="/booking/update/:rid" element={<UpdateBooking />} />
           </Route> 
@@ -68,10 +69,11 @@ function App() {
 
           {/* admin Main layout */}
           <Route element={<AdminLayout />}>
-            <Route path="/admin/:id" element={<AdminVehicle />} />
-            <Route path="/admin/add/:id" element={<AddVehicle />} />
-            <Route path="/admin/update/:aid/:vname/:vid" element={<UpdateVehicle />} />
-            <Route path="/admin/:id/pending" element={<PendingReserve />} />
+            <Route path="/admin/" element={<AdminVehicle />} />
+            <Route path="/admin/add" element={<AddVehicle />} />
+            <Route path="/admin/update/:vname/:vid" element={<UpdateVehicle />} />
+            <Route path="/admin/pending" element={<PendingReserve />} />
+            <Route path="/admin/confirmed" element={<ConfirmedReservations /> } />
           
           </Route>
         </Routes>

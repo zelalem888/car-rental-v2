@@ -5,18 +5,21 @@ import AdminNavBar from "../../components/default/AdminNavBar";
 
 const AdminVehicle = () => {
   const [adminData, setAdminData] = useState();
+  const [adminID, setAdminID] = useState()
   const [allVehicle, setAllVehicle] = useState([]);
   const [deltePopUp, setDeletePopUp] = useState(false);
   const [targetID , setTargetID] = useState(null)
   const [error, SetError] = useState();
-  const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAdmin = async () => {
       try {
-
          const token = localStorage.getItem("jwt-token");
+         if(!token){
+          navigate("/admin/login");
+          return
+         }
         const responseVerify = await fetch(
           "http://localhost:3000/api/admin/verify",
           {
@@ -31,8 +34,10 @@ const AdminVehicle = () => {
           navigate("/admin/login");
           return
         }
+        const adminData = await responseVerify.json()
+       setAdminID(adminData.id)
 
-        const response = await fetch(`http://localhost:3000/api/admin/${id}`);
+        const response = await fetch(`http://localhost:3000/api/admin/${adminData.id}`);
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -41,6 +46,7 @@ const AdminVehicle = () => {
 
         const data = await response.json();
         setAdminData(data);
+        console.log(data)
 
         const allVehicle = await fetch(`http://localhost:3000/api/vehicles`);
 
@@ -90,7 +96,7 @@ const AdminVehicle = () => {
 
         {/* ✅ Add Vehicle Button */}
         <button
-          onClick={() => navigate(`/admin/add/${id}`)}
+          onClick={() => navigate(`/admin/add`)}
           className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg shadow transition"
         >
           <Plus size={18} />
@@ -143,7 +149,7 @@ const AdminVehicle = () => {
                     {/* Edit */}
                     <button
                       onClick={() =>
-                        navigate(`/admin/update/${id}/${v.V_Name}/${v.V_ID}`)
+                        navigate(`/admin/update/${v.V_Name}/${v.V_ID}`)
                       }
                       className="flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
                     >

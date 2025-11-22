@@ -128,27 +128,14 @@ const Hero = () => {
                           rounded-full filter blur-3xl transform -rotate-12"></div>
 
             <img
-              src={assets.car}
+              src="/public/11111.png"
               alt="Luxury Car"
               className="relative z-10 w-full h-auto max-w-2xl mx-auto 
                        transform hover:scale-105 transition-transform duration-500"
             />
           </div>
 
-          {/* Floating Cards */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="absolute bottom-4 -right-4 bg-white p-6 rounded-lg shadow-xl">
-            <div className="flex items-center gap-3">
-              <Car className="text-orange-500 w-8 h-8" />
-              <div>
-                <p className="font-semibold text-lg">Latest Models</p>
-                <p className="text-gray-500">Premium Selection</p>
-              </div>
-            </div>
-          </motion.div>
+     
 
           {/* Additional Floating Badge */}
           <motion.div

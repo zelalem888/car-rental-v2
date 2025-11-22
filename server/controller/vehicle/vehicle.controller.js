@@ -36,6 +36,7 @@ exports.oneVehicleInfoController = async (req, res)=>{
 exports.vehicleByIdController = async(req,res)=>{
     try{
         const result = await vehicleByIdService({paramsId:req.params.id})
+        
         res.status(200).json(result)
     }catch(error){
         res.status(400).json({message : error})

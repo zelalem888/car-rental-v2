@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate} from "react-router-dom";
 
 const AddVehicle = () => {
-    const {id} = useParams()
-    const navigate = useNavigate()
+  const navigate = useNavigate()
   const [formData, setFormdata] = useState({
-    A_ID: id,
+    A_ID:null,
     vehicleName: "",
     plateNumber: "",
     brandName: "",
@@ -15,6 +14,38 @@ const AddVehicle = () => {
     fuelType: "",
   });
   const [plateError, setPlateError] = useState(null);
+    useEffect(() => {
+      const fetchAdmin = async () => {
+        try {
+           const token = localStorage.getItem("jwt-token");
+           if(!token){
+            navigate("/admin/login");
+            return
+           }
+          const responseVerify = await fetch(
+            "http://localhost:3000/api/admin/verify",
+            {
+              method: "POST",
+              headers: {
+                "jwt-token": token,
+              },
+            }
+          );
+  
+          if (!responseVerify.ok) {
+            localStorage.removeItem("jwt-token")
+            navigate("/admin/login");
+            return
+          }
+          const data = await responseVerify.json()
+
+          setFormdata({...formData, A_ID : data.id})
+        } catch (e) {
+          throw new Error(e);
+        }
+      };
+      fetchAdmin();
+    }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +70,7 @@ const AddVehicle = () => {
       }
       const successData = await response.json()
       alert(successData.message)
-      navigate(`/admin/${id}`)
+      navigate(`/admin`)
 
     } catch (e) {
         alert(e)

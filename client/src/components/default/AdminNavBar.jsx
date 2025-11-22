@@ -49,7 +49,7 @@ const AdminNavBar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link
-              to={`/admin/${adminID.id}`}
+              to={`/admin/`}
               className="flex-shrink-0 text-white text-2xl font-bold"
             >
               AdminPanel
@@ -58,17 +58,17 @@ const AdminNavBar = () => {
             <div className="hidden sm:ml-6 sm:flex sm:space-x-4">
               
               <Link
-                to={`/admin/${adminID.id}/pending`}
+                to={`/admin/pending`}
                 className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
               >
                 pending Reserve
               </Link>
-              <a
-                href="#"
+              <Link
+                to={`/admin/confirmed`}
                 className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
               >
-                Users
-              </a>
+                confirmed reserve
+              </Link>
             </div>
           </div>
 
