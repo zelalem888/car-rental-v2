@@ -30,37 +30,39 @@ const Work = () => {
   };
 
   const steps = [
-    {
-      icon: Car,
-      title: "Select Your Car",
-      description:
-        "Choose from our wide range of premium vehicles for any occasion",
-      bgcolor: "bg-blue-50",
-      iconcolor: "text-blue-500",
-    },
-    {
-      icon: MapPin,
-      title: "Pick-up Location",
-      description:
-        "Select from our numerous convenient pick-up and drop-off locations",
-      bgcolor: "bg-green-50",
-      iconcolor: "text-green-500",
-    },
-    {
-      icon: Calendar,
-      title: "Pick-up Date",
-      description: "Choose your rental duration and preferred pick-up timing",
-      bgcolor: "bg-purple-50",
-      iconcolor: "text-purple-500",
-    },
-    {
-      icon: CreditCard,
-      title: "Make Payment",
-      description: "Quick and secure payment with multiple payment options",
-      bgcolor: "bg-orange-50",
-      iconcolor: "text-orange-500",
-    },
-  ];
+  {
+    icon: Car,
+    title: "Select Your Car",
+    description:
+      "Choose from our wide range of premium vehicles for any occasion",
+    bgcolor: "bg-blue-50",
+    iconcolor: "text-blue-500",
+  },
+  {
+    icon: MapPin,
+    title: "Add Pickup & Return Date",
+    description:
+      "Choose where the car will be picked up and when it will be returned",
+    bgcolor: "bg-green-50",
+    iconcolor: "text-green-500",
+  },
+  {
+    icon: Calendar,
+    title: "Make a Reservation",
+    description: "Review your details and confirm your booking instantly",
+    bgcolor: "bg-purple-50",
+    iconcolor: "text-purple-500",
+  },
+  {
+    icon: CreditCard,
+    title: "Payment on Pickup",
+    description:
+      "Pay at our office when you arrive to collect the vehicle",
+    bgcolor: "bg-orange-50",
+    iconcolor: "text-orange-500",
+  },
+];
+
 
   return (
     <section className="py-20 bg-gray-50">

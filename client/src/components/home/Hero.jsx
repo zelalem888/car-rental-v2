@@ -9,6 +9,7 @@ import {
   Shield,
   Clock,
   CreditCard,
+  BookCheck
 } from "lucide-react";
 import { assets } from "../../assets/assets";
 
@@ -30,11 +31,11 @@ const Hero = () => {
   const features = [
     { icon: Shield, text: "Fully Insured" },
     { icon: Clock, text: "24/7 Support" },
-    { icon: CreditCard, text: "Flexible Payment" },
+    { icon: BookCheck, text: "Easy To Manage" },
   ];
 
   const stats = [
-    { value: "50+", label: "Car Models" },
+    { value: "20+", label: "Car Models" },
     { value: "98%", label: "Happy Clients" },
     { value: "24/7", label: "Support" },
   ];
@@ -62,20 +63,17 @@ const Hero = () => {
 
           <p className="text-gray-600 text-lg mb-8 leading-relaxed">
             Experience the freedom of the open road with our premium car rental
-            service. Unbeatable prices, unlimited miles, and flexible pick-up
-            options.
+            service. Unbeatable prices and unlimited miles.
           </p>
 
           <div className="flex flex-wrap gap-4 mb-12">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <button
               onClick={() => navigate("/models")}
-              className="flex items-center gap-2 px-8 py-4 bg-orange-500 text-white rounded-lg
-                          hover:bg-orange-600 transition-all">
+              className="flex items-center gap-2 px-8 py-4 bg-orange-500 text-gray-900 rounded-lg hover:scale-110
+                          hover:bg-orange-600 transition-all book-ride">
               <span className="font-medium">Book Ride</span>
               <CheckCircle className="w-5 h-5" />
-            </motion.button>
+            </button>
 
             <motion.button
               whileHover={{ scale: 1.05 }}

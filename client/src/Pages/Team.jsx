@@ -25,7 +25,7 @@ const Team = () => {
 
   const teamMembers = [
     {
-      name: "John Smith",
+      name: "Zelalem L.",
       position: "Founder & CEO",
       description:
         "With over 15 years in the automotive industry, John leads our vision of providing exceptional car rental experiences.",
@@ -35,7 +35,7 @@ const Team = () => {
         "Industry Relations",
       ],
       image:
-        "https://t3.ftcdn.net/jpg/06/01/17/18/360_F_601171827_GwbDHEuhisbGFXRfIpXFhtf7wAvsbLut.jpg",
+        "/public/team/zelalem.JPG",
       social: {
         linkedin: "#",
         twitter: "#",
@@ -45,7 +45,7 @@ const Team = () => {
       iconColor: "text-blue-500",
     },
     {
-      name: "Sarah Johnson",
+      name: "Bereket T.",
       position: "Fleet Manager",
       description:
         "Sarah ensures our fleet meets the highest standards of quality and performance for our customers.",
@@ -55,7 +55,7 @@ const Team = () => {
         "Quality Assurance",
       ],
       image:
-        "https://t3.ftcdn.net/jpg/06/01/17/18/360_F_601171862_l7yZ0wujj8o2SowiKTUsfLEEx8KunYNd.jpg",
+        "/public/team/beki.jpg",
       social: {
         linkedin: "#",
         twitter: "#",
@@ -65,7 +65,7 @@ const Team = () => {
       iconColor: "text-orange-500",
     },
     {
-      name: "Michael Chen",
+      name: "Kaleab W.",
       position: "Customer Relations Head",
       description:
         "Michael leads our customer service team, ensuring every rental experience exceeds expectations.",
@@ -75,7 +75,7 @@ const Team = () => {
         "Service Excellence",
       ],
       image:
-        "https://t3.ftcdn.net/jpg/06/00/86/26/360_F_600862676_U1qq7vSQKjghCXxz8WfNFA3VqXegARDk.jpg",
+        "/public/team/kaleab.jpg",
       social: {
         linkedin: "#",
         twitter: "#",
@@ -85,7 +85,7 @@ const Team = () => {
       iconColor: "text-green-500",
     },
     {
-      name: "Emma Davis",
+      name: "Nebyu T.",
       position: "Operations Director",
       description:
         "Emma oversees daily operations and strategic planning to deliver seamless rental services.",
@@ -95,7 +95,7 @@ const Team = () => {
         "Team Development",
       ],
       image:
-        "https://t4.ftcdn.net/jpg/05/90/45/35/360_F_590453518_yYTpu0JmO80Ky1b1BrDVVxpWMNgD6trY.jpg",
+        "/public/team/i.JPG",
       social: {
         linkedin: "#",
         twitter: "#",
@@ -266,43 +266,7 @@ const Team = () => {
         </div>
       </section>
 
-      {/* Join Us Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <motion.div
-            variants={fadeIn}
-            initial="initial"
-            whileInView="whileInView"
-            className="max-w-4xl mx-auto bg-gradient-to-r from-orange-500 to-orange-600 
-                     rounded-2xl p-8 md:p-12 text-center text-white">
-            <Briefcase className="w-12 h-12 mx-auto mb-6" />
-            <h2 className="text-3xl font-bold mb-4">Join Our Growing Team</h2>
-            <p className="text-orange-100 mb-8 max-w-2xl mx-auto">
-              We're always looking for talented individuals who share our
-              passion for excellence and customer service. Explore career
-              opportunities with us.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-3 bg-white text-orange-500 rounded-lg font-medium 
-                         hover:bg-orange-50 transition-colors">
-                View Openings
-              </motion.button>
-              <motion.a
-                href="mailto:careers@carrental.com"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-3 bg-orange-600 text-white rounded-lg font-medium 
-                         hover:bg-orange-700 transition-colors inline-flex items-center gap-2">
-                <Mail className="w-5 h-5" />
-                Contact HR
-              </motion.a>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+  
     </div>
   );
 };

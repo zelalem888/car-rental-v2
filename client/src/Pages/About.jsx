@@ -44,53 +44,9 @@ const About = () => {
       color: "text-green-500",
       bgColor: "bg-green-50",
     },
-    {
-      icon: CreditCard,
-      title: "Easy Payments",
-      description: "Flexible and secure payment options",
-      color: "text-purple-500",
-      bgColor: "bg-purple-50",
-    },
   ];
 
-  const advancedFeatures = [
-    {
-      icon: Clock,
-      title: "Real-time Availability",
-      description: "Check car availability instantly with live updates",
-      color: "text-indigo-500",
-      bgColor: "bg-indigo-50",
-    },
-    {
-      icon: Calendar,
-      title: "Flexible Duration",
-      description: "Rent cars from hours to months with flexible terms",
-      color: "text-pink-500",
-      bgColor: "bg-pink-50",
-    },
-    {
-      icon: CreditCard,
-      title: "Integrated Payments",
-      description: "Secure payment gateway with multiple options",
-      color: "text-yellow-500",
-      bgColor: "bg-yellow-50",
-    },
-    {
-      icon: BarChart,
-      title: "Admin Analytics",
-      description: "Comprehensive dashboards with valuable insights",
-      color: "text-teal-500",
-      bgColor: "bg-teal-50",
-    },
-    {
-      icon: PhoneCall,
-      title: "24/7 Support",
-      description: "Round-the-clock comprehensive customer assistance",
-      color: "text-red-500",
-      bgColor: "bg-red-50",
-    },
-  ];
-
+  
   const stats = [
     { value: "15K+", label: "Happy Customers" },
     { value: "150+", label: "Locations" },
@@ -199,7 +155,7 @@ const About = () => {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {featureCards.map((feature, index) => (
               <motion.div
                 key={index}
@@ -213,43 +169,6 @@ const About = () => {
               </motion.div>
             ))}
           </div>
-
-          {/* Advanced Features */}
-          <motion.div
-            variants={fadeIn}
-            initial="initial"
-            whileInView="whileInView"
-            className="mt-20">
-            <div className="text-center mb-12">
-              <h3 className="text-2xl font-bold mb-4">Advanced Features</h3>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                Our application is packed with powerful features to ensure a
-                smooth car rental experience
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {advancedFeatures.map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-white rounded-xl p-6 border border-gray-100 hover:border-orange-200 
-                           transition-all hover:-translate-y-1 group">
-                  <div
-                    className={`${feature.bgColor} w-12 h-12 rounded-lg flex items-center justify-center 
-                                mb-4 group-hover:scale-110 transition-transform`}>
-                    <feature.icon className={`w-6 h-6 ${feature.color}`} />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600">{feature.description}</p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </section>
     </div>

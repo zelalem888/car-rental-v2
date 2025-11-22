@@ -62,3 +62,28 @@ select {
   text-indent: 1px;
   text-overflow: '';
 }
+.book-ride{
+
+  background-image: linear-gradient(
+    100deg,
+    hsl(100deg 100% 20%) 0%,
+    hsl(91deg 100% 23%) 6%,
+    hsl(84deg 100% 26%) 12%,
+    hsl(78deg 100% 29%) 18%,
+    hsl(73deg 100% 32%) 23%,
+    hsl(69deg 100% 35%) 29%,
+    hsl(65deg 100% 39%) 35%,
+    hsl(61deg 100% 42%) 41%,
+    hsl(57deg 100% 47%) 47%,
+    hsl(53deg 100% 50%) 53%,
+    hsl(48deg 100% 50%) 59%,
+    hsl(44deg 100% 50%) 65%,
+    hsl(39deg 100% 50%) 70%,
+    hsl(34deg 100% 50%) 76%,
+    hsl(28deg 100% 50%) 82%,
+    hsl(22deg 100% 50%) 88%,
+    hsl(15deg 100% 50%) 94%,
+    hsl(0deg 100% 50%) 100%
+  );
+
+}
