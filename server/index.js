@@ -18,6 +18,7 @@ const app = express()
 app.use(cors());
 app.use(bodyParser.urlencoded())
 app.use(express.json())
+app.use("/uploads", express.static("uploads"));
 const port = process.env.PORT || 4000
 // ======superAdmin=====
 app.use('/api',superAdminRoute)

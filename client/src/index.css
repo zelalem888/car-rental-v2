@@ -87,3 +87,24 @@ select {
   );
 
 }
+.login-bg{
+  background-image: linear-gradient(
+     125deg,
+    hsl(104deg 100% 37%) -1%,
+    hsl(79deg 100% 30%) 16%,
+    hsl(63deg 61% 31%) 36%,
+    hsl(44deg 65% 28%) 57%,
+    hsl(28deg 91% 22%) 78%,
+    hsl(0deg 98% 18%) 100%)
+}
+.register-bg{
+  background-image: linear-gradient(
+    125deg,
+    hsl(0deg 98% 18%) -1%,
+    hsl(28deg 91% 22%) 16%,
+    hsl(44deg 65% 28%) 36%,
+    hsl(63deg 61% 31%) 57%,
+    hsl(79deg 100% 30%) 78%,
+    hsl(104deg 100% 37%) 100%
+  );
+}

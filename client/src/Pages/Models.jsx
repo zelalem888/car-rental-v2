@@ -12,11 +12,13 @@ import {
   Settings,
   Calendar,
   MapPin,
+  Ellipsis,
+  CalendarCheck
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Models = () => {
-  const[result, setResult] = useState([])
+  const [result, setResult] = useState([]);
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,50 +28,87 @@ const Models = () => {
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true },
   };
-useEffect( ()=>{
-  const fetchData = async()=>{
-    try{
-      const response = await fetch("http://localhost:3000/api/vehicles")
-      
-      if(!response.ok){
-        const errorData = await response.json()
-        throw new Error(errorData.error)
-      }
-      
-      setResult(await response.json())
-      console.log(result)
-      
-    }catch(e){
-      throw new Error(e)
-    }
+  const statusColor = {
+    pending: "text-yellow-800",
+    available: "text-green-800",
+    confirmed: "text-red-800",
+  };
+   const statusTitle = {
+    pending: "booked",
+    available: "available",
+    confirmed: "rented",
+  };
+  const statusIcon = {
+    pending : <Ellipsis className='w-5 h-5 text-yellow-800'/>,
+    confirmed : <CalendarCheck className='w-5 h-5 text-red-800'/>
   }
-  fetchData()
-},[])
-
-
-  const booking = async(V_ID)=>{
-   const token = localStorage.getItem("jwt-token");
-        const responseVerify = await fetch(
-          "http://localhost:3000/api/user/verify",
-          {
-            method: "POST",
-            headers: {
-              "jwt-token": token,
-            },
-          }
-        );
-        if(!responseVerify.ok){
-          navigate("/login")
-          return
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/vehicles");
+        if (!response.ok) {
+          console.log("there is not token to login.", await response.json());
         }
-        const resultVerify = await responseVerify.json();
-        navigate(`/booking/${V_ID}`)
-  }
 
-const filteredVehicles = result.filter((car)=>{
-  const filtered = car.V_Name.toLowerCase().includes(searchQuery.toLowerCase())
-  return filtered;
-})
+        const result = await response.json();
+        // setResult(await response.json())
+
+        console.log(result);
+
+        const reserveResponse = await fetch(
+          "http://localhost:3000/api/reservation/vehicle"
+        );
+        if (!reserveResponse.ok) {
+          console.log("can not fetch the reservation list from vehicles.");
+        }
+
+        const reserveResult = await reserveResponse.json();
+        // console.log(reserveResult);
+
+        for (let i = 0; i < result.length; i++) {
+          // result[i].image = JSON.parse(result[i].Images)
+              result[i].image = result[i].Images ? JSON.parse(result[i].Images) : [];
+          for (let j = 0; j < reserveResult.length; j++) {
+            if (result[i].V_ID == parseInt(reserveResult[j].V_ID)) {
+              result[i].status = reserveResult[j].Status;
+              result[i].availableFor = reserveResult[j].Return_Date 
+            }
+          }
+        }
+        setResult(result);
+        console.log(result)
+      } catch (e) {
+        throw new Error(e);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const booking = async (V_ID) => {
+    const token = localStorage.getItem("jwt-token");
+    const responseVerify = await fetch(
+      "http://localhost:3000/api/user/verify",
+      {
+        method: "POST",
+        headers: {
+          "jwt-token": token,
+        },
+      }
+    );
+    if (!responseVerify.ok) {
+      navigate("/login");
+      return;
+    }
+    const resultVerify = await responseVerify.json();
+    navigate(`/booking/${V_ID}`);
+  };
+
+  const filteredVehicles = result.filter((car) => {
+    const filtered = car.V_Name.toLowerCase().includes(
+      searchQuery.toLowerCase()
+    );
+    return filtered;
+  });
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 pt-8">
       {/* Hero Section */}
@@ -79,7 +118,8 @@ const filteredVehicles = result.filter((car)=>{
             variants={fadeIn}
             initial="initial"
             whileInView="whileInView"
-            className="text-center max-w-3xl mx-auto">
+            className="text-center max-w-3xl mx-auto"
+          >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 rounded-full mb-6">
               <Car className="w-5 h-5 text-orange-500" />
               <span className="text-orange-700 font-medium">Our Fleet</span>
@@ -123,82 +163,98 @@ const filteredVehicles = result.filter((car)=>{
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredVehicles && filteredVehicles.map((car) => (
-              <motion.div
-                key={car.V_ID}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="group">
-                <div
-                  className={`rounded-xl p-6 ${car.color} transition-all duration-300 
-                             group-hover:-translate-y-2`}>
-                  {/* Car Image */}
-                  <div className="aspect-[4/3] rounded-lg bg-white mb-6 overflow-hidden">
-                    <a href={`/singlemodel/${car.V_Name}/${car.V_ID}`}>
-                      <img
-                      src="https://static.vecteezy.com/system/resources/previews/055/050/942/non_2x/simple-car-design-with-isolated-look-vector.jpg"
-                      // alt={car.name}
-                      className="w-full h-full object-cover"
-                    />
-                    </a>
+            {filteredVehicles &&
+              filteredVehicles.map((car) => (
+                <motion.div
+                  key={car.V_ID}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="group"
+                >
+                  <div
+                    className={`rounded-xl p-6 ${car.color} transition-all duration-300 
+                             group-hover:-translate-y-2`}
+                  >
+                    {/* Car Image */}
+                    <div className="aspect-[4/3] rounded-lg bg-white mb-6 overflow-hidden">
+                      <a 
+                        style={{pointerEvents : car.status ? "none" : "unset"}}
+                       href={`/singlemodel/${car.V_Name}/${car.V_ID}`}>
+                        <img
+                          src={`http://localhost:3000${car.image[0]}`}
+
+                          // alt={car.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </a>
+                    </div>
+
+                    {/* Car Info */}
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="text-xl font-bold mb-1">
+                            {car.V_Name}
+                          </h3>
+                          <span className="text-sm text-gray-600">
+                            {car.Model_Year}
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-2xl font-bold text-orange-500">
+                            Birr {car.Price_Per_Day}
+                          </span>
+                          <span className="text-sm text-gray-600">/day</span>
+                        </div>
+                      </div>
+
+                      {/* Features */}
+                      <div className="flex justify-between py-4 border-t border-gray-200">
+                        <div className="flex items-center gap-2">
+                          <Users className="w-5 h-5 text-gray-500" />
+                          <span>{car.Seating_Capacity} Seats</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Briefcase className="w-5 h-5 text-gray-500" />
+                          {/* <span>{car.features.luggage} Luggage</span> */}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Fuel className="w-5 h-5 text-gray-500" />
+                          <span>{car.Fuel_Type}</span>
+                        </div>
+                      </div>
+
+                      {/* Rating and Book Button */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex flex-col items-center">
+                          <span
+                            className={`flex gap-2 font-medium ${statusColor[car.status] || "text-green-700"}`}>
+                           { statusIcon[car.status] || <Star className="w-5 h-5 text-green-700" />}
+                            {statusTitle[car.status] || "available" }
+                          </span>
+                           <span
+                            className={`text-sm`}>
+                          { car.status ? "Available on " + new Date(car.availableFor).toLocaleDateString("en-CA"):""}
+                          </span>
+                        </div>
+                        
+                        <motion.a
+                        style={{pointerEvents : car.status ? "none" : "unset"}}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => booking(car.V_ID)}
+                          className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 
+                                 transition-colors cursor-pointer"
+                          
+                        >
+                          Book Now
+                        </motion.a>
+                      </div>
+                    </div>
                   </div>
-
-                  {/* Car Info */}
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="text-xl font-bold mb-1">{car.V_Name}</h3>
-                        <span className="text-sm text-gray-600">
-                          {car.Fuel_Type}
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-2xl font-bold text-orange-500">
-                          Birr {car.Price_Per_Day}
-                        </span>
-                        <span className="text-sm text-gray-600">/day</span>
-                      </div>
-                    </div>
-
-                    {/* Features */}
-                    <div className="flex justify-between py-4 border-t border-gray-200">
-                      <div className="flex items-center gap-2">
-                        <Users className="w-5 h-5 text-gray-500" />
-                        <span>{car.Seating_Capacity} Seats</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Briefcase className="w-5 h-5 text-gray-500" />
-                        {/* <span>{car.features.luggage} Luggage</span> */}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Fuel className="w-5 h-5 text-gray-500" />
-                        <span>{car.Fuel_Type}</span>
-                      </div>
-                    </div>
-
-                    {/* Rating and Book Button */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                        <span className="font-medium">{car.Model_Year}</span>
-                        <span className="text-gray-600">
-                          ({car.Brand_Name} reviews)
-                        </span>
-                      </div>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => booking(car.V_ID)}
-                        className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 
-                                 transition-colors">
-                        Book Now
-                      </motion.button>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
           </div>
         </div>
       </section>
@@ -210,7 +266,8 @@ const filteredVehicles = result.filter((car)=>{
             variants={fadeIn}
             initial="initial"
             whileInView="whileInView"
-            className="text-center max-w-3xl mx-auto mb-12">
+            className="text-center max-w-3xl mx-auto mb-12"
+          >
             <div className="flex items-center justify-center gap-2 mb-4">
               <Settings className="w-6 h-6 text-orange-500" />
               <h2 className="text-3xl font-bold">How to Book</h2>
@@ -244,10 +301,12 @@ const filteredVehicles = result.filter((car)=>{
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-gray-50 rounded-lg p-6 text-center">
+                className="bg-gray-50 rounded-lg p-6 text-center"
+              >
                 <div
                   className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center 
-                             mx-auto mb-6">
+                             mx-auto mb-6"
+                >
                   <step.icon className="w-8 h-8 text-orange-500" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4">{step.title}</h3>

@@ -1,7 +1,7 @@
 const db = require("../../db/config");
 
 exports.allVehicleInfoService = async () => {
-  const [allVehicles] = await db.query("SELECT V_ID,V_Name,Plate_Number,Brand_Name,driver,Price_Per_Day,Model_Year,Seating_Capacity,Fuel_Type FROM vehicle");
+  const [allVehicles] = await db.query("SELECT V_ID,V_Name,Plate_Number,Brand_Name,driver,Price_Per_Day,Model_Year,Seating_Capacity,Fuel_Type,Images FROM vehicle");
   return allVehicles;
 };
 // =======================================

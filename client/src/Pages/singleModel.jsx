@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import {
     Car,
     CarFront,
+    ChevronLeft,
+    ChevronRight,
   Filter,
   Search,
   Fuel,
@@ -21,8 +23,9 @@ const SingleModel = () => {
   const [fetchedData, setFetchedData] = useState();
   const { name, id } = useParams();
   const [tokenId , setTokenId] = useState()
+  const [index, setIndex] = useState(0);
   const navigate = useNavigate()
-
+  const [imageCount, setImageCount] = useState()
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,9 +36,12 @@ const SingleModel = () => {
           const errorData = await response.json();
           throw new Error(errorData.message);
         }
-
+        
         const waitedDate = await response.json();
-        setFetchedData(waitedDate);
+        waitedDate[0].image = JSON.parse(waitedDate[0].Images)
+        
+       setFetchedData(waitedDate);
+       setImageCount(waitedDate[0].image.length)
       } catch (e) {
         throw new Error(e);
       }
@@ -66,7 +72,7 @@ const SingleModel = () => {
     <div>
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 max-md:grid-cols-1 items-center gap-8">
+          <div className="grid grid-cols-2 max-md:grid-cols-1 items-center gap-2">
             {fetchedData && (
               <>
                 <motion.div
@@ -77,17 +83,27 @@ const SingleModel = () => {
                   className="group"
                 >
                   <div
-                    className={`rounded-xl p-6 transition-all duration-300 
+                    className={`flex gap-5 rounded-xl p-6 transition-all duration-300 
                                      group-hover:-translate-y-2`}
                   >
                     {/* data Image */}
-                    <div className="aspect-[4/3] rounded-lg bg-white mb-6 overflow-hidden">
+                      <button 
+                       onClick={() => setIndex((prev) => (prev === 0 ? imageCount - 1 : prev - 1))}
+                      > <ChevronLeft className="text-white bg-orange-500 rounded-full w-7 h-7"/> </button>
+                    <div className="flex aspect-[4/3] rounded-lg bg-white mb-6 ">
+                 
                       <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLptOjOJenqt7Bz6qsECtviNs6J1SylWar3w&s"
+                        src={`http://localhost:3000${fetchedData[0].image[index]}`}
                         alt=""
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover rounded-lg"
                       />
+                  
                     </div>
+                      <button
+                        onClick={() =>
+                           setIndex((prev) => (prev === imageCount - 1 ? 0 : prev + 1)) }
+                      > <ChevronRight className="text-white bg-orange-500 rounded-full w-7 h-7" /></button>
+                      
                   </div>
                 </motion.div>
                 <motion.div

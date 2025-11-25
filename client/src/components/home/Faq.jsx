@@ -25,7 +25,7 @@ const FAQ = () => {
         {
           question: "How do I make a car reservation?",
           answer:
-            "Making a reservation is simple:\n\n• Select your desired car model\n• Choose pickup and return dates\n• Enter your details\n• Confirm payment information\n\nYou'll receive instant confirmation via email.",
+            "Making a reservation is simple:\n\n• Select your desired car model\n• Choose pickup and return dates\n• Enter your details\n• pay for renting in person\n\nYou'll receive instant confirmation via email.",
         },
         {
           question: "Can I modify my reservation?",

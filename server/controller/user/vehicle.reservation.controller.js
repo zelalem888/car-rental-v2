@@ -25,18 +25,12 @@ exports.allVehicleReservationController = async (req, res) => {
 
 // =====================================================================
 exports.vehicleReservationController = async (req, res) => {
-    const userId = req.user.id;
   try {
     const result = await vehicleReservationService({
       reservationData: req.body,
       userId: req.params.id,
       vehicleId: req.params.vehicleid,
     });
-
-    console.log(result)
-     if (result[0].C_ID && result[0].C_ID !== userId) {
-        return res.status(403).json({ message: "Forbidden" });
-    }
 
     if (result) {
       return res.status(200).json({

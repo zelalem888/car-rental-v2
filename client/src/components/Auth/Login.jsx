@@ -86,7 +86,7 @@ const Login = () => {
         transition={{ duration: 0.6 }}
         className="hidden lg:flex w-1/2 relative overflow-hidden">
         {/* Background with gradient and pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700">
+        <div  className="absolute inset-0 login-bg">
           {/* Modern grid pattern */}
           <div
             className="absolute inset-0"
@@ -110,7 +110,7 @@ const Login = () => {
               <div className="bg-white/10 p-2 rounded-lg backdrop-blur-sm group-hover:bg-white/20 transition-all">
                 <Car className="w-8 h-8" />
               </div>
-              <span className="text-2xl font-bold">CarRental</span>
+              <span className="text-2xl font-bold">Sami CarRental</span>
             </Link>
 
             <div className="space-y-8">
@@ -166,7 +166,7 @@ const Login = () => {
             <div className="grid grid-cols-3 gap-8">
               {[
                 { value: "50K+", label: "Happy Customers" },
-                { value: "100+", label: "Premium Cars" },
+                { value: "20+", label: "Premium Cars" },
                 { value: "4.9/5", label: "User Rating" },
               ].map((stat, index) => (
                 <div key={index} className="text-center">
@@ -287,7 +287,7 @@ const Login = () => {
               whileTap={{ scale: 0.98 }}
               type="submit"
               className="w-full px-4 py-3 bg-orange-500 text-white rounded-lg font-medium 
-                       hover:bg-orange-600 transition-colors flex items-center justify-center gap-2">
+                       login-bg transition-colors flex items-center justify-center gap-2">
               <LogIn className="w-5 h-5" />
               Sign in
             </motion.button>

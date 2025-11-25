@@ -16,7 +16,7 @@ exports.adminAllVehiclesController = async (req, res) => {
 
 exports.adminVehicleRegisterController = async (req, res) => {
   try {
-    await adminVehicleRegisterService(req.body);
+    await adminVehicleRegisterService(req.body , req.files);
 
     res.status(201).json({ message: "vehicle add successfully." });
   } catch (error) {
@@ -29,6 +29,7 @@ exports.adminVehicleUpdateController = async (req, res) => {
     await adminVehicleUpdateService({
       paramID: req.params.id,
       updatingData: req.body,
+      files: req.files
     });
     res.send({ message: "Update vehicle Success." });
   } catch (error) {

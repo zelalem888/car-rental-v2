@@ -26,81 +26,53 @@ const Team = () => {
   const teamMembers = [
     {
       name: "Zelalem L.",
-      position: "Founder & CEO",
-      description:
-        "With over 15 years in the automotive industry, John leads our vision of providing exceptional car rental experiences.",
-      expertise: [
-        "Strategic Planning",
-        "Business Development",
-        "Industry Relations",
-      ],
+      position: "Team Member",
       image:
         "/public/team/zelalem.JPG",
       social: {
         linkedin: "#",
         twitter: "#",
       },
-      achievements: "15+ years experience",
+      achievements: "2+ years experience on web Development",
       color: "bg-blue-50",
       iconColor: "text-blue-500",
     },
     {
       name: "Bereket T.",
-      position: "Fleet Manager",
-      description:
-        "Sarah ensures our fleet meets the highest standards of quality and performance for our customers.",
-      expertise: [
-        "Fleet Maintenance",
-        "Vehicle Acquisition",
-        "Quality Assurance",
-      ],
+      position: "Team Member",
       image:
         "/public/team/beki.jpg",
       social: {
         linkedin: "#",
         twitter: "#",
       },
-      achievements: "200+ fleet vehicles managed",
+      achievements: "2+ year on full stack Development",
       color: "bg-orange-50",
       iconColor: "text-orange-500",
     },
     {
       name: "Kaleab W.",
-      position: "Customer Relations Head",
-      description:
-        "Michael leads our customer service team, ensuring every rental experience exceeds expectations.",
-      expertise: [
-        "Customer Experience",
-        "Team Leadership",
-        "Service Excellence",
-      ],
+      position: "Team member",
       image:
         "/public/team/kaleab.jpg",
       social: {
         linkedin: "#",
         twitter: "#",
       },
-      achievements: "98% customer satisfaction",
+      achievements: "2+ year on FrontEnd Development",
       color: "bg-green-50",
       iconColor: "text-green-500",
     },
     {
       name: "Nebyu T.",
-      position: "Operations Director",
-      description:
-        "Emma oversees daily operations and strategic planning to deliver seamless rental services.",
-      expertise: [
-        "Operations Management",
-        "Process Optimization",
-        "Team Development",
-      ],
+      position: "Team Member",
       image:
         "/public/team/i.JPG",
       social: {
         linkedin: "#",
         twitter: "#",
       },
-      achievements: "30% efficiency increase",
+      achievements: "2+ year on backend Development",
       color: "bg-purple-50",
       iconColor: "text-purple-500",
     },
@@ -202,7 +174,6 @@ const Team = () => {
                   <p className={`text-sm font-medium mb-4 ${member.iconColor}`}>
                     {member.position}
                   </p>
-                  <p className="text-gray-600 mb-4">{member.description}</p>
 
                   <div className="mb-4">
                     <div className="flex items-center gap-2 mb-2">
@@ -211,16 +182,6 @@ const Team = () => {
                         {member.achievements}
                       </span>
                     </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    {member.expertise.map((skill, idx) => (
-                      <div
-                        key={idx}
-                        className="text-sm bg-white/50 rounded-full px-3 py-1 inline-block mr-2">
-                        {skill}
-                      </div>
-                    ))}
                   </div>
                 </div>
               </motion.div>

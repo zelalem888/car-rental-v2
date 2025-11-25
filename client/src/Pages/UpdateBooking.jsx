@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { DayPicker as EthiopicDayPicker } from "react-day-picker/ethiopic";
+import { DayPicker as USDayPicker } from "react-day-picker";
+
 const UpdateBooking = () => {
   const { rid } = useParams();
   const [reservedCar, setReservedCar] = useState();
   const [selectedCar, setSelectedCar] = useState();
   const [userData, setUserData] = useState({});
+  const [selected, setSelected] = useState();
   const navigate = useNavigate();
   const [rentalDetails, setRentalDetails] = useState({
     pickUpDate: "",
     returnDate: "",
   });
   const [deletePopUp, setDeletePopUp] = useState(false);
+    const year = new Date().getFullYear();
+  const month = new Date().getMonth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +60,10 @@ const UpdateBooking = () => {
         setRentalDetails({
           pickUpDate: reservationResult[0].Pickup_Date,
           returnDate: reservationResult[0].Return_Date,
+        });
+          setSelected({
+          from: reservationResult[0].Pickup_Date,
+          to: reservationResult[0].Return_Date,
         });
         console.log(reservationResult);
 
@@ -101,6 +111,14 @@ const UpdateBooking = () => {
     } catch (e) {
       throw new Error(e);
     }
+  };
+
+    const selectHandler = (range) => {
+    setSelected(range);
+    setRentalDetails({
+      pickUpDate: range.from.toISOString(),
+      returnDate: range.to.toISOString(),
+    });
   };
 
   const deleteHandler = async () => {
@@ -175,36 +193,32 @@ const UpdateBooking = () => {
           {/* Booking Form */}
           <form onSubmit={handleSubmit}>
             <div className="space-y-6">
-              <div className="flex flex-col">
-                <label htmlFor="pickUpDate" className="text-sm text-gray-600">
-                  Pick-up Date
-                </label>
-                <input
-                  type="date"
-                  name="pickUpDate"
-                  defaultValue={new Date(rentalDetails.pickUpDate).toLocaleDateString("en-CA")}
-                  onChange={(e)=> setRentalDetails({...rentalDetails , pickUpDate : e.target.value})}
-                  className="p-3 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  required
-                />
-              </div>
+                <div className="flex flex-col">
+                             <label htmlFor="dropOffDate" className="text-sm text-gray-600">
+                               Pick a Date
+                             </label>
+                             <p className="bg-green-400 w-fit px-2 rounded-md">Ethiopian </p>
+                             <EthiopicDayPicker
+                               mode="range"
+                               selected={selected}
+                               onSelect={selectHandler}
+                               startMonth={new Date(year, month)}
+                               numerals="latn"
+                               disabled={{ before: new Date() }}
+                             />
+                             <p className="bg-green-400 w-fit px-2 rounded-md">Gregorian </p>
+                             <USDayPicker
+                               mode="range"
+                               selected={selected}
+                               onSelect={selectHandler}
+                               startMonth={new Date(year, month)}
+                               numerals="latn"
+                               disabled={{ before: new Date() }}
+                             />
+                           </div>
 
               <div className="flex flex-col">
-                <label htmlFor="dropOffDate" className="text-sm text-gray-600">
-                  Drop-off Date
-                </label>
-                <input
-                  type="date"
-                  name="returnDate"
-                  defaultValue={new Date(rentalDetails.returnDate).toLocaleDateString("en-CA")}
-                  onChange={(e)=> setRentalDetails({...rentalDetails , returnDate : e.target.value})}
-                  className="p-3 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  required
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="location" className="text-sm text-gray-600">
+                <label  className="text-sm text-gray-600">
                   Pickup Location
                 </label>
                 <input

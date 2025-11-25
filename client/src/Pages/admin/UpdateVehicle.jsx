@@ -60,6 +60,7 @@ const UpdateVehicle = () => {
           modelYear: waitedDate[0].Model_Year,
           seatCapacity: waitedDate[0].Seating_Capacity,
           fuelType: waitedDate[0].Fuel_Type,
+          image: JSON.parse(waitedDate[0].Images)
         });
         console.log(formData);
       } catch (e) {
@@ -114,7 +115,33 @@ const UpdateVehicle = () => {
         (
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* <!-- Vehicle Name --> */}
+          <div className="grid grid-cols-1 gap-2">
+          {formData.image ? (formData.image.map((img)=>(
+            <div className=" flex gap-3 items-center justify-around">
+            <img  className="w-[350px] h-fit border-gray-800 border-2 object-cover" src={`http://localhost:3000${img}`} alt="image"/>
+            <button className="bg-red-600 px-4 text-white text-lg rounded-md self-end">Delete</button>
+            </div>
+          ))):(
+            <p>no image</p>
+          )}
+          </div>
+              <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Vehicle Images
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              max={6}
+              // defaultValue={`http://localhost:3000${formData.image}`}
+              // onChange={(e)=>{setImages(e.target.files)}}
+              placeholder="Add Vehicle Name"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
+              required
+            />
 
+          </div>
             <div>
               <label className="block text-gray-700 font-medium mb-1">
                 Vehicle Name

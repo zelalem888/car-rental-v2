@@ -13,6 +13,7 @@ const AddVehicle = () => {
     seatCapacity: Number,
     fuelType: "",
   });
+  const [images, setImages] = useState()
   const [plateError, setPlateError] = useState(null);
     useEffect(() => {
       const fetchAdmin = async () => {
@@ -53,15 +54,24 @@ const AddVehicle = () => {
       setPlateError("Plate Number Must Start With ET- or et-");
       return;
     }
-    console.log(formData);
+    const form = new FormData()
+
+    form.append( "A_ID",parseInt(formData.A_ID))
+    form.append( "brandName",formData.brandName)
+    form.append( "fuelType",formData.fuelType)
+    form.append( "modelYear",formData.modelYear)
+    form.append( "plateNumber",formData.plateNumber)
+    form.append( "pricePerDay",formData.pricePerDay)
+    form.append( "seatCapacity",formData.seatCapacity)
+    form.append( "vehicleName",formData.vehicleName)
+     for (let i = 0; i < images.length; i++) {
+      form.append("images", images[i]);
+    }
 
     try {
       const response = await fetch("http://localhost:3000/api/admin/registervehicle",{
           method: "POST",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify(formData),
+          body:form,
         }
       );
       if(!response.ok){
@@ -88,6 +98,22 @@ const AddVehicle = () => {
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           {/* <!-- Vehicle Name --> */}
+               <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Vehicle Images
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              max={6}
+              onChange={(e)=>{setImages(e.target.files)}}
+              placeholder="Add Vehicle Name"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
+              required
+            />
+
+          </div>
           <div>
             <label className="block text-gray-700 font-medium mb-1">
               Vehicle Name

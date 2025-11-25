@@ -122,7 +122,7 @@ const Register = () => {
         className="hidden lg:flex w-1/2 relative overflow-hidden"
       >
         {/* Background with gradient and pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700">
+        <div className="absolute inset-0 bg-gradient-to-br register-bg">
           <div
             className="absolute inset-0"
             style={{
@@ -147,7 +147,7 @@ const Register = () => {
               <div className="bg-white/10 p-2 rounded-lg backdrop-blur-sm group-hover:bg-white/20 transition-all">
                 <Car className="w-8 h-8" />
               </div>
-              <span className="text-2xl font-bold">CarRental</span>
+              <span className="text-2xl font-bold">Sami CarRental</span>
             </Link>
 
             <div className="space-y-8">
@@ -526,8 +526,8 @@ const Register = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="w-full px-4 py-3 bg-orange-500 text-white rounded-lg font-medium 
-                       hover:bg-orange-600 transition-colors flex items-center justify-center gap-2"
+              className="w-full px-4 py-3 register-bg text-white rounded-lg font-medium 
+                        transition-colors flex items-center justify-center gap-2"
             >
               <UserPlus className="w-5 h-5" />
               Create Account
