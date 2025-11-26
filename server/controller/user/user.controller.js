@@ -50,7 +50,7 @@ exports.usersInfoDeleteController = async (req, res) => {
   try {
     const result = await usersInfoDeleteService(req.params.id);
 
-    res.status(200).json({ message: "Deleted successfully.", ID: result });
+    res.status(200).json({ message: "Account Deleted successfully.", ID: result });
   } catch (error) {
     res.status(400).json({ message: error });
   }

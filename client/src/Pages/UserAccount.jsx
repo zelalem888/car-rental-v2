@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useNavigate, Link, useParams, redirect } from "react-router-dom";
 const UserAccount = () => {
-    const { id } = useParams()
+  const { id } = useParams();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -35,9 +35,9 @@ const UserAccount = () => {
     password: false,
     confirmPassword: false,
   });
-  const [deletePopUp,setDeletePopUp] = useState(false)
+  const [deletePopUp, setDeletePopUp] = useState(false);
   const [emailError, setEmailError] = useState(null);
-  const [emailCheck , setEmailCheck] = useState()
+  const [emailCheck, setEmailCheck] = useState();
   const [passwordError, setPasswordError] = useState(null);
   const [phoneError, setPhoneError] = useState(null);
   const navigate = useNavigate();
@@ -62,26 +62,35 @@ const UserAccount = () => {
           return;
         }
         const result = await responseVerify.json();
-        const response = await fetch(
-          `http://localhost:3000/api/user/${id}`
-        ,{
-          method:"GET",
-          headers:{
-            "authorization": `Bearer ${token}`
-          }
+        const response = await fetch(`http://localhost:3000/api/user/${id}`, {
+          method: "GET",
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
         });
         if (!response.ok) {
-          navigate(`/account/${result.id}`)
-          return
+          navigate(`/account/${result.id}`);
+          return;
         }
 
         const userResult = await response.json();
         // console.log(userResult);
+        let pNumber = "";
+
+        if (
+          String(userResult[0].PhoneNumber).startsWith("9") ||
+          String(userResult[0].PhoneNumber).startsWith("7")
+        ) {
+          pNumber = "0" + String(userResult[0].PhoneNumber);
+        } else {
+          pNumber = String(userResult[0].PhoneNumber);
+        }
+
         setFormData({
           fullName: userResult[0].FullName,
           email: userResult[0].Email,
           password: userResult[0].Password,
-          phoneNumber: userResult[0].PhoneNumber,
+          phoneNumber: pNumber,
           dateOfBirth: userResult[0].DoB.slice(0, 10),
           nationality: userResult[0].Nationality,
           city: userResult[0].City,
@@ -93,13 +102,17 @@ const UserAccount = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== confirmPassword.confirmPassworder) {
+    if (formData.password != confirmPassword.confirmPassworder) {
       setPasswordError("Passwords do not match!");
       return;
+    } else {
+      setPasswordError(null);
     }
     if (formData.password.length < 8) {
       setPasswordError("length must be greeter than 8 characters.");
       return;
+    } else {
+      setPasswordError(null);
     }
     if (
       String(formData.phoneNumber).length != 12 &&
@@ -107,48 +120,58 @@ const UserAccount = () => {
     ) {
       setPhoneError("phone number incorrect. ex:- 0912345678 or +251912345678");
       return;
+    } else {
+      setPhoneError(null);
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/user/update/${id}`, {
-        method: "PUT",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/user/update/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.text();
-        setEmailCheck("Email already existed")
-        return
+        console.log(errorData);
+        setEmailCheck("Email already existed");
+        return;
       }
       const result = await response.json();
-      console.log(result)
-      localStorage.removeItem("jwt-token")
+      console.log(result);
+      localStorage.removeItem("jwt-token");
       localStorage.setItem("jwt-token", result);
-      navigate("/")
+      navigate("/");
     } catch (error) {
-      console.log("network error",error);
+      console.log("network error", error);
     }
   };
 
-  
-  const deleteHandler = async ()=>{
-
-    try{
-         const response = await fetch(`http://localhost:3000/api/user/delete/${id}`, {
-        method: "DELETE",
-      });
+  const deleteHandler = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/user/delete/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (!response.ok) {
-        console.log("delete unsuccessful")
-        return
+        console.log("delete unsuccessful");
+        return;
       }
-      localStorage.removeItem("jwt-token")
-    }catch(error){
-        console.log("network error", error)
+      const result = (await response.json())
+      alert(result.message)
+      localStorage.removeItem("jwt-token");
+      navigate("/")
+    } catch (error) {
+      console.log("network error", error);
     }
-  }
+  };
   return (
     <>
       <motion.div
@@ -470,38 +493,42 @@ const UserAccount = () => {
             <button
               className="text-green-500 font-semibold hover:text-green-600 transition-colors 
                        inline-flex items-center gap-1"
-                       onClick={()=>{setDeletePopUp(true)}}
+              onClick={() => {
+                setDeletePopUp(true);
+              }}
             >
               Delete Account
               <Trash className="w-4 h-4" />
             </button>
-            {( deletePopUp &&
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="bg-white rounded-lg shadow-lg p-6 w-80">
-                          <h2 className="text-lg font-semibold mb-4 text-gray-800">
-                            Confirm Deletion
-                          </h2>
-                          <p className="text-gray-600 mb-6">
-                            Are you sure you want to delete this item? This
-                            action cannot be undone. 
-                          </p>
-                          <div className="flex justify-end space-x-3">
-                            <button
-                              onClick={()=>{setDeletePopUp(false)}}
-                              className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md"
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              onClick={deleteHandler}
-                              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md"
-                            >
-                              Yes, Delete
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      )}
+            {deletePopUp && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="bg-white rounded-lg shadow-lg p-6 w-80">
+                  <h2 className="text-lg font-semibold mb-4 text-gray-800">
+                    Confirm Deletion
+                  </h2>
+                  <p className="text-gray-600 mb-6">
+                    Are you sure you want to delete this item? This action
+                    cannot be undone.
+                  </p>
+                  <div className="flex justify-end space-x-3">
+                    <button
+                      onClick={() => {
+                        setDeletePopUp(false);
+                      }}
+                      className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={deleteHandler}
+                      className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md"
+                    >
+                      Yes, Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </p>
         </div>
       </motion.div>

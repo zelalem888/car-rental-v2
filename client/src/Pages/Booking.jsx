@@ -108,15 +108,16 @@ const CarDetailPage = () => {
   const selectHandler = (range) => {
     setSelected(range);
     setRentalDetails({
-      pickUpDate: range.from.toISOString(),
-      returnDate: range.to.toISOString(),
+      pickUpDate: range.from.toLocaleDateString("en-CA"),
+      returnDate: range.to.toLocaleDateString("en-CA")
     });
+    console.log(range)
   };
   return selectedCar ? (
     <div className="container mx-auto p-6 mt-20">
-      <div className="flex flex-col md:flex-row md:space-x-10">
+      <div className="grid grid-cols-[3fr_2fr] max-lg:grid-cols-1">
         {/* Car Image */}
-        <div className="w-full md:w-1/2 mb-8 md:mb-0">
+        <div className="w-full  mb-8 md:mb-0">
             <motion.div
                   key={selectedCar.V_ID}
                   initial={{ opacity: 0, y: 20 }}
@@ -131,7 +132,7 @@ const CarDetailPage = () => {
                     {/* data Image */}
                       <button 
                        onClick={() => setIndex((prev) => (prev === 0 ? imageCount - 1 : prev - 1))}
-                      > <ChevronLeft className="text-white bg-orange-500 rounded-full w-7 h-7"/> </button>
+                      > <ChevronLeft className="text-white bg-green-500 rounded-full w-7 h-7"/> </button>
                     <div className="flex aspect-[4/3] rounded-lg bg-white mb-6 ">
                  
                       <img
@@ -144,14 +145,14 @@ const CarDetailPage = () => {
                       <button
                         onClick={() =>
                            setIndex((prev) => (prev === imageCount - 1 ? 0 : prev + 1)) }
-                      > <ChevronRight className="text-white bg-orange-500 rounded-full w-7 h-7" /></button>
+                      > <ChevronRight className="text-white bg-green-500 rounded-full w-7 h-7" /></button>
                       
                   </div>
                 </motion.div>
         </div>
 
         {/* Car Details */}
-        <div className="w-full md:w-1/2 bg-white shadow-xl rounded-lg p-8">
+        <div className="w-full bg-white shadow-xl rounded-lg p-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">
             {selectedCar[0].V_Name}
           </h2>
@@ -199,6 +200,7 @@ const CarDetailPage = () => {
                   selected={selected}
                   onSelect={selectHandler}
                   startMonth={new Date(year, month)}
+                  timeZone="+03:00"
                   numerals="latn"
                   disabled={{ before: new Date() }}
                 />
@@ -208,6 +210,7 @@ const CarDetailPage = () => {
                   selected={selected}
                   onSelect={selectHandler}
                   startMonth={new Date(year, month)}
+                  timeZone="+03:00"
                   numerals="latn"
                   disabled={{ before: new Date() }}
                 />

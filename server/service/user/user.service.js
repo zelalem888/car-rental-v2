@@ -26,7 +26,6 @@ exports.usersInfoUpdateService = async ({ paramID, updatingData }) => {
     updatingData.phoneNumber,
     updatingData.dateOfBirth,
     updatingData.nationality,
-    updatingData.address,
     updatingData.city,
     data,
     paramID,
@@ -43,16 +42,17 @@ exports.usersInfoUpdateService = async ({ paramID, updatingData }) => {
   "SELECT Email FROM customer WHERE C_ID != ?",
   [paramID]
 );
-
-for (let i = 0; i < FindEmail.length; i++) {
-  if (FindEmail[i].Email === updatingData.email) {
-    throw new Error("This Email already exists.");
+if(FindEmail > 0){
+  for (let i = 0; i < FindEmail.length; i++) {
+    if (FindEmail[i].Email === updatingData.email) {
+      throw new Error("This Email already exists.");
+    }
   }
 }
 
 
   await db.query(
-    "UPDATE customer SET FullName=? , Email=? , Password=? , PhoneNumber=? , DoB=? , Nationality=? , Address=?, City=? , Update_Date=? WHERE C_ID = ?",
+    "UPDATE customer SET FullName=? , Email=? , Password=? , PhoneNumber=? , DoB=? , Nationality=? , City=? , Update_Date=? WHERE C_ID = ?",
     result
   );
     const [userData] = await db.query(

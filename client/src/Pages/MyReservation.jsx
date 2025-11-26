@@ -112,10 +112,10 @@ useEffect(()=>{
                     className="hover:bg-gray-50 transition-colors"
                   >
                     <td className="p-3 border-b">
-                      {item.Pickup_Date.slice(0, 10)}
+                      { new Date(item.Pickup_Date).toLocaleDateString("en-CA")}
                     </td>
                     <td className="p-3 border-b">
-                      {item.Return_Date.slice(0, 10)}
+                      {new Date(item.Return_Date).toLocaleDateString("en-CA")}
                     </td>
                     <td
                       className={`p-3 border-b font-semibold 

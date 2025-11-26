@@ -93,9 +93,10 @@ const UpdateVehicle = () => {
     form.append( "pricePerDay",formData.pricePerDay)
     form.append( "seatCapacity",formData.seatCapacity)
     form.append( "vehicleName",formData.vehicleName)
+    if(images){
      for (let i = 0; i < images.length; i++) {
       form.append("images", images[i]);
-    }
+    }}
 
 
     try {
@@ -167,7 +168,6 @@ const UpdateVehicle = () => {
               onChange={(e)=>{setImages(e.target.files)}}
               placeholder="Add Vehicle Name"
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
-              required
             />
 
           </div>

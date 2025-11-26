@@ -70,7 +70,7 @@ exports.adminVehicleRegisterService = async (body, files) => {
 exports.adminVehicleUpdateService = async ({ paramID, updatingData, files }) => {
   const data = new Date().toLocaleString();
    if (!files || files.length === 0) {
-    throw new Error("At least one image is required");
+   console.log("there is no image.")
   }
    const imagePaths = files.map(file => "/uploads/" + file.filename);
   //  console.log(imagePaths)

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { DayPicker as EthiopicDayPicker } from "react-day-picker/ethiopic";
 import { DayPicker as USDayPicker } from "react-day-picker";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
+
 
 const UpdateBooking = () => {
   const { rid } = useParams();
@@ -9,6 +12,8 @@ const UpdateBooking = () => {
   const [selectedCar, setSelectedCar] = useState();
   const [userData, setUserData] = useState({});
   const [selected, setSelected] = useState();
+  const [imageCount, setImageCount] = useState()
+  const [index, setIndex] = useState(0);
   const navigate = useNavigate();
   const [rentalDetails, setRentalDetails] = useState({
     pickUpDate: "",
@@ -58,12 +63,12 @@ const UpdateBooking = () => {
         }
         // setReservedCar(reservationResult);
         setRentalDetails({
-          pickUpDate: reservationResult[0].Pickup_Date,
-          returnDate: reservationResult[0].Return_Date,
+          pickUpDate: new Date(reservationResult[0].Pickup_Date).toLocaleDateString("en-CA"),
+          returnDate: new Date( reservationResult[0].Return_Date).toLocaleDateString("en-CA"),
         });
           setSelected({
-          from: reservationResult[0].Pickup_Date,
-          to: reservationResult[0].Return_Date,
+          from: new Date(reservationResult[0].Pickup_Date).toLocaleDateString("en-CA"),
+          to:new Date( reservationResult[0].Return_Date).toLocaleDateString("en-CA")
         });
         console.log(reservationResult);
 
@@ -77,7 +82,11 @@ const UpdateBooking = () => {
         }
 
         const result = await response.json();
+        result[0].image = JSON.parse(result[0].Images)
+
         setSelectedCar(result);
+       setImageCount(result[0].image.length)
+
         console.log(result);
       } catch (e) {
         throw new Error(e);
@@ -144,18 +153,42 @@ const UpdateBooking = () => {
 
   return selectedCar ? (
     <div className="container mx-auto p-6 mt-20">
-      <div className="flex flex-col md:flex-row md:space-x-10">
+      <div className="grid grid-cols-[3fr_2fr]  max-lg:grid-cols-1">
         {/* Car Image */}
-        <div className="w-full md:w-1/2 mb-8 md:mb-0">
-          <img
-            src="https://www.bentleymotors.com/content/dam/bm/websites/bmcom/bentleymotors-com/homepage/26my-azure/GT%20Azure%20Dynamic%20Desktop.jpg/_jcr_content/renditions/original.image_file.1286.643.file/GT%20Azure%20Dynamic%20Desktop.jpg"
-            // alt={selectedCar.name}
-            className="w-full h-80 object-cover rounded-lg border hover:shadow-lg hover:scale-105 delay-75 ease-in-out"
-          />
-        </div>
+        <motion.div
+                  key={selectedCar.V_ID}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="group"
+                >
+                  <div
+                    className={`flex gap-5 rounded-xl p-6 transition-all duration-300 
+                                     group-hover:-translate-y-2`}
+                  >
+                    {/* data Image */}
+                      <button 
+                       onClick={() => setIndex((prev) => (prev === 0 ? imageCount - 1 : prev - 1))}
+                      > <ChevronLeft className="text-white bg-green-500 rounded-full w-7 h-7"/> </button>
+                    <div className="flex aspect-[4/3] rounded-lg bg-white mb-6 ">
+                 
+                      <img
+                        src={`http://localhost:3000${selectedCar[0].image[index]}`}
+                        alt=""
+                        className="h-full w-full object-cover rounded-lg"
+                      />
+                  
+                    </div>
+                      <button
+                        onClick={() =>
+                           setIndex((prev) => (prev === imageCount - 1 ? 0 : prev + 1)) }
+                      > <ChevronRight className="text-white bg-green-500 rounded-full w-7 h-7" /></button>
+                      
+                  </div>
+                </motion.div>
 
         {/* Car Details */}
-        <div className="w-full md:w-1/2 bg-white shadow-xl rounded-lg p-8">
+        <div className="w-full  bg-white shadow-xl rounded-lg p-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">
             {selectedCar[0].V_Name}
           </h2>
@@ -202,6 +235,7 @@ const UpdateBooking = () => {
                                mode="range"
                                selected={selected}
                                onSelect={selectHandler}
+                               timeZone="+03:00"
                                startMonth={new Date(year, month)}
                                numerals="latn"
                                disabled={{ before: new Date() }}
@@ -212,6 +246,7 @@ const UpdateBooking = () => {
                                selected={selected}
                                onSelect={selectHandler}
                                startMonth={new Date(year, month)}
+                               timeZone="+03:00"
                                numerals="latn"
                                disabled={{ before: new Date() }}
                              />
