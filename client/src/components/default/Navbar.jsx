@@ -155,18 +155,18 @@ const Navbar = () => {
                         className="absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-lg py-2 border border-gray-100"
                       >
                          <button
-                          className="w-full px-4 py-2 text-left text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors flex items-center space-x-2"
+                          className="w-full px-4 py-2 text-left text-gray-700 hover:bg-green-50 hover:text-green-500 transition-colors flex items-center space-x-2"
                         >
                           <span>{userData.name}</span>
                         </button>
                          <Link
-                          className="w-full px-4 py-2 text-left text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors flex items-center space-x-2"
+                          className="w-full px-4 py-2 text-left text-gray-700 hover:bg-green-50 hover:text-green-500 transition-colors flex items-center space-x-2"
                           to={`/myreservation/${userData.id}`}
                         >
                           <span>My Reservations</span>
                         </Link>
                         <Link
-                          className="w-full px-4 py-2 text-left text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors flex items-center space-x-2"
+                          className="w-full px-4 py-2 text-left text-gray-700 hover:bg-green-50 hover:text-green-500 transition-colors flex items-center space-x-2"
                           to={`/account/${userData.id}`}
                         >
                           <span>Profile</span>
@@ -174,7 +174,7 @@ const Navbar = () => {
 
                         <button
                           onClick={handleLogout}
-                          className="w-full px-4 py-2 text-left text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors flex items-center space-x-2"
+                          className="w-full px-4 py-2 text-left text-gray-700 hover:bg-green-50 hover:text-green-500 transition-colors flex items-center space-x-2"
                         >
                           <LogOut className="w-4 h-4" />
                           <span>Logout</span>
@@ -187,7 +187,7 @@ const Navbar = () => {
                 <>
                   <Link
                     to="/login"
-                    className="flex items-center space-x-2 text-gray-700 hover:text-orange-500 transition-all"
+                    className="flex items-center space-x-2 text-gray-700 hover:text-green-500 transition-all"
                   >
                     <LogIn className="w-4 h-4" />
                     <span>Login</span>
@@ -232,7 +232,7 @@ const Navbar = () => {
                     key={item.path}
                     to={item.path}
                     onClick={() => setIsOpen(false)}
-                    className={`text-sm font-medium transition-colors hover:text-orange-500 
+                    className={`text-sm font-medium transition-colors hover:text-green-500 
                     ${
                       isLinkActive(item.path)
                         ? "text-green-500"
@@ -249,14 +249,14 @@ const Navbar = () => {
                   {userData ? (
                     <>
                      <button
-                      className="flex items-center justify-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-orange-600 transition-all"
+                      className="flex items-center justify-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>{userData.name}</span>
                     </button>
                     <button
                       onClick={handleLogout}
-                      className="flex items-center justify-center space-x-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all"
+                      className="flex items-center justify-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Logout</span>
@@ -275,7 +275,7 @@ const Navbar = () => {
                       <Link
                         to="/register"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center justify-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-orange-600 transition-all"
+                        className="flex items-center justify-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all"
                       >
                         <UserPlus className="w-4 h-4" />
                         <span>Sign Up</span>

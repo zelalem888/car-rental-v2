@@ -96,7 +96,7 @@ const Login = () => {
             }}></div>
 
           {/* Floating shapes */}
-          <div className="absolute top-20 right-20 w-64 h-64 bg-orange-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute top-20 right-20 w-64 h-64 bg-green-400/20 rounded-full blur-3xl"></div>
           <div className="absolute bottom-40 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
         </div>
 
@@ -120,7 +120,7 @@ const Login = () => {
                   <br />
                   Begins Here
                 </h1>
-                <p className="text-orange-50/90 text-lg leading-relaxed max-w-md">
+                <p className="text-green-50/90 text-lg leading-relaxed max-w-md">
                   Experience premium car rental services with unlimited miles
                   and flexible pickup options.
                 </p>
@@ -150,7 +150,7 @@ const Login = () => {
                     <h3 className="text-white font-semibold mb-1">
                       {feature.title}
                     </h3>
-                    <p className="text-orange-50/80 text-sm">{feature.desc}</p>
+                    <p className="text-green-50/80 text-sm">{feature.desc}</p>
                   </motion.div>
                 ))}
               </div>
@@ -173,7 +173,7 @@ const Login = () => {
                   <h4 className="text-2xl font-bold text-white mb-1">
                     {stat.value}
                   </h4>
-                  <p className="text-orange-50/80 text-sm">{stat.label}</p>
+                  <p className="text-green-50/80 text-sm">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -194,12 +194,12 @@ const Login = () => {
             animate={{ opacity: 1, y: 0 }}
             className="lg:hidden flex flex-col items-center gap-4 mb-8">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="bg-orange-50 p-2 rounded-lg group-hover:bg-orange-100 transition-all">
-                <Car className="w-8 h-8 text-orange-500" />
+              <div className="bg-green-50 p-2 rounded-lg group-hover:bg-green-100 transition-all">
+                <Car className="w-8 h-8 text-green-500" />
               </div>
               <span className="text-2xl font-bold">
                 <span className="text-gray-900">Car</span>
-                <span className="text-orange-500">Rental</span>
+                <span className="text-green-500">Rental</span>
               </span>
             </Link>
           </motion.div>
@@ -225,7 +225,7 @@ const Login = () => {
                   }
                   autoComplete="off"
                   required
-                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Enter your email"
                 />
@@ -245,7 +245,7 @@ const Login = () => {
                     setFormData({ ...formData, password: e.target.value })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Enter your password"
                 />
@@ -277,7 +277,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => setShowForgotPassword(true)}
-                className="text-orange-500 hover:text-orange-600 transition-colors">
+                className="text-green-500 hover:text-green-600 transition-colors">
                 Forgot password?
               </button>
             </div>
@@ -286,7 +286,7 @@ const Login = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="w-full px-4 py-3 bg-orange-500 text-white rounded-lg font-medium 
+              className="w-full px-4 py-3 bg-green-500 text-white rounded-lg font-medium 
                        login-bg transition-colors flex items-center justify-center gap-2">
               <LogIn className="w-5 h-5" />
               Sign in
@@ -299,7 +299,7 @@ const Login = () => {
             <motion.a
               whileHover={{ scale: 1.05 }}
               href="/register"
-              className="text-orange-500 font-semibold hover:text-orange-600 transition-colors 
+              className="text-green-500 font-semibold hover:text-green-600 transition-colors 
                        inline-flex items-center gap-1">
               Sign up
               <ChevronRight className="w-4 h-4" />

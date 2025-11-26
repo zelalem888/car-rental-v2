@@ -132,7 +132,7 @@ const Register = () => {
           ></div>
 
           {/* Floating shapes */}
-          <div className="absolute top-20 right-20 w-64 h-64 bg-orange-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute top-20 right-20 w-64 h-64 bg-green-400/20 rounded-full blur-3xl"></div>
           <div className="absolute bottom-40 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
         </div>
 
@@ -157,7 +157,7 @@ const Register = () => {
                   <br />
                   Journey Today
                 </h1>
-                <p className="text-orange-50/90 text-lg leading-relaxed max-w-md">
+                <p className="text-green-50/90 text-lg leading-relaxed max-w-md">
                   Join thousands of satisfied customers and experience our
                   premium car rental services.
                 </p>
@@ -188,7 +188,7 @@ const Register = () => {
                     <h3 className="text-white font-semibold mb-1">
                       {feature.title}
                     </h3>
-                    <p className="text-orange-50/80 text-sm">{feature.desc}</p>
+                    <p className="text-green-50/80 text-sm">{feature.desc}</p>
                   </motion.div>
                 ))}
               </div>
@@ -208,7 +208,7 @@ const Register = () => {
                 <h4 className="text-white font-semibold">
                   Trusted by Thousands
                 </h4>
-                <p className="text-orange-50/80 text-sm">
+                <p className="text-green-50/80 text-sm">
                   Join our growing community of car renters
                 </p>
               </div>
@@ -232,12 +232,12 @@ const Register = () => {
             className="lg:hidden flex flex-col items-center gap-4 mb-8"
           >
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="bg-orange-50 p-2 rounded-lg group-hover:bg-orange-100 transition-all">
-                <Car className="w-8 h-8 text-orange-500" />
+              <div className="bg-green-50 p-2 rounded-lg group-hover:bg-green-100 transition-all">
+                <Car className="w-8 h-8 text-green-500" />
               </div>
               <span className="text-2xl font-bold">
                 <span className="text-gray-900">Car</span>
-                <span className="text-orange-500">Rental</span>
+                <span className="text-green-500">Rental</span>
               </span>
             </Link>
           </motion.div>
@@ -264,7 +264,7 @@ const Register = () => {
                     setFormData({ ...formData, fullName: e.target.value })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Enter your Full Name"
                 />
@@ -284,7 +284,7 @@ const Register = () => {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Enter your email"
                 />
@@ -319,7 +319,7 @@ const Register = () => {
                     setFormData({ ...formData, password: e.target.value })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Create a password"
                 />
@@ -359,7 +359,7 @@ const Register = () => {
                     })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Confirm your password"
                 />
@@ -410,7 +410,7 @@ const Register = () => {
                     setFormData({ ...formData, phoneNumber: e.target.value })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Enter your Phone Number"
                 />
@@ -445,7 +445,7 @@ const Register = () => {
                     setFormData({ ...formData, dateOfBirth: e.target.value })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Enter your Birth Date"
                 />
@@ -461,7 +461,7 @@ const Register = () => {
               </label>
               <div className="relative">
                 <select
-                  className="nationality w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="nationality w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   onChange={(e) =>
                     setFormData({ ...formData, nationality: e.target.value })
@@ -490,7 +490,7 @@ const Register = () => {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Enter your Address"
                 />
@@ -504,7 +504,7 @@ const Register = () => {
               <label className="text-sm font-medium text-gray-700">City</label>
               <div className="relative">
                 <select
-                  className="city w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="city w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   onChange={(e) =>
                     setFormData({ ...formData, city: e.target.value })
@@ -539,7 +539,7 @@ const Register = () => {
             <motion.a
               whileHover={{ scale: 1.05 }}
               href="/login"
-              className="text-orange-500 font-semibold hover:text-orange-600 transition-colors 
+              className="text-green-500 font-semibold hover:text-green-600 transition-colors 
                        inline-flex items-center gap-1"
             >
               Sign in
