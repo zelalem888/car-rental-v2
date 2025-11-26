@@ -3,14 +3,15 @@ const {
   adminVehicleRegisterService,
   adminVehicleUpdateService,
   adminVehicleDeleteService,
+  adminDeleteImageService
 } = require("../../service/admin/vehicle.CRUD.service");
 
 exports.adminAllVehiclesController = async (req, res) => {
   try {
     const allVehicles = await adminAllVehiclesService();
-    res.send(allVehicles);
+    res.json(allVehicles);
   } catch (error) {
-    res.send({ message: error });
+    res.json({ message: error });
   }
 };
 
@@ -31,11 +32,24 @@ exports.adminVehicleUpdateController = async (req, res) => {
       updatingData: req.body,
       files: req.files
     });
-    res.send({ message: "Update vehicle Success." });
+    res.json({ message: "Update vehicle Success." });
   } catch (error) {
-    res.send({ message: error });
+    res.json({ message: error });
   }
 };
+
+exports.adminDeleteImageController =  async (req, res) => {
+  try {
+    await adminDeleteImageService({
+      paramID: req.params.id,
+      updatingData: req.body
+    });
+    res.status(200).Json({ message: "image deleted Success." });
+  } catch (error) {
+    res.json({ message: error });
+  }
+};
+
 
 exports.adminVehicleDeleteController = async (req, res) => {
   try {

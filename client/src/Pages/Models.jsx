@@ -13,7 +13,7 @@ import {
   Calendar,
   MapPin,
   Ellipsis,
-  CalendarCheck
+  CalendarCheck,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -33,15 +33,15 @@ const Models = () => {
     available: "text-green-800",
     confirmed: "text-red-800",
   };
-   const statusTitle = {
+  const statusTitle = {
     pending: "booked",
     available: "available",
     confirmed: "rented",
   };
   const statusIcon = {
-    pending : <Ellipsis className='w-5 h-5 text-yellow-800'/>,
-    confirmed : <CalendarCheck className='w-5 h-5 text-red-800'/>
-  }
+    pending: <Ellipsis className="w-5 h-5 text-yellow-800" />,
+    confirmed: <CalendarCheck className="w-5 h-5 text-red-800" />,
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -53,7 +53,7 @@ const Models = () => {
         const result = await response.json();
         // setResult(await response.json())
 
-        console.log(result);
+        // console.log(result);
 
         const reserveResponse = await fetch(
           "http://localhost:3000/api/reservation/vehicle"
@@ -65,18 +65,24 @@ const Models = () => {
         const reserveResult = await reserveResponse.json();
         // console.log(reserveResult);
 
+       for(let i = 0 ; i <result.length; i++){
+        result[i].status = ""
+       }
+
         for (let i = 0; i < result.length; i++) {
           // result[i].image = JSON.parse(result[i].Images)
-              result[i].image = result[i].Images ? JSON.parse(result[i].Images) : [];
+          result[i].image = result[i].Images
+            ? JSON.parse(result[i].Images)
+            : [];
           for (let j = 0; j < reserveResult.length; j++) {
             if (result[i].V_ID == parseInt(reserveResult[j].V_ID)) {
               result[i].status = reserveResult[j].Status;
-              result[i].availableFor = reserveResult[j].Return_Date 
+              result[i].availableFor = reserveResult[j].Return_Date;
             }
           }
         }
         setResult(result);
-        console.log(result)
+        // console.log(result);
       } catch (e) {
         throw new Error(e);
       }
@@ -84,6 +90,20 @@ const Models = () => {
     fetchData();
   }, []);
 
+  const categories = [
+    {
+      name: "All",
+    },
+    {
+      name: ""
+    },
+    {
+      name: "pending",
+    },
+    {
+      name: "confirmed",
+    },
+  ];
   const booking = async (V_ID) => {
     const token = localStorage.getItem("jwt-token");
     const responseVerify = await fetch(
@@ -104,10 +124,12 @@ const Models = () => {
   };
 
   const filteredVehicles = result.filter((car) => {
+      const matchesCategory =
+      selectedCategory === "All" || car.status === selectedCategory;
     const filtered = car.V_Name.toLowerCase().includes(
       searchQuery.toLowerCase()
     );
-    return filtered;
+    return filtered && matchesCategory;
   });
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 pt-8">
@@ -120,12 +142,12 @@ const Models = () => {
             whileInView="whileInView"
             className="text-center max-w-3xl mx-auto"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 rounded-full mb-6">
-              <Car className="w-5 h-5 text-orange-500" />
-              <span className="text-orange-700 font-medium">Our Fleet</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 rounded-full mb-6">
+              <Car className="w-5 h-5 text-green-500" />
+              <span className="text-green-700 font-medium">Our Fleet</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Choose Your Perfect <span className="text-orange-500">Ride</span>
+              Choose Your Perfect <span className="text-green-500">Ride</span>
             </h1>
             <p className="text-gray-600 text-lg leading-relaxed">
               Experience premium service with unlimited miles and flexible
@@ -150,9 +172,29 @@ const Models = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:outline-none 
-                           focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                           focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
                 <Filter className="w-5 h-5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
+              </div>
+              {/* Category Filter */}
+              <div className="flex gap-4 overflow-x-auto pb-2">
+                {categories.map((category, index) => (
+                  <motion.button
+                    key={index}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setSelectedCategory(category.name)}
+                    className={`flex items-center gap-2 px-4 py-3 rounded-lg whitespace-nowrap
+                             ${
+                               selectedCategory === category.name
+                                 ? "bg-green-500 text-white"
+                                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                             }`}
+                  >
+                    <Car className="w-5 h-5" />
+                    <span>{category.name === "All" ? "All" : category.name === "pending" ? "Booked" : category.name ==="" ? "Available" : "Rented"}</span>
+                  </motion.button>
+                ))}
               </div>
             </div>
           </div>
@@ -178,12 +220,12 @@ const Models = () => {
                   >
                     {/* Car Image */}
                     <div className="aspect-[4/3] rounded-lg bg-white mb-6 overflow-hidden">
-                      <a 
-                        style={{pointerEvents : car.status ? "none" : "unset"}}
-                       href={`/singlemodel/${car.V_Name}/${car.V_ID}`}>
+                      <a
+                        style={{ pointerEvents: car.status ? "none" : "unset" }}
+                        href={`/singlemodel/${car.V_Name}/${car.V_ID}`}
+                      >
                         <img
                           src={`http://localhost:3000${car.image[0]}`}
-
                           // alt={car.name}
                           className="w-full h-full object-cover"
                         />
@@ -202,7 +244,7 @@ const Models = () => {
                           </span>
                         </div>
                         <div className="text-right">
-                          <span className="text-2xl font-bold text-orange-500">
+                          <span className="text-2xl font-bold text-green-500">
                             Birr {car.Price_Per_Day}
                           </span>
                           <span className="text-sm text-gray-600">/day</span>
@@ -229,24 +271,34 @@ const Models = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex flex-col items-center">
                           <span
-                            className={`flex gap-2 font-medium ${statusColor[car.status] || "text-green-700"}`}>
-                           { statusIcon[car.status] || <Star className="w-5 h-5 text-green-700" />}
-                            {statusTitle[car.status] || "available" }
+                            className={`flex gap-2 font-medium ${
+                              statusColor[car.status] || "text-green-700"
+                            }`}
+                          >
+                            {statusIcon[car.status] || (
+                              <Star className="w-5 h-5 text-green-700" />
+                            )}
+                            {statusTitle[car.status] || "available"}
                           </span>
-                           <span
-                            className={`text-sm`}>
-                          { car.status ? "Available on " + new Date(car.availableFor).toLocaleDateString("en-CA"):""}
+                          <span className={`text-sm`}>
+                            {car.status
+                              ? "Available on " +
+                                new Date(car.availableFor).toLocaleDateString(
+                                  "en-CA"
+                                )
+                              : ""}
                           </span>
                         </div>
-                        
+
                         <motion.a
-                        style={{pointerEvents : car.status ? "none" : "unset"}}
+                          style={{
+                            pointerEvents: car.status ? "none" : "unset",
+                          }}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => booking(car.V_ID)}
-                          className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 
+                          className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 
                                  transition-colors cursor-pointer"
-                          
                         >
                           Book Now
                         </motion.a>
@@ -269,7 +321,7 @@ const Models = () => {
             className="text-center max-w-3xl mx-auto mb-12"
           >
             <div className="flex items-center justify-center gap-2 mb-4">
-              <Settings className="w-6 h-6 text-orange-500" />
+              <Settings className="w-6 h-6 text-green-500" />
               <h2 className="text-3xl font-bold">How to Book</h2>
             </div>
             <p className="text-gray-600">
@@ -304,10 +356,10 @@ const Models = () => {
                 className="bg-gray-50 rounded-lg p-6 text-center"
               >
                 <div
-                  className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center 
+                  className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center 
                              mx-auto mb-6"
                 >
-                  <step.icon className="w-8 h-8 text-orange-500" />
+                  <step.icon className="w-8 h-8 text-green-500" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4">{step.title}</h3>
                 <p className="text-gray-600">{step.description}</p>

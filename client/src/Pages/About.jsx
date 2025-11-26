@@ -34,8 +34,8 @@ const About = () => {
       icon: Car,
       title: "Wide Selection",
       description: "Diverse fleet of vehicles for every need",
-      color: "text-orange-500",
-      bgColor: "bg-orange-50",
+      color: "text-green-500",
+      bgColor: "bg-green-50",
     },
     {
       icon: Users,
@@ -64,13 +64,13 @@ const About = () => {
             initial="initial"
             whileInView="whileInView"
             className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 rounded-full mb-6">
-              <Star className="w-5 h-5 text-orange-500" />
-              <span className="text-orange-700 font-medium">About Us</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 rounded-full mb-6">
+              <Star className="w-5 h-5 text-green-500" />
+              <span className="text-green-700 font-medium">About Us</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
               Experience the Best in
-              <span className="text-orange-500"> Car Rentals</span>
+              <span className="text-green-500"> Car Rentals</span>
             </h1>
             <p className="text-gray-600 text-lg leading-relaxed">
               Welcome to CarRental, where we redefine the car rental experience.
@@ -91,7 +91,7 @@ const About = () => {
             className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <Award className="w-6 h-6 text-orange-500" />
+                <Award className="w-6 h-6 text-green-500" />
                 <h2 className="text-3xl font-bold">Our Mission</h2>
               </div>
               <p className="text-gray-600 leading-relaxed mb-6">
@@ -113,7 +113,7 @@ const About = () => {
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-orange-500 flex-shrink-0" />
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
                     <span className="text-gray-700">{item}</span>
                   </motion.li>
                 ))}
@@ -126,8 +126,8 @@ const About = () => {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gray-50 p-6 rounded-lg text-center group hover:bg-orange-50 transition-colors">
-                  <h3 className="text-3xl font-bold text-orange-500 mb-2 group-hover:scale-110 transition-transform">
+                  className="bg-gray-50 p-6 rounded-lg text-center group hover:bg-green-50 transition-colors">
+                  <h3 className="text-3xl font-bold text-green-500 mb-2 group-hover:scale-110 transition-transform">
                     {stat.value}
                   </h3>
                   <p className="text-gray-600">{stat.label}</p>
@@ -147,7 +147,7 @@ const About = () => {
             whileInView="whileInView"
             className="text-center mb-12">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <Settings className="w-6 h-6 text-orange-500" />
+              <Settings className="w-6 h-6 text-green-500" />
               <h2 className="text-3xl font-bold">Key Features</h2>
             </div>
             <p className="text-gray-600 max-w-2xl mx-auto">

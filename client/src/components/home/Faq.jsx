@@ -37,8 +37,8 @@ const FAQ = () => {
     {
       title: "Rental Requirements",
       icon: Car,
-      color: "text-orange-500",
-      bgColor: "bg-orange-50",
+      color: "text-green-500",
+      bgColor: "bg-green-50",
       questions: [
         {
           question: "What documents do I need to rent a car?",
@@ -102,9 +102,9 @@ const FAQ = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 rounded-full mb-4">
-            <HelpCircle className="w-5 h-5 text-orange-500" />
-            <span className="text-orange-700 font-medium">Need Help?</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 rounded-full mb-4">
+            <HelpCircle className="w-5 h-5 text-green-900" />
+            <span className="text-green-700 font-medium">Need Help?</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Frequently Asked Questions
@@ -136,7 +136,7 @@ const FAQ = () => {
                 return (
                   <div
                     key={itemIndex}
-                    className="border border-gray-200 hover:border-orange-500 rounded-lg bg-white transition-colors">
+                    className="border border-gray-200 hover:border-green-500 rounded-lg bg-white transition-colors">
                     <button
                       onClick={() => toggleAccordion(index)}
                       className="w-full px-6 py-4 flex items-center justify-between text-left">
@@ -146,11 +146,11 @@ const FAQ = () => {
                       <div
                         className={`p-2 rounded-full ${
                           activeIndex === index
-                            ? "bg-orange-100"
+                            ? "bg-green-100"
                             : "bg-gray-100"
                         } transition-colors`}>
                         {activeIndex === index ? (
-                          <Minus className="w-4 h-4 text-orange-500" />
+                          <Minus className="w-4 h-4 text-green-500" />
                         ) : (
                           <Plus className="w-4 h-4 text-gray-500" />
                         )}
@@ -165,7 +165,7 @@ const FAQ = () => {
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.3 }}
                           className="overflow-hidden">
-                          <div className="px-6 py-4 bg-orange-50/50 border-t border-gray-200">
+                          <div className="px-6 py-4 bg-green-50/50 border-t border-gray-200">
                             <p className="text-gray-600 leading-relaxed whitespace-pre-line">
                               {item.answer}
                             </p>
@@ -186,8 +186,8 @@ const FAQ = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="mt-16 relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl opacity-10"></div>
-          <div className="relative bg-white border border-orange-100 rounded-2xl p-8">
+          <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl opacity-10"></div>
+          <div className="relative bg-white border border-green-100 rounded-2xl p-8">
             <div className="max-w-3xl mx-auto text-center">
               <h3 className="text-2xl font-semibold mb-4">
                 Still have questions?
@@ -200,14 +200,14 @@ const FAQ = () => {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
+                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-tr from-green-700 via-yellow-700 to-red-700 text-white rounded-lg hover:bg-green-600 transition-colors">
                   <Mail className="w-5 h-5" />
                   <span>Email Support</span>
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="flex items-center gap-2 px-6 py-3 border border-orange-200 text-orange-500 rounded-lg hover:bg-orange-50 transition-colors">
+                  className="flex items-center gap-2 px-6 py-3 border border-green-200 text-green-700 rounded-lg hover:bg-green-50 transition-colors">
                   <Phone className="w-5 h-5" />
                   <span>Call Support</span>
                 </motion.button>

@@ -29,10 +29,10 @@ const Loader = () => {
                 ease: "easeInOut",
               },
             }}
-            className="w-24 h-10 bg-orange-500 rounded-lg relative">
+            className="w-24 h-10 bg-green-500 rounded-lg relative">
             {/* Car Windows */}
-            <div className="absolute top-0 left-4 w-8 h-4 bg-orange-600 rounded-t-lg"></div>
-            <div className="absolute -top-2 right-4 w-6 h-4 bg-orange-600 rounded-t-lg skew-x-12"></div>
+            <div className="absolute top-0 left-4 w-8 h-4 bg-green-600 rounded-t-lg"></div>
+            <div className="absolute -top-2 right-4 w-6 h-4 bg-green-600 rounded-t-lg skew-x-12"></div>
 
             {/* Headlights */}
             <div className="absolute right-0 top-2 w-2 h-2 bg-yellow-300 rounded-full"></div>

@@ -63,8 +63,8 @@ const Contact = () => {
       icon: Mail,
       title: "Email",
       details: ["info@samicarrental.com", "support@samicarrental.com"],
-      color: "text-orange-500",
-      bgColor: "bg-orange-50",
+      color: "text-green-500",
+      bgColor: "bg-green-50",
     },
     {
       icon: MapPin,
@@ -96,12 +96,12 @@ const Contact = () => {
             initial="initial"
             whileInView="whileInView"
             className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 rounded-full mb-6">
-              <MessageSquare className="w-5 h-5 text-orange-500" />
-              <span className="text-orange-700 font-medium">Contact Us</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 rounded-full mb-6">
+              <MessageSquare className="w-5 h-5 text-green-500" />
+              <span className="text-green-700 font-medium">Contact Us</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Get in <span className="text-orange-500">Touch</span>
+              Get in <span className="text-green-500">Touch</span>
             </h1>
             <p className="text-gray-600 text-lg leading-relaxed">
               We'd love to hear from you. Let us know how we can help make your
@@ -147,8 +147,8 @@ const Contact = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                className="bg-gray-100 rounded-lg p-4 h-64 flex items-center justify-center">
-                <MapPin className="w-12 h-12 text-gray-400" />
+                className="bg-gray-100 rounded-lg h-64 flex items-center justify-center">
+            <iframe src="https://umap.openstreetmap.de/en/map/anonymous-edit/115287:t_BZokg2IzGmQ01Nd8i_U5cFSWBCboJ1tY1oVq8FtSg" className="w-full h-full" ></iframe>
               </motion.div>
             </motion.div>
 
@@ -159,7 +159,7 @@ const Contact = () => {
               whileInView="whileInView"
               className="bg-white rounded-xl p-8 border border-gray-100">
               <div className="flex items-center gap-2 mb-6">
-                <MessageCircle className="w-6 h-6 text-orange-500" />
+                <MessageCircle className="w-6 h-6 text-green-500" />
                 <h2 className="text-2xl font-bold">Send Us a Message</h2>
               </div>
 
@@ -177,7 +177,7 @@ const Contact = () => {
                       value={formData.name}
                       onChange={handleChange}
                       className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 
-                               focus:outline-none focus:ring-2 focus:ring-orange-500 
+                               focus:outline-none focus:ring-2 focus:ring-green-500 
                                focus:border-transparent transition-all"
                       required
                     />
@@ -198,7 +198,7 @@ const Contact = () => {
                       value={formData.email}
                       onChange={handleChange}
                       className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 
-                               focus:outline-none focus:ring-2 focus:ring-orange-500 
+                               focus:outline-none focus:ring-2 focus:ring-green-500 
                                focus:border-transparent transition-all"
                       required
                     />
@@ -220,7 +220,7 @@ const Contact = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 
-                             focus:outline-none focus:ring-2 focus:ring-orange-500 
+                             focus:outline-none focus:ring-2 focus:ring-green-500 
                              focus:border-transparent transition-all"
                     required
                   />
@@ -240,7 +240,7 @@ const Contact = () => {
                     onChange={handleChange}
                     rows="4"
                     className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 
-                             focus:outline-none focus:ring-2 focus:ring-orange-500 
+                             focus:outline-none focus:ring-2 focus:ring-green-500 
                              focus:border-transparent transition-all resize-none"
                     required
                   />
@@ -251,7 +251,7 @@ const Contact = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className={`w-full py-4 rounded-lg flex items-center justify-center gap-2
-                           ${isSubmitted ? "bg-green-500" : "bg-orange-500"} 
+                           ${isSubmitted ? "bg-green-500" : "bg-green-500"} 
                            text-white font-medium transition-colors`}>
                   {isSubmitted ? (
                     <>

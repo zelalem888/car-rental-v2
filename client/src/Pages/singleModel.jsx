@@ -89,7 +89,7 @@ const SingleModel = () => {
                     {/* data Image */}
                       <button 
                        onClick={() => setIndex((prev) => (prev === 0 ? imageCount - 1 : prev - 1))}
-                      > <ChevronLeft className="text-white bg-orange-500 rounded-full w-7 h-7"/> </button>
+                      > <ChevronLeft className="text-white bg-green-500 rounded-full w-7 h-7"/> </button>
                     <div className="flex aspect-[4/3] rounded-lg bg-white mb-6 ">
                  
                       <img
@@ -102,7 +102,7 @@ const SingleModel = () => {
                       <button
                         onClick={() =>
                            setIndex((prev) => (prev === imageCount - 1 ? 0 : prev + 1)) }
-                      > <ChevronRight className="text-white bg-orange-500 rounded-full w-7 h-7" /></button>
+                      > <ChevronRight className="text-white bg-green-500 rounded-full w-7 h-7" /></button>
                       
                   </div>
                 </motion.div>
@@ -123,7 +123,7 @@ const SingleModel = () => {
                             <h3 className="text-5xl font-bold mb-2">
                              {fetchedData[0].Brand_Name} {fetchedData[0].V_Name}
                             </h3>
-                            <span className="text-2xl font-bold text-orange-500">
+                            <span className="text-2xl font-bold text-green-500">
                               Birr {fetchedData[0].Price_Per_Day}
                             </span>
                             <span className="text-sm text-gray-600">/day</span>
@@ -159,7 +159,7 @@ const SingleModel = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={booking}
-                        className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 
+                        className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 
                                          transition-colors"
                       >
                         Book Now

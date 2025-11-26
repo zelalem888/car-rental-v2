@@ -1,5 +1,6 @@
 const db = require("../../db/config");
 const z = require("zod");
+const fs = require('fs')
 
 exports.adminAllVehiclesService = async () => {
   const [allVehicles] = await db.query("SELECT * FROM vehicle");
@@ -72,7 +73,19 @@ exports.adminVehicleUpdateService = async ({ paramID, updatingData, files }) => 
     throw new Error("At least one image is required");
   }
    const imagePaths = files.map(file => "/uploads/" + file.filename);
-   console.log(imagePaths)
+  //  console.log(imagePaths)
+
+   const [findID] = await db.query(
+     "SELECT * FROM vehicle WHERE V_ID = ?",
+     paramID
+    );
+    
+    if (findID.length === 0) {
+      throw new Error("there is no vehicle in this ID to update.");
+    }
+    const existing = JSON.parse(findID[0].Images)
+
+    const updatedImage = [...existing,...imagePaths]
 
   const result = [
     updatingData.vehicleName,
@@ -82,24 +95,36 @@ exports.adminVehicleUpdateService = async ({ paramID, updatingData, files }) => 
     updatingData.modelYear,
     updatingData.seatCapacity,
     updatingData.fuelType,
-    JSON.stringify(imagePaths),
+    JSON.stringify(updatedImage),
     data,
     paramID,
   ];
-  console.log(result);
-  const [findID] = await db.query(
-    "SELECT * FROM vehicle WHERE V_ID = ?",
-    paramID
-  );
-  if (findID.length === 0) {
-    throw new Error("there is no vehicle in this ID to update.");
-  }
-
+  
   await db.query(
     "UPDATE vehicle SET V_Name=? , Plate_Number=? , Brand_Name=? , Price_Per_Day=? , Model_Year=? , Seating_Capacity=? , Fuel_Type=?, Images=?, Updation_Date=? WHERE V_ID = ?",
     result
   );
 };
+
+
+// ==============================================================
+
+exports.adminDeleteImageService = async ({paramID , updatingData})=>{
+  
+  const [findID] = await  db.query("SELECT Images FROM vehicle WHERE V_ID = ?", paramID)
+  const images = JSON.parse(findID[0].Images)
+  const filteredImages = images.filter((img)=> !img.includes(updatingData.image))
+  console.log(findID)
+
+  await db.query("UPDATE vehicle SET Images = ? WHERE V_ID = ?" , [JSON.stringify(filteredImages) , paramID])
+  
+  const [result] = await  db.query("SELECT Images FROM vehicle WHERE V_ID = ?", paramID)
+  console.log(result)
+    const filePath = path.join(__dirname, "../../uploads", updatingData.image);
+  fs.unlink(filePath, () => {});
+
+
+}
 // ===============================================================
 
 exports.adminVehicleDeleteService = async (id) => {

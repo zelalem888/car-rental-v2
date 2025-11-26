@@ -71,10 +71,10 @@ const Footer = () => {
             viewport={{ once: true }}
             className="space-y-6">
             <Link to="/" className="flex items-center space-x-2 group">
-              <Car className="w-8 h-8 text-orange-500 group-hover:scale-110 transition-transform" />
+              <Car className="w-8 h-8 text-green-500 group-hover:scale-110 transition-transform" />
               <span className="text-2xl font-bold">
                 <span className="text-white">Car</span>
-                <span className="text-orange-500">Rental</span>
+                <span className="text-green-500">Rental</span>
               </span>
             </Link>
             <p className="text-gray-400 leading-relaxed">
@@ -112,7 +112,7 @@ const Footer = () => {
                 <li key={index}>
                   <Link
                     to={link.path}
-                    className="group hover:text-orange-500 transition-colors inline-flex items-center space-x-2">
+                    className="group hover:text-green-500 transition-colors inline-flex items-center space-x-2">
                     <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                     <span>{link.label}</span>
                   </Link>
@@ -132,7 +132,7 @@ const Footer = () => {
             <ul className="space-y-4">
               {workingHours.map((schedule, index) => (
                 <li key={index} className="flex items-center space-x-3">
-                  <Clock className="w-5 h-5 text-orange-500" />
+                  <Clock className="w-5 h-5 text-green-500" />
                   <div>
                     <span className="block text-sm text-gray-400">
                       {schedule.day}
@@ -144,19 +144,19 @@ const Footer = () => {
             </ul>
             <div className="space-y-4 pt-4 border-t border-gray-800">
               <div className="flex items-center space-x-3 group cursor-pointer">
-                <Phone className="w-5 h-5 text-orange-500 group-hover:rotate-12 transition-transform" />
-                <span className="hover:text-orange-500 transition-colors">
+                <Phone className="w-5 h-5 text-green-500 group-hover:rotate-12 transition-transform" />
+                <span className="hover:text-green-500 transition-colors">
                   +251 911 121 123
                 </span>
               </div>
               <div className="flex items-center space-x-3 group cursor-pointer">
-                <Mail className="w-5 h-5 text-orange-500 group-hover:scale-110 transition-transform" />
-                <span className="hover:text-orange-500 transition-colors">
+                <Mail className="w-5 h-5 text-green-500 group-hover:scale-110 transition-transform" />
+                <span className="hover:text-green-500 transition-colors">
                   info@samicarrental.com
                 </span>
               </div>
               <div className="flex items-center space-x-3">
-                <MapPin className="w-5 h-5 text-orange-500" />
+                <MapPin className="w-5 h-5 text-green-500" />
                 <span>Addis Ababa, bole</span>
               </div>
             </div>

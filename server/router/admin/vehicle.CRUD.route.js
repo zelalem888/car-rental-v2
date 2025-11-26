@@ -4,6 +4,7 @@ const {
   adminVehicleRegisterController,
   adminVehicleUpdateController,
   adminVehicleDeleteController,
+  adminDeleteImageController
 } = require("../../controller/admin/vehicle.CRUD.controller");
 const {upload}  = require("./uploadImage")
 const router = express.Router();
@@ -18,7 +19,12 @@ router.post("/admin/registervehicle",upload.array("images", 6) , adminVehicleReg
 
 // ==================update vehicle info api=====================
 
+
 router.put("/admin/vehicle/update/:id" ,upload.array("images", 6), adminVehicleUpdateController);
+
+// image delete while updating==
+
+router.delete('/admin/vehicle/imagedelete/:id', adminDeleteImageController)
 
 // ================vehicle delete api =============================
 

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import { DayPicker as EthiopicDayPicker } from "react-day-picker/ethiopic";
 import { DayPicker as USDayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const CarDetailPage = () => {
   const { id } = useParams();
@@ -11,6 +13,8 @@ const CarDetailPage = () => {
   const navigate = useNavigate();
   const [selected, setSelected] = useState();
   const [error, setError] = useState();
+  const [index, setIndex] = useState(0);
+  const [imageCount, setImageCount] = useState()
   const year = new Date().getFullYear();
   const month = new Date().getMonth();
 
@@ -49,7 +53,11 @@ const CarDetailPage = () => {
         }
 
         const result = await response.json();
+        result[0].image = JSON.parse(result[0].Images)
+
         setSelectedCar(result);
+       setImageCount(result[0].image.length)
+
         console.log(result);
       } catch (e) {
         throw new Error(e);
@@ -109,11 +117,37 @@ const CarDetailPage = () => {
       <div className="flex flex-col md:flex-row md:space-x-10">
         {/* Car Image */}
         <div className="w-full md:w-1/2 mb-8 md:mb-0">
-          <img
-            src="https://www.bentleymotors.com/content/dam/bm/websites/bmcom/bentleymotors-com/homepage/26my-azure/GT%20Azure%20Dynamic%20Desktop.jpg/_jcr_content/renditions/original.image_file.1286.643.file/GT%20Azure%20Dynamic%20Desktop.jpg"
-            // alt={selectedCar.name}
-            className="w-full h-80 object-cover rounded-lg border hover:shadow-lg hover:scale-105 delay-75 ease-in-out"
-          />
+            <motion.div
+                  key={selectedCar.V_ID}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="group"
+                >
+                  <div
+                    className={`flex gap-5 rounded-xl p-6 transition-all duration-300 
+                                     group-hover:-translate-y-2`}
+                  >
+                    {/* data Image */}
+                      <button 
+                       onClick={() => setIndex((prev) => (prev === 0 ? imageCount - 1 : prev - 1))}
+                      > <ChevronLeft className="text-white bg-orange-500 rounded-full w-7 h-7"/> </button>
+                    <div className="flex aspect-[4/3] rounded-lg bg-white mb-6 ">
+                 
+                      <img
+                        src={`http://localhost:3000${selectedCar[0].image[index]}`}
+                        alt=""
+                        className="h-full w-full object-cover rounded-lg"
+                      />
+                  
+                    </div>
+                      <button
+                        onClick={() =>
+                           setIndex((prev) => (prev === imageCount - 1 ? 0 : prev + 1)) }
+                      > <ChevronRight className="text-white bg-orange-500 rounded-full w-7 h-7" /></button>
+                      
+                  </div>
+                </motion.div>
         </div>
 
         {/* Car Details */}

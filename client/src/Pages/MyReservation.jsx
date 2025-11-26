@@ -156,9 +156,9 @@ useEffect(()=>{
                           </button>
                           {popup && (
                             <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 backdrop-blur-sm">
-                              <div className="bg-white w-full max-w-3xl rounded-xl shadow-2xl border border-orange-300">
+                              <div className="bg-white w-full max-w-3xl rounded-xl shadow-2xl border border-green-300">
                                 {/* Header */}
-                                <div className="bg-orange-500 text-white px-6 py-3 rounded-t-xl flex justify-between items-center">
+                                <div className="bg-green-500 text-white px-6 py-3 rounded-t-xl flex justify-between items-center">
                                   <h2 className="text-lg font-bold">
                                     Rent Details
                                   </h2>
@@ -167,7 +167,7 @@ useEffect(()=>{
                                     {/* PRINT BUTTON */}
                                     <button
                                       onClick={() => window.print()}
-                                      className="px-3 py-1 bg-white text-orange-600 rounded hover:bg-gray-200 transition"
+                                      className="px-3 py-1 bg-white text-green-600 rounded hover:bg-gray-200 transition"
                                     >
                                       Print
                                     </button>
@@ -175,7 +175,7 @@ useEffect(()=>{
                                     {/* CLOSE BUTTON */}
                                     <button
                                       onClick={() => setPopup(false)}
-                                      className="px-3 py-1 bg-white text-orange-600 rounded hover:bg-gray-200 transition"
+                                      className="px-3 py-1 bg-white text-green-600 rounded hover:bg-gray-200 transition"
                                     >
                                       Close
                                     </button>
@@ -185,11 +185,11 @@ useEffect(()=>{
                                 {/* Body */}
                                 <div className="print-area">
                                 <div className="p-6">
-                                  <table className="w-full border border-orange-300 rounded-lg overflow-hidden shadow">
+                                  <table className="w-full border border-green-300 rounded-lg overflow-hidden shadow">
                                   {rent && (
                                     <tbody>
-                                      <tr className="border-b border-orange-200">
-                                        <th className="p-3 bg-orange-100 text-orange-700 w-1/3 text-left font-semibold">
+                                      <tr className="border-b border-green-200">
+                                        <th className="p-3 bg-green-100 text-green-700 w-1/3 text-left font-semibold">
                                           Pickup Date
                                         </th>
                                         <td className="p-3">
@@ -197,8 +197,8 @@ useEffect(()=>{
                                         </td>
                                       </tr>
 
-                                      <tr className="border-b border-orange-200">
-                                        <th className="p-3 bg-orange-100 text-orange-700 text-left font-semibold">
+                                      <tr className="border-b border-green-200">
+                                        <th className="p-3 bg-green-100 text-green-700 text-left font-semibold">
                                           Return Date
                                         </th>
                                         <td className="p-3">
@@ -206,57 +206,57 @@ useEffect(()=>{
                                         </td>
                                       </tr>
 
-                                      <tr className="border-b border-orange-200">
-                                        <th className="p-3 bg-orange-100 text-orange-700 text-left font-semibold">
+                                      <tr className="border-b border-green-200">
+                                        <th className="p-3 bg-green-100 text-green-700 text-left font-semibold">
                                           Total Rent Days
                                         </th>
                                         <td className="p-3">{rent[0].Total_Rent_Day} Days</td>
                                       </tr>
 
-                                      <tr className="border-b border-orange-200">
-                                        <th className="p-3 bg-orange-100 text-orange-700 text-left font-semibold">
+                                      <tr className="border-b border-green-200">
+                                        <th className="p-3 bg-green-100 text-green-700 text-left font-semibold">
                                           Daily Fee
                                         </th>
                                         <td className="p-3">{rent[0].Daily_Fee} Birr</td>
                                       </tr>
 
-                                      <tr className="border-b border-orange-200">
-                                        <th className="p-3 bg-orange-100 text-orange-700 text-left font-semibold">
+                                      <tr className="border-b border-green-200">
+                                        <th className="p-3 bg-green-100 text-green-700 text-left font-semibold">
                                           Over Payment
                                         </th>
                                         <td className="p-3">{rent[0].over_payment === null ? "0.00" :rent[0].over_payment } Birr</td>
                                       </tr>
 
-                                      <tr className="border-b border-orange-200">
-                                        <th className="p-3 bg-orange-100 text-orange-700 text-left font-semibold">
+                                      <tr className="border-b border-green-200">
+                                        <th className="p-3 bg-green-100 text-green-700 text-left font-semibold">
                                           Fuel Charged
                                         </th>
                                         <td className="p-3">{rent[0].Fule_Charged}</td>
                                       </tr>
 
-                                      <tr className="border-b border-orange-200">
-                                        <th className="p-3 bg-orange-100 text-orange-700 text-left font-semibold">
+                                      <tr className="border-b border-green-200">
+                                        <th className="p-3 bg-green-100 text-green-700 text-left font-semibold">
                                           Down Payment
                                         </th>
                                         <td className="p-3">{rent[0].Down_Payment === null ? "0.00" : rent[0].Down_Payment} Birr</td>
                                       </tr>
 
-                                      <tr className="border-b border-orange-200">
-                                        <th className="p-3 bg-orange-100 text-orange-700 text-left font-semibold">
+                                      <tr className="border-b border-green-200">
+                                        <th className="p-3 bg-green-100 text-green-700 text-left font-semibold">
                                           Total Paid
                                         </th>
                                         <td className="p-3">{rent[0].Total_Paid} Birr</td>
                                       </tr>
 
-                                      <tr className="border-b border-orange-200">
-                                        <th className="p-3 bg-orange-100 text-orange-700 text-left font-semibold">
+                                      <tr className="border-b border-green-200">
+                                        <th className="p-3 bg-green-100 text-green-700 text-left font-semibold">
                                           Refund
                                         </th>
                                         <td className="p-3">{rent[0].Refund === null ? "0.00" : rent[0].Refund } Birr</td>
                                       </tr>
 
                                       <tr>
-                                        <th className="p-3 bg-orange-100 text-orange-700 text-left font-semibold">
+                                        <th className="p-3 bg-green-100 text-green-700 text-left font-semibold">
                                           Confirmation Number
                                         </th>
                                         <td className="p-3">{rent[0].Confirmation_Number}</td>

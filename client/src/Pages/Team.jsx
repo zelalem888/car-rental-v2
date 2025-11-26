@@ -47,8 +47,8 @@ const Team = () => {
         twitter: "#",
       },
       achievements: "2+ year on full stack Development",
-      color: "bg-orange-50",
-      iconColor: "text-orange-500",
+      color: "bg-green-50",
+      iconColor: "text-green-500",
     },
     {
       name: "Kaleab W.",
@@ -111,12 +111,12 @@ const Team = () => {
             initial="initial"
             whileInView="whileInView"
             className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 rounded-full mb-6">
-              <Users className="w-5 h-5 text-orange-500" />
-              <span className="text-orange-700 font-medium">Our Team</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 rounded-full mb-6">
+              <Users className="w-5 h-5 text-green-500" />
+              <span className="text-green-700 font-medium">Our Team</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Meet the <span className="text-orange-500">Experts</span> Behind
+              Meet the <span className="text-green-500">Experts</span> Behind
               Our Success
             </h1>
             <p className="text-gray-600 text-lg leading-relaxed">
@@ -199,7 +199,7 @@ const Team = () => {
             whileInView="whileInView"
             className="text-center max-w-3xl mx-auto mb-12">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <BookOpen className="w-6 h-6 text-orange-500" />
+              <BookOpen className="w-6 h-6 text-green-500" />
               <h2 className="text-3xl font-bold">Our Core Values</h2>
             </div>
             <p className="text-gray-600">
@@ -214,10 +214,10 @@ const Team = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-lg p-6 border border-gray-100 hover:border-orange-200 
+                className="bg-white rounded-lg p-6 border border-gray-100 hover:border-green-200 
                          transition-all hover:-translate-y-1">
-                <div className="w-12 h-12 bg-orange-50 rounded-lg flex items-center justify-center mb-4">
-                  <value.icon className="w-6 h-6 text-orange-500" />
+                <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center mb-4">
+                  <value.icon className="w-6 h-6 text-green-500" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
                 <p className="text-gray-600">{value.description}</p>

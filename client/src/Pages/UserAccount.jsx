@@ -15,7 +15,7 @@ import {
   MapPinHouse,
   Trash,
 } from "lucide-react";
-import { useNavigate, Link, useParams } from "react-router-dom";
+import { useNavigate, Link, useParams, redirect } from "react-router-dom";
 const UserAccount = () => {
     const { id } = useParams()
   const [formData, setFormData] = useState({
@@ -124,8 +124,10 @@ const UserAccount = () => {
         return
       }
       const result = await response.json();
+      console.log(result)
+      localStorage.removeItem("jwt-token")
       localStorage.setItem("jwt-token", result);
-      navigate("/");
+      navigate("/")
     } catch (error) {
       console.log("network error",error);
     }
@@ -143,7 +145,6 @@ const UserAccount = () => {
         return
       }
       localStorage.removeItem("jwt-token")
-      navigate('/')
     }catch(error){
         console.log("network error", error)
     }
@@ -164,12 +165,12 @@ const UserAccount = () => {
             className=" flex flex-col items-center gap-4 mb-8"
           >
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="bg-orange-50 p-2 rounded-lg group-hover:bg-orange-100 transition-all">
-                <Car className="w-8 h-8 text-orange-500" />
+              <div className="bg-green-50 p-2 rounded-lg group-hover:bg-green-100 transition-all">
+                <Car className="w-8 h-8 text-green-500" />
               </div>
               <span className="text-2xl font-bold">
                 <span className="text-gray-900">Car</span>
-                <span className="text-orange-500">Rental</span>
+                <span className="text-green-500">Rental</span>
               </span>
             </Link>
           </motion.div>
@@ -194,7 +195,7 @@ const UserAccount = () => {
                     setFormData({ ...formData, fullName: e.target.value })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Enter your Full Name"
                 />
@@ -214,7 +215,7 @@ const UserAccount = () => {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Enter your email"
                 />
@@ -249,7 +250,7 @@ const UserAccount = () => {
                     setFormData({ ...formData, password: e.target.value })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Create a password"
                 />
@@ -289,7 +290,7 @@ const UserAccount = () => {
                     })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Confirm your password"
                 />
@@ -340,7 +341,7 @@ const UserAccount = () => {
                     setFormData({ ...formData, phoneNumber: e.target.value })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Enter your Phone Number"
                 />
@@ -375,7 +376,7 @@ const UserAccount = () => {
                     setFormData({ ...formData, dateOfBirth: e.target.value })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Enter your Birth Date"
                 />
@@ -391,7 +392,7 @@ const UserAccount = () => {
               </label>
               <div className="relative">
                 <select
-                  className="nationality w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="nationality w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   onChange={(e) =>
                     setFormData({ ...formData, nationality: e.target.value })
@@ -420,7 +421,7 @@ const UserAccount = () => {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   required
-                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   placeholder="Enter your Address"
                 />
@@ -434,7 +435,7 @@ const UserAccount = () => {
               <label className="text-sm font-medium text-gray-700">City</label>
               <div className="relative">
                 <select
-                  className="city w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 
+                  className="city w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   onChange={(e) =>
                     setFormData({ ...formData, city: e.target.value })
@@ -456,8 +457,8 @@ const UserAccount = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="w-full px-4 py-3 bg-orange-500 text-white rounded-lg font-medium 
-                       hover:bg-orange-600 transition-colors flex items-center justify-center gap-2"
+              className="w-full px-4 py-3 bg-green-500 text-white rounded-lg font-medium 
+                       hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
             >
               <UserPlus className="w-5 h-5" />
               Update Account
@@ -467,7 +468,7 @@ const UserAccount = () => {
           <p className="mt-8 text-center text-gray-600">
             Do you wanna Delete your account?{" "}
             <button
-              className="text-orange-500 font-semibold hover:text-orange-600 transition-colors 
+              className="text-green-500 font-semibold hover:text-green-600 transition-colors 
                        inline-flex items-center gap-1"
                        onClick={()=>{setDeletePopUp(true)}}
             >

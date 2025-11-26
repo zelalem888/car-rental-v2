@@ -233,7 +233,7 @@ const UpdateBooking = () => {
 
             <button
               type="submit"
-              className="mt-6 w-full py-3 bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-400 transition ease-in-out duration-200"
+              className="mt-6 w-full py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-400 transition ease-in-out duration-200"
             >
               Confirm Booking
             </button>

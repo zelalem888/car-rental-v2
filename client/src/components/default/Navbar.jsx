@@ -10,7 +10,6 @@ import {
   Car,
   ChevronDown,
 } from "lucide-react";
-// import useAuthStore from "../../store/store.js";
 
 const Navbar = () => {
   // const { user, setUser, logout } = useAuthStore();
@@ -43,7 +42,8 @@ const Navbar = () => {
             
             const result = await response.json()
             setUserData(result)
-            // console.log(result)
+
+            console.log(result)
 
           } catch (e) {
             // throw new Error(e)
@@ -66,6 +66,13 @@ const Navbar = () => {
     }
   };
 
+  const dropdown = ()=>{
+      setDropdownOpen(prev => !prev)
+      setTimeout(()=>{
+      setDropdownOpen(prev => !prev)
+      },3000)
+  }
+
   const isLinkActive = (path) => location.pathname === path;
 
   const navItems = [
@@ -76,6 +83,7 @@ const Navbar = () => {
     { path: "/team", label: "Our Team" },
     { path: "/contact", label: "Contact" },
   ];
+
 
   return (
     <motion.nav
@@ -94,9 +102,10 @@ const Navbar = () => {
             to="/"
             className="flex items-center space-x-2 text-2xl font-bold group"
           >
-            <Car className="w-8 h-8 text-orange-500 transform group-hover:scale-110 transition-transform" />
-            <span className="text-gray-900">Sami</span>
-            <span className="text-orange-500">Car Rental</span>
+            <Car className="w-8 h-8 text-green-900 transform group-hover:scale-110 transition-transform" />
+            <span className="text-3xl bg-gradient-to-r from-green-600 via-yellow-600 to-red-600 text-transparent bg-clip-text">SAMI 
+            <span className="">{" "}Car Rental</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -105,13 +114,13 @@ const Navbar = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`text-sm font-medium transition-all hover:text-orange-500 relative
+                className={`text-sm font-medium transition-all hover:text-green-500 relative
                   ${
                     isLinkActive(item.path)
-                      ? "text-orange-500"
+                      ? "text-green-500"
                       : "text-gray-700"
                   }
-                  after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-orange-500 
+                  after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-green-500 
                   after:left-0 after:-bottom-1 after:transition-all hover:after:w-full
                   ${isLinkActive(item.path) ? "after:w-full" : ""}`}
               >
@@ -126,8 +135,8 @@ const Navbar = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className="flex items-center space-x-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all"
+                    onClick={() => dropdown()}
+                    className="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all"
                   >
                     <span>Account</span>
                     <ChevronDown
@@ -185,8 +194,8 @@ const Navbar = () => {
                   </Link>
                   <Link
                     to="/register"
-                    className="flex items-center space-x-2 px-4 py-2 bg-orange-500 text-white rounded-lg
-                             hover:bg-orange-600 transition-all transform hover:scale-105"
+                    className="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg
+                             hover:bg-green-600 transition-all transform hover:scale-105"
                   >
                     <UserPlus className="w-4 h-4" />
                     <span>Sign Up</span>
@@ -200,7 +209,7 @@ const Navbar = () => {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-gray-700 hover:text-orange-500 transition-colors"
+            className="lg:hidden p-2 text-gray-700 hover:text-green-500 transition-colors"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </motion.button>
@@ -226,10 +235,10 @@ const Navbar = () => {
                     className={`text-sm font-medium transition-colors hover:text-orange-500 
                     ${
                       isLinkActive(item.path)
-                        ? "text-orange-500"
+                        ? "text-green-500"
                         : "text-gray-700"
                     }
-                    flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-50`}
+                    flex items-center space-x-2 p-2 rounded-lg hover:bg-green-50`}
                   >
                     <span>{item.label}</span>
                   </Link>
@@ -240,7 +249,7 @@ const Navbar = () => {
                   {userData ? (
                     <>
                      <button
-                      className="flex items-center justify-center space-x-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all"
+                      className="flex items-center justify-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-orange-600 transition-all"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>{userData.name}</span>
@@ -266,7 +275,7 @@ const Navbar = () => {
                       <Link
                         to="/register"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center justify-center space-x-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all"
+                        className="flex items-center justify-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-orange-600 transition-all"
                       >
                         <UserPlus className="w-4 h-4" />
                         <span>Sign Up</span>

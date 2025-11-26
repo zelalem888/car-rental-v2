@@ -31,7 +31,7 @@ import ConfirmedReservations from "./Pages/admin/confirmedReservations";
 function App() {
   return (
     <>
-      <MouseTrail strokeColor="#F97316" lineWidthStart={30} />
+      <MouseTrail strokeColor="#00e626" lineWidthStart={30} />
       <AnimatePresence mode="wait">
         <Routes>
           {/* Auth routes without Navbar and Footer */}

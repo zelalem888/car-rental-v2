@@ -15,6 +15,9 @@ const UpdateVehicle = () => {
     fuelType: "",
   });
   const [plateError, setPlateError] = useState(null);
+  const [images, setImages] = useState()
+  const [refresh, setRefresh] = useState(!true)
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -68,7 +71,7 @@ const UpdateVehicle = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [refresh]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -80,15 +83,27 @@ const UpdateVehicle = () => {
     }
     console.log(formData);
 
+    const form = new FormData()
+
+     form.append( "A_ID",parseInt(formData.A_ID))
+    form.append( "brandName",formData.brandName)
+    form.append( "fuelType",formData.fuelType)
+    form.append( "modelYear",formData.modelYear)
+    form.append( "plateNumber",formData.plateNumber)
+    form.append( "pricePerDay",formData.pricePerDay)
+    form.append( "seatCapacity",formData.seatCapacity)
+    form.append( "vehicleName",formData.vehicleName)
+     for (let i = 0; i < images.length; i++) {
+      form.append("images", images[i]);
+    }
+
+
     try {
       const response = await fetch(
         `http://localhost:3000/api/admin/vehicle/update/${vid}`,
         {
           method: "PUT",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify(formData),
+          body: form,
         }
       );
       if (!response.ok) {
@@ -104,6 +119,21 @@ const UpdateVehicle = () => {
     }
   };
 
+  const deleteHandler = async(img)=>{
+      try{
+        console.log(img)
+        const response = await fetch(`http://localhost:3000/api/admin/vehicle/imagedelete/${vid}`,{
+          method: "DELETE",
+          headers:{
+            "content-type": "application/json"
+          },
+          body: JSON.stringify({image : img})
+        })
+        setRefresh((prev) => !prev)
+      }catch(e){}
+  }
+
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
       <div className="bg-white w-full max-w-2xl shadow-lg rounded-xl p-8">
@@ -112,19 +142,19 @@ const UpdateVehicle = () => {
         </h2>
 
         {formData &&
-        (
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            {/* <!-- Vehicle Name --> */}
+        (<>
           <div className="grid grid-cols-1 gap-2">
-          {formData.image ? (formData.image.map((img)=>(
-            <div className=" flex gap-3 items-center justify-around">
-            <img  className="w-[350px] h-fit border-gray-800 border-2 object-cover" src={`http://localhost:3000${img}`} alt="image"/>
-            <button className="bg-red-600 px-4 text-white text-lg rounded-md self-end">Delete</button>
+          {formData.image ? (formData.image.map((img , index)=>(
+            <div key={index} className=" flex gap-3 items-center justify-around">
+            <img   className="w-[350px] h-fit border-gray-800 border-2 object-cover" src={`http://localhost:3000${img}`} alt="image"/>
+            <button onClick={()=>deleteHandler(img)} className="bg-red-600 px-4 text-white text-lg rounded-md self-end">Delete</button>
             </div>
           ))):(
             <p>no image</p>
           )}
           </div>
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            {/* <!-- Vehicle Name --> */}
               <div>
             <label className="block text-gray-700 font-medium mb-1">
               Vehicle Images
@@ -134,8 +164,7 @@ const UpdateVehicle = () => {
               accept="image/*"
               multiple
               max={6}
-              // defaultValue={`http://localhost:3000${formData.image}`}
-              // onChange={(e)=>{setImages(e.target.files)}}
+              onChange={(e)=>{setImages(e.target.files)}}
               placeholder="Add Vehicle Name"
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
               required
@@ -299,6 +328,7 @@ const UpdateVehicle = () => {
               </button>
             </div>
           </form>
+          </>
         )}
       </div>
     </div>

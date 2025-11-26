@@ -34,8 +34,8 @@ const About = () => {
       icon: Car,
       title: "Wide Selection",
       description: "Diverse fleet of vehicles for every need",
-      color: "text-orange-500",
-      bgColor: "bg-orange-50",
+      color: "text-green-500",
+      bgColor: "bg-green-50",
     },
     {
       icon: Users,
@@ -108,13 +108,13 @@ const About = () => {
             initial="initial"
             whileInView="whileInView"
             className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 rounded-full mb-6">
-              <Star className="w-5 h-5 text-orange-500" />
-              <span className="text-orange-700 font-medium">Our Services</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 rounded-full mb-6">
+              <Star className="w-5 h-5 text-green-500" />
+              <span className="text-green-700 font-medium">Our Services</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
               Enjoy the Best service in
-              <span className="text-orange-500"> Car Rentals</span>
+              <span className="text-green-500"> Car Rentals</span>
             </h1>
             <p className="text-gray-600 text-lg leading-relaxed">
               Welcome to CarRental, where we redefine the car rental experience.
@@ -134,7 +134,7 @@ const About = () => {
             whileInView="whileInView"
             className="text-center mb-12">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <Settings className="w-6 h-6 text-orange-500" />
+              <Settings className="w-6 h-6 text-green-500" />
               <h2 className="text-3xl font-bold">Main Services</h2>
             </div>
             <p className="text-gray-600 max-w-2xl mx-auto">
@@ -178,7 +178,7 @@ const About = () => {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-white rounded-xl p-6 border border-gray-100 hover:border-orange-200 
+                  className="bg-white rounded-xl p-6 border border-gray-100 hover:border-green-200 
                            transition-all hover:-translate-y-1 group">
                   <div
                     className={`${feature.bgColor} w-12 h-12 rounded-lg flex items-center justify-center 

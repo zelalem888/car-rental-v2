@@ -55,12 +55,16 @@ for (let i = 0; i < FindEmail.length; i++) {
     "UPDATE customer SET FullName=? , Email=? , Password=? , PhoneNumber=? , DoB=? , Nationality=? , Address=?, City=? , Update_Date=? WHERE C_ID = ?",
     result
   );
+    const [userData] = await db.query(
+    "SELECT * FROM customer WHERE C_ID = ?",
+    paramID
+  );
 
   // console.log(findID);
   const JWTSecretKey = process.env.JWT_SECRET;
-  const email = findID[0].Email;
-  const id = findID[0].C_ID;
-  const name = findID[0].FullName;
+  const email = userData[0].Email;
+  const id = userData[0].C_ID;
+  const name = userData[0].FullName;
 
 const jwtData = {
     signInTime: Date.now(),

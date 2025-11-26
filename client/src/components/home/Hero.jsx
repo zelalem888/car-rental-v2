@@ -49,16 +49,16 @@ const Hero = () => {
           initial="initial"
           animate="animate"
           variants={fadeIn}>
-          <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-orange-100 rounded-full">
-            <Star className="text-orange-500 w-5 h-5" />
-            <span className="text-orange-700 font-medium text-sm">
-              Premium Car Rental Service
+          <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-green-100 rounded-full">
+            <Star className="text-green-900 w-5 h-5" />
+            <span className="text-slate-700 font-medium text-sm">
+              Ethiopian 🇪🇹 Based Car Rental Service
             </span>
           </div>
 
           <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
-            Save <span className="text-orange-500">big</span> with our
-            <span className="text-orange-500"> car rental</span>
+            Save <span className="text-green-700">big</span> with our
+            <span className="text-green-700"> car rental</span>
           </h1>
 
           <p className="text-gray-600 text-lg mb-8 leading-relaxed">
@@ -69,8 +69,8 @@ const Hero = () => {
           <div className="flex flex-wrap gap-4 mb-12">
             <button
               onClick={() => navigate("/models")}
-              className="flex items-center gap-2 px-8 py-4 bg-orange-500 text-gray-900 rounded-lg hover:scale-110
-                          hover:bg-orange-600 transition-all book-ride">
+              className="flex items-center gap-2 px-8 py-4 bg-green-500 text-gray-900 rounded-lg hover:scale-110
+                          hover:bg-green-600 transition-all book-ride">
               <span className="font-medium">Book Ride</span>
               <CheckCircle className="w-5 h-5" />
             </button>
@@ -90,8 +90,8 @@ const Hero = () => {
           <div className="flex flex-wrap gap-6 mb-12">
             {features.map((feature, index) => (
               <div key={index} className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
-                  <feature.icon className="w-5 h-5 text-orange-500" />
+                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                  <feature.icon className="w-5 h-5 text-green-900" />
                 </div>
                 <span className="text-gray-700 font-medium">
                   {feature.text}
@@ -104,7 +104,7 @@ const Hero = () => {
           <div className="flex flex-wrap gap-12">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <h3 className="text-4xl font-bold text-orange-500">
+                <h3 className="text-4xl font-bold text-green-800">
                   {stat.value}
                 </h3>
                 <p className="text-gray-600 font-medium">{stat.label}</p>
@@ -122,7 +122,7 @@ const Hero = () => {
           <div className="relative">
             {/* Background Gradient */}
             <div
-              className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-orange-500/5 
+              className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-green-500/5 
                           rounded-full filter blur-3xl transform -rotate-12"></div>
 
             <img
@@ -140,7 +140,7 @@ const Hero = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.7 }}
-            className="hidden lg:block absolute top-4 -left-4 bg-orange-500 text-white px-6 py-3 rounded-full shadow-lg">
+            className="hidden lg:block absolute top-4 -left-4 bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 text-white px-6 py-3 rounded-full shadow-lg">
             <p className="font-semibold">Best Prices Guaranteed</p>
           </motion.div>
         </motion.div>

@@ -50,7 +50,7 @@ const Work = () => {
     icon: Calendar,
     title: "Make a Reservation",
     description: "Review your details and confirm your booking instantly",
-    bgcolor: "bg-purple-50",
+    bgcolor: "bg-green-50",
     iconcolor: "text-purple-500",
   },
   {
@@ -58,8 +58,8 @@ const Work = () => {
     title: "Payment on Pickup",
     description:
       "Pay at our office when you arrive to collect the vehicle",
-    bgcolor: "bg-orange-50",
-    iconcolor: "text-orange-500",
+    bgcolor: "bg-green-50",
+    iconcolor: "text-green-500",
   },
 ];
 
@@ -73,9 +73,9 @@ const Work = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 rounded-full mb-4">
-            <CircleHelp className="w-5 h-5 text-orange-500" />
-            <span className="text-orange-700 font-medium">How It Works?</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 rounded-full mb-4">
+            <CircleHelp className="w-5 h-5 text-green-900" />
+            <span className="text-green-900 font-medium">How It Works?</span>
           </div>
           <h2 className="text-4xl font-bold mb-6 mt-2">
             Rent Your Dream Car in 4 Easy Steps
@@ -110,7 +110,7 @@ const Work = () => {
 
                   {/* Step Number */}
                   <div
-                    className="absolute -top-4 -right-4 w-8 h-8 bg-orange-500 rounded-full 
+                    className="absolute -top-4 -right-4 w-8 h-8 bg-green-500 rounded-full 
                               flex items-center justify-center text-white font-bold">
                     {index + 1}
                   </div>
@@ -119,7 +119,7 @@ const Work = () => {
                 {index !== steps.length - 1 && (
                   <div
                     className="hidden lg:block absolute top-1/2 left-full w-8 border-t-2 
-                               border-dashed border-orange-300 -translate-y-1/2 z-10"></div>
+                               border-dashed border-green-300 -translate-y-1/2 z-10"></div>
                 )}
               </div>
 
@@ -148,8 +148,8 @@ const Work = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/models")}
-            className="px-8 py-4 bg-orange-500 text-white rounded-lg shadow-lg 
-                     shadow-orange-500/30 hover:bg-orange-600 transition-all">
+            className="px-8 py-4 bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 text-white rounded-lg shadow-lg 
+                     shadow-green-500/30 hover:bg-gradient-to-l transition-all">
             Book a Car Now
           </motion.button>
         </motion.div>
