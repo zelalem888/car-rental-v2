@@ -7,9 +7,9 @@ function LoginForm() {
     username: "",
     password: ""
   });
-  const [error , setError] = useState(null)
-  useEffect(()=>{
-     const fetchData = async () => {
+  const [error, setError] = useState(null)
+  useEffect(() => {
+    const fetchData = async () => {
       try {
         const token = localStorage.getItem("jwt-token");
 
@@ -23,41 +23,50 @@ function LoginForm() {
           }
         );
 
-       if (!responseVerify.ok) {
-        return;
-      }
+        if (!responseVerify.ok) {
+          return;
+        }
 
-      const result = await responseVerify.json();
-      navigate(`/admin/${result.id}`);
+        const result = await responseVerify.json();
+        navigate(`/admin/${result.id}`);
       } catch (e) {
-       
+
       }
     };
     fetchData();
-  },[])
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
-      const response = await fetch("http://localhost:3000/api/admin/login",{
+    try {
+      const response = await fetch("http://localhost:3000/api/admin/login", {
         method: "POST",
         headers: {
           "content-type": "application/json",
         },
         body: JSON.stringify(formData)
       })
-
-      if(!response.ok){
+      if (!response.ok) {
         setError("Invalid username or password.")
       }
 
-       const data = await response.json();
+      const data = await response.json();
 
-    
-      localStorage.setItem('jwt-token', data.token)
-      const dataId = data.rows[0].A_ID
-      navigate(`/admin/`)
-    }catch(e){
+      if (!data.success) {
+        setError("Invalid username or password.");
+        return;
+      }
+
+
+      localStorage.setItem("jwt-token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      if (data.user.type === "superadmin") {
+        navigate("/superadmin/manage-admins");
+      } else if (data.user.type === "admin") {
+        navigate("/admin");
+      }
+    } catch (e) {
       throw new Error(e)
     }
 
@@ -71,10 +80,10 @@ function LoginForm() {
         className="sm:w-[350px] w-ful text-center border border-gray-300/60 rounded-2xl px-8 bg-white py-3"
       >
         <h1 className="text-gray-900 text-3xl mt-10 font-medium">
-         Login
+          Login
         </h1>
         <p className="text-gray-500 text-sm mt-2">Please login to continue in admin</p>
-       
+
         <div className="flex items-center w-full mt-4 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -97,9 +106,9 @@ function LoginForm() {
             placeholder="Username"
             className="border-none outline-none ring-0"
             value={formData.username}
-            onChange={(e)=>{
+            onChange={(e) => {
               setFormData(
-                {...formData, username: e.target.value}
+                { ...formData, username: e.target.value }
               )
             }}
             required
@@ -127,8 +136,8 @@ function LoginForm() {
             placeholder="Password"
             className="border-none outline-none ring-0"
             value={formData.password}
-            onChange={(e)=>{
-              setFormData({...formData,password:e.target.value})
+            onChange={(e) => {
+              setFormData({ ...formData, password: e.target.value })
             }}
             required
           />

@@ -14,6 +14,7 @@ import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import LearnMore from "./Pages/LearnMore";
 import UpdateVehicle from "./Pages/admin/UpdateVehicle";
+// import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import { MainLayout } from "./layout/MainLayout";
 import { AuthLayout } from "./layout/AuthLayout";
 import { AdminLayout } from "./layout/AdminLayout";
@@ -27,11 +28,16 @@ import UserAccount from "./Pages/UserAccount";
 import MyReservation from "./Pages/MyReservation";
 import UpdateBooking from "./Pages/UpdateBooking";
 import ConfirmedReservations from "./Pages/admin/confirmedReservations";
+import { SuperAdminLayout } from "./layout/SuperAdminLayout";
+import RequireRole from "./components/Role/RequireRole";
+import ManageAdmins from "./Pages/superAdmin/ManageAdmins";
+import AddAdmin from "./Pages/superAdmin/AddAdmin";
+import UpdateAdmin from "./Pages/superAdmin/UpdateAdmin";
 
 function App() {
   return (
     <>
-      <MouseTrail strokeColor="#00e626" lineWidthStart={30} />
+      <MouseTrail strokeColor="#F97316" lineWidthStart={30} />
       <AnimatePresence mode="wait">
         <Routes>
           {/* Auth routes without Navbar and Footer */}
@@ -53,14 +59,14 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/services" element={<Services />} />
             <Route path="/learnmore" element={<LearnMore />} />
-            <Route path="/booking/:id" element={<Booking />}/>
+            <Route path="/booking/:id" element={<Booking />} />
             <Route path="/myreservation/:id" element={<MyReservation />} />
             <Route path="/booking/update/:rid" element={<UpdateBooking />} />
-          </Route> 
+          </Route>
 
-            <Route path="*" element={<Errorpage />} />
+          <Route path="*" element={<Errorpage />} />
 
-          {/* Admin Auth Layout */}
+          {/* Admin and Super admin Auth Layout */}
           <Route element={<AuthAdminLayout />}>
             <Route path="/admin/login" element={<LoginForm />} />
           </Route>
@@ -68,12 +74,19 @@ function App() {
 
           {/* admin Main layout */}
           <Route element={<AdminLayout />}>
-            <Route path="/admin/" element={<AdminVehicle />} />
-            <Route path="/admin/add" element={<AddVehicle />} />
-            <Route path="/admin/update/:vname/:vid" element={<UpdateVehicle />} />
-            <Route path="/admin/pending" element={<PendingReserve />} />
-            <Route path="/admin/confirmed" element={<ConfirmedReservations /> } />
-          
+            <Route path="/admin" element={<AdminVehicle />} />
+            <Route path="/admin/add" element={<RequireRole allowed={["admin"]}><AddVehicle /></RequireRole>} />
+            <Route path="/admin/update/:vname/:vid" element={<RequireRole allowed={["admin"]}><UpdateVehicle /></RequireRole>} />
+            <Route path="/admin/pending" element={<RequireRole allowed={["admin"]}><PendingReserve /></RequireRole>} />
+            <Route path="/admin/confirmed" element={<RequireRole allowed={["admin"]}><ConfirmedReservations /></RequireRole>} />
+          </Route>
+
+          {/* super admin Main layout */}
+
+          <Route element={<SuperAdminLayout />}>
+            <Route path="/superadmin/manage-admins" element={<RequireRole allowed={["superadmin"]}><ManageAdmins /></RequireRole>} />
+            <Route path="/superadmin/add-admin" element={<RequireRole allowed={["superadmin"]}><AddAdmin /></RequireRole>} />
+            <Route path="/superadmin/update-admin/:id" element={<RequireRole allowed={["superadmin"]}><UpdateAdmin /></RequireRole>} />
           </Route>
         </Routes>
       </AnimatePresence>

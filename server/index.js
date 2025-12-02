@@ -1,6 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const superAdminRoute = require('./router/admin/super.admin.route')
+const superAdminRoute = require('./router/superadmin/super.admin.route')
 const adminAuthRoute = require("./router/admin/auth.admin.route")
 const adminConfirmReservation = require("./router/admin/confirm.reserve.route")
 const adminVehicleCRUDRoute = require("./router/admin/vehicle.CRUD.route")
@@ -21,21 +21,21 @@ app.use(express.json())
 app.use("/uploads", express.static("uploads"));
 const port = process.env.PORT || 4000
 // ======superAdmin=====
-app.use('/api',superAdminRoute)
+app.use('/api', superAdminRoute)
 
 // =======admin=========
 app.use('/api', adminAuthRoute)
 app.use('/api', adminConfirmReservation)
-app.use('/api',adminVehicleCRUDRoute )
+app.use('/api', adminVehicleCRUDRoute)
 
 // =======user==========
 
 app.use('/api', userAuthRoute)
-app.use('/api',userInfoRoute)
+app.use('/api', userInfoRoute)
 app.use('/api', vehicleReservationRoute)
 app.use('/api', vehicleRoute)
 
-app.listen(port , (req , res )=>{
+app.listen(port, (req, res) => {
     console.log(`backend is running on port ${port}`)
 
 })
