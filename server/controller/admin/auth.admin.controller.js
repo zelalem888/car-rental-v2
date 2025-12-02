@@ -1,42 +1,50 @@
 const express = require('express')
-const {adminLoginService,adminPageService,adminVerifyService} = require('../../service/admin/auth.admin.service')
+const { adminLoginService, adminPageService, adminVerifyService } = require('../../service/admin/auth.admin.service')
 
-exports.adminLoginController = async (req, res)=>{
+exports.adminLoginController = async (req, res) => {
   try {
-    const rows = await adminLoginService(req.body)
+    const result = await adminLoginService(req.body);
 
-    if (rows.rows.length > 0) {
-    
-      // console.log(rows)
-      return res.status(200).json(rows);
-    } else {
-      return res.status(401).json("Invalid email or password.");
+    if (!result) {
+      return res.status(401).json({ success: false, message: "Invalid username or password" });
     }
+
+    return res.status(200).json({
+      success: true,
+      ...result,
+    });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "An internal server error occurred." });
+    return res.status(500).json({ message: "Server error" });
   }
-}
+};
+
 
 // ==================================================
 
-exports.adminVerifyController = async(req, res)=>{
- try {
+exports.adminVerifyController = async (req, res) => {
+  try {
     const result = await adminVerifyService(req.headers["jwt-token"])
-    
-    res.status(200).json(result);
+
+    console.log("Controller verified =", result);
+    return res.status(200).json({
+      success: true,
+      user: {
+        id: result.id,
+        name: result.name,
+        type: result.type,
+      }
+    });
   } catch (error) {
     res.status(400)
   }
 }
 // ==================================================
 
-exports.adminPageController = async(req , res)=>{
+exports.adminPageController = async (req, res) => {
   try {
     const result = await adminPageService(req.params)
     res.status(200).json(result)
-  }catch(error){
+  } catch (error) {
     return res.status(400).json(error)
   }
 }

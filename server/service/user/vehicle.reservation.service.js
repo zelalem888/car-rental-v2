@@ -1,5 +1,5 @@
 const db = require("../../db/config");
-const { v4 : uuidv4 } = require('uuid')
+// const { v4 : uuidv4 } = require('uuid')
 
 
 exports.allVehicleReservationService = async ({ id }) => {
@@ -13,9 +13,9 @@ exports.allVehicleReservationService = async ({ id }) => {
 
 // ================================================================================
 
-exports.vehicleReservationService = async ({ reservationData, userId, vehicleId}) => {
+exports.vehicleReservationService = async ({ reservationData, userId, vehicleId }) => {
   const status = "pending";
-  const uuid = uuidv4()
+  const uuid = '1234'
   const values = [
     userId,
     vehicleId,
@@ -23,7 +23,7 @@ exports.vehicleReservationService = async ({ reservationData, userId, vehicleId}
     reservationData.returnDate,
     status,
     uuid
-    
+
   ];
 
   const [rows] = await db.query(
@@ -36,54 +36,54 @@ exports.vehicleReservationService = async ({ reservationData, userId, vehicleId}
 
 // ==========================================================
 
-exports.vehicleReservationUpdateService = async({reservationID,updatingData})=>{
-const date = new Date().toLocaleString();
+exports.vehicleReservationUpdateService = async ({ reservationID, updatingData }) => {
+  const date = new Date().toLocaleString();
 
   const values = [
     updatingData.pickUpDate, updatingData.returnDate, reservationID
   ];
-   
-    const [findID] = await db.query(
-      "SELECT * FROM reservation WHERE R_ID = ?",
-      reservationID
-    );
-    if (findID.length === 0) {
-        throw new Error("there is no reservation in this ID to update.")
-    }
 
-      await db.query(
-        "UPDATE reservation SET Pickup_Date = ?, Return_Date = ? WHERE R_ID = ?",
-        values
-      );
+  const [findID] = await db.query(
+    "SELECT * FROM reservation WHERE R_ID = ?",
+    reservationID
+  );
+  if (findID.length === 0) {
+    throw new Error("there is no reservation in this ID to update.")
+  }
+
+  await db.query(
+    "UPDATE reservation SET Pickup_Date = ?, Return_Date = ? WHERE R_ID = ?",
+    values
+  );
 }
 
 // ================================================================
 
-exports.vehicleReservationDeleteService = async({reservationID})=>{
-    const [findID] = await db.query(
-      "SELECT * FROM reservation WHERE R_ID = ?",
-      reservationID
-    );
-    if (findID.length === 0) {
-        throw new Error("there is no reservation in this ID to Delete.")
-    }
+exports.vehicleReservationDeleteService = async ({ reservationID }) => {
+  const [findID] = await db.query(
+    "SELECT * FROM reservation WHERE R_ID = ?",
+    reservationID
+  );
+  if (findID.length === 0) {
+    throw new Error("there is no reservation in this ID to Delete.")
+  }
 
-      await db.query("DELETE FROM reservation WHERE R_ID = ?" , reservationID);
+  await db.query("DELETE FROM reservation WHERE R_ID = ?", reservationID);
 }
 
 // ===============================================================
-exports.SingleVehicleReservationService = async({reservationID}) =>{
-const [rows] = await db.query(
-      "SELECT * FROM reservation WHERE R_ID = ?",
-      reservationID
-    );
-    return rows
+exports.SingleVehicleReservationService = async ({ reservationID }) => {
+  const [rows] = await db.query(
+    "SELECT * FROM reservation WHERE R_ID = ?",
+    reservationID
+  );
+  return rows
 }
 //  ============================================================
-exports.rentedVehicleService =  async({reservationID}) =>{
-const [rows] = await db.query(
-      "SELECT * FROM rent WHERE Reservation_R_ID  = ?",
-      reservationID
-    );
-    return rows
+exports.rentedVehicleService = async ({ reservationID }) => {
+  const [rows] = await db.query(
+    "SELECT * FROM rent WHERE Reservation_R_ID  = ?",
+    reservationID
+  );
+  return rows
 }
