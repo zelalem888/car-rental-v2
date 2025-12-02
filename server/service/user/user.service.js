@@ -16,7 +16,7 @@ exports.usersInfoService = async (id) => {
 
 // ========================================================
 
-exports.usersInfoUpdateService = async ({ paramID, updatingData }) => {
+exports.usersInfoUpdateService = async ({ paramID, updatingData, browser }) => {
   const data = new Date().toLocaleString();
 
   const result = [
@@ -60,6 +60,9 @@ if(FindEmail > 0){
     paramID
   );
 
+  await db.query("INSERT INTO user_logs (User_ID, Role, Action, Description,Device) VALUES (?,?,?,?,?)",[paramID,"customer" ,"Update Account", `Updated Account by userID ${paramID}`, browser])
+
+
   // console.log(findID);
   const JWTSecretKey = process.env.JWT_SECRET;
   const email = userData[0].Email;
@@ -81,7 +84,7 @@ const jwtData = {
 
 // =============================================================
 
-exports.usersInfoDeleteService = async (id) => {
+exports.usersInfoDeleteService = async (id,browser) => {
   const paramID = id;
   const [findID] = await db.query(
     "SELECT * FROM customer WHERE C_ID = ?",
@@ -91,5 +94,8 @@ exports.usersInfoDeleteService = async (id) => {
     throw new Error("there is no user in this ID to Delete.");
   }
   await db.query("DELETE FROM customer WHERE C_ID = ?", paramID);
+    
+  await db.query("INSERT INTO user_logs (User_ID, Role, Action, Description, Device) VALUES (?,?,?,?,?)",[paramID,"customer" ,"Deleted Account", `Deleted Reservation by userID ${paramID}`, browser])
+
   return paramID;
 };

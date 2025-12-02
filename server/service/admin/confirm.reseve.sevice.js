@@ -6,12 +6,18 @@ exports.allReservationService = async () => {
 };
 // ===============================================================
 exports.pendingReservationService = async () => {
-  const [rows] = await db.query("SELECT * FROM reservation WHERE status = ? ", "pending");
+  const [rows] = await db.query(
+    "SELECT * FROM reservation WHERE status = ? ",
+    "pending"
+  );
   return rows;
 };
 // ==============================================================
 exports.confirmedReservationService = async () => {
-  const [rows] = await db.query("SELECT * FROM reservation WHERE status = ? ", "confirmed");
+  const [rows] = await db.query(
+    "SELECT * FROM reservation WHERE status = ? ",
+    "confirmed"
+  );
   return rows;
 };
 // ===============================================================
@@ -41,16 +47,7 @@ exports.confirmReservationService = async (params) => {
     "SELECT * FROM vehicle WHERE V_ID = ?",
     data[0].V_ID
   );
- 
 
-  const pickupD =JSON.stringify(data[0].Pickup_Date).slice(1,11);
-  const returnD =JSON.stringify(data[0].Return_Date).slice(1,11);
-  const pickupDate = pickupD.split("-");
-  const returnDate = returnD.split("-");
-  const totalRentDay =((parseInt(returnDate[0]) - parseInt(pickupDate[0])) * 365) +((parseInt(returnDate[1])- parseInt(pickupDate[1])) * 30) +  (parseInt(returnDate[2])- parseInt(pickupDate[2]))
-  const totalPay = parseFloat(vehicleData[0].Price_Per_Day) * totalRentDay;
-
-  
   const result = [
     data[0].C_ID,
     data[0].V_ID,
@@ -58,10 +55,10 @@ exports.confirmReservationService = async (params) => {
     data[0].R_ID,
     data[0].Pickup_Date,
     data[0].Return_Date,
-    totalRentDay,
+    data[0].Rent_Day,
     vehicleData[0].Price_Per_Day,
-    totalPay,
-    data[0].Confirmation_Number
+    data[0].total_Payment,
+    data[0].Confirmation_Number,
   ];
 
   await db.query(
@@ -69,5 +66,114 @@ exports.confirmReservationService = async (params) => {
     result
   );
 
+  await db.query(
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    [
+      reservationID,
+      findID[0].C_ID,
+      findID[0].V_ID,
+      vehicleData[0].A_ID,
+      "confirmed",
+      findID[0].Status,
+      `Reservation confirmed by AdminID ${adminID}`,
+      data[0].Pickup_Date,
+      data[0].Return_Date,
+      data[0].Rent_Day,
+      vehicleData[0].Price_Per_Day,
+      data[0].total_Payment,
+      data[0].Confirmation_Number,
+    ]
+  );
+
   return reservationID;
+};
+
+// =============================================================
+exports.doneReservationService = async (params) => {
+  const adminID = params.adminid;
+  const reservationID = params.reservationid;
+  const date = new Date().toLocaleString();
+
+
+  const [findID] = await db.query(
+    "SELECT * FROM reservation WHERE R_ID = ?",
+    reservationID
+  );
+  if (findID.length === 0) {
+    throw new Error("there is no reservation in this ID to delete/done.");
+  }
+
+  const [vehicleData] = await db.query(
+    "SELECT * FROM vehicle WHERE V_ID = ?",
+    findID[0].V_ID
+  );
+
+  const today = new Date();
+  const returning = new Date(findID[0].Return_Date);
+
+  const diffMs = returning - today;
+  const totalRentDay = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  let overPay = 0;
+  let refund = 0;
+  let payment = 0;
+
+  if (totalRentDay < 0) {
+    overPay = Math.abs(totalRentDay) * parseFloat(vehicleData[0].Price_Per_Day);
+  } else if (totalRentDay === 0) {
+    payment = 0;
+  } else {
+    refund = totalRentDay * parseFloat(vehicleData[0].Price_Per_Day);
+  }
+
+  const result = [
+    findID[0].C_ID,
+    findID[0].V_ID,
+    adminID,
+    findID[0].R_ID,
+    findID[0].Pickup_Date,
+    findID[0].Return_Date,
+    totalRentDay,
+    vehicleData[0].Price_Per_Day,
+    overPay,
+    refund,
+    findID[0].Confirmation_Number,
+    reservationID,
+  ];
+
+  await db.query(
+    "UPDATE rent SET C_ID =? , V_ID =?, A_ID=?,Reservation_R_ID=?, Pickup_Date=?,Return_Date=?,Total_Rent_Day=? ,Daily_Fee=?,over_payment=?, Refund=? ,Confirmation_Number=? WHERE Reservation_R_ID=?",
+    result
+  );
+
+  await db.query("DELETE FROM reservation WHERE R_ID=?", reservationID);
+
+  
+  await db.query(
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Overpayment, Refund, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    [
+      reservationID,
+      findID[0].C_ID,
+      findID[0].V_ID,
+      vehicleData[0].A_ID,
+      "done",
+      findID[0].Status,
+      `Reservation completed by AdminID ${adminID}`,
+      findID[0].Pickup_Date,
+      findID[0].Return_Date,
+      findID[0].Rent_Day,
+      vehicleData[0].Price_Per_Day,
+      findID[0].total_Payment,
+      overPay,
+      refund,
+      findID[0].Confirmation_Number,
+    ]
+  );
+
+
+  const [rows] = await db.query(
+    "SELECT * FROM rent WHERE Reservation_R_ID=?",
+    reservationID
+  );
+
+  return rows;
 };

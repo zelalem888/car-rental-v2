@@ -3,16 +3,23 @@ const { adminLoginService, adminPageService, adminVerifyService } = require('../
 
 exports.adminLoginController = async (req, res) => {
   try {
-    const result = await adminLoginService(req.body);
+    const browser =  req.headers["user-agent"];
+    const rows = await adminLoginService(req.body, browser)
 
-    if (!result) {
-      return res.status(401).json({ success: false, message: "Invalid username or password" });
+    if (rows.rows.length > 0) {
+    
+      // console.log(rows)
+       return res.status(200).json({
+      success: true,
+      ...rows,
+    });
+    } else {
+     return res.status(401).json({ success: false, message: "Invalid username or password" });
+
+
     }
 
-    return res.status(200).json({
-      success: true,
-      ...result,
-    });
+   
   } catch (error) {
     return res.status(500).json({ message: "Server error" });
   }

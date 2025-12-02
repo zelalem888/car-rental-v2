@@ -54,6 +54,13 @@ const AdminNavBar = () => {
               >
                 AdminPanel
               </Link>
+              {/* <Link
+                to={`/admin/previous`}
+                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+              >
+                Previously rented Cars
+              </Link> */}
+
 
               <div className="hidden sm:ml-6 sm:flex sm:space-x-4">
 
@@ -70,6 +77,7 @@ const AdminNavBar = () => {
                   confirmed reserve
                 </Link>
               </div>
+
             </div>
 
             <div>

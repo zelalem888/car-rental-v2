@@ -2,7 +2,8 @@ const { userAuthService, userRegisterService,userVerifyService } = require("../.
 
 exports.userAuthController = async (req, res) => {
   try {
-    const rows = await userAuthService(req.body);
+    const browser =  req.headers["user-agent"];
+    const rows = await userAuthService(req.body, browser);
     console.log(rows)
     if (rows.rows.length > 0) {
     
@@ -31,7 +32,8 @@ exports.userVerifyController = async(req, res)=>{
 
 exports.userRegisterController = async (req, res) => {
   try {
-    const result = await userRegisterService(req.body)
+    const browser =  req.headers["user-agent"];
+    const result = await userRegisterService(req.body, browser)
     
     res.status(201).json(result);
   } catch (error) {

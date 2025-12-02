@@ -64,16 +64,21 @@ const PendingReserve = () => {
       }
       const vehicleResult = await vehicleResponse.json();
       setVehicle(vehicleResult);
+      console.log(vehicleResult)
+
+      console.log(C_ID)
 
       const customerResponse = await fetch(
         `http://localhost:3000/api/user/admin/${C_ID}`
       );
       if (!customerResponse.ok) {
         const errorData = await customerResponse.json();
+        setCustomer(null);
         throw new Error(errorData.error);
       }
       const customerResult = await customerResponse.json();
       setCustomer(customerResult);
+      console.log(customerResult)
     } catch (e) {
       throw new Error(e);
     }

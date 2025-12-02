@@ -74,6 +74,7 @@ function App() {
 
           {/* admin Main layout */}
           <Route element={<AdminLayout />}>
+
             <Route path="/admin" element={<AdminVehicle />} />
             <Route path="/admin/add" element={<RequireRole allowed={["admin"]}><AddVehicle /></RequireRole>} />
             <Route path="/admin/update/:vname/:vid" element={<RequireRole allowed={["admin"]}><UpdateVehicle /></RequireRole>} />
@@ -87,6 +88,7 @@ function App() {
             <Route path="/superadmin/manage-admins" element={<RequireRole allowed={["superadmin"]}><ManageAdmins /></RequireRole>} />
             <Route path="/superadmin/add-admin" element={<RequireRole allowed={["superadmin"]}><AddAdmin /></RequireRole>} />
             <Route path="/superadmin/update-admin/:id" element={<RequireRole allowed={["superadmin"]}><UpdateAdmin /></RequireRole>} />
+
           </Route>
         </Routes>
       </AnimatePresence>

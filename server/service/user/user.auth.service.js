@@ -2,7 +2,7 @@ const db = require("../../db/config");
 const z = require("zod");
 const jwt = require("jsonwebtoken");
 
-exports.userAuthService = async (loginData) => {
+exports.userAuthService = async (loginData,browser) => {
   const values = [loginData.email, loginData.password];
   const [rows] = await db.query(
     "SELECT C_ID, FullName, Email FROM customer WHERE Email = ? AND Password = ?",
@@ -12,6 +12,8 @@ exports.userAuthService = async (loginData) => {
   const JWTSecretKey = process.env.JWT_SECRET;
   // console.log(JWTSecretKey)
   
+  await db.query("INSERT INTO user_logs (User_ID, Role, Action, Description,Device) VALUES (?,?,?,?,?)",[rows[0].C_ID,"customer" ,"Login.", `Account Logged In by userID ${rows[0].C_ID}`, browser])
+
   const email = rows[0].email;
   const id = rows[0].C_ID;
   const name = rows[0].FullName;
@@ -62,7 +64,7 @@ const userSchema = z.object({
   city: z.string().min(2),
 });
 
-exports.userRegisterService = async (body) => {
+exports.userRegisterService = async (body, browser) => {
   const registerData = body;
   const validateRegister = userSchema.parse(registerData);
   const date = new Date().toLocaleString();
@@ -93,13 +95,15 @@ exports.userRegisterService = async (body) => {
     "INSERT INTO customer (FullName , Email, Password, PhoneNumber, DoB,Nationality, City,Update_Date) VALUES (?,?,?,?,?,?,?,?)",
     result
   );
+  // console.log(data.insertId, browser)
+  await db.query("INSERT INTO user_logs (User_ID, Role, Action, Description,Device) VALUES (?,?,?,?,?)",[data.insertId,"customer" ,"Account Created.", `Account created by userID ${data.insertId}`, browser])
 
   const [getIdForToken] = await db.query(
     "SELECT C_ID,FullName,Email FROM customer WHERE Email = ?",
     validateRegister.email
   );
 
-  console.log(getIdForToken);
+  // console.log(getIdForToken);
   const JWTSecretKey = process.env.JWT_SECRET;
   const email = getIdForToken[0].Email;
   const id = getIdForToken[0].C_ID;

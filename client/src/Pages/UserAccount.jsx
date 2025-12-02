@@ -178,7 +178,7 @@ const UserAccount = () => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12"
+        className="w-full flex items-center justify-center p-6 md:p-12"
       >
         <div className="w-full max-w-md">
           {/* Mobile Logo */}

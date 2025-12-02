@@ -1,6 +1,6 @@
 const db = require("../../db/config");
 const z = require("zod");
-const fs = require('fs')
+const fs = require("fs");
 
 exports.adminAllVehiclesService = async () => {
   const [allVehicles] = await db.query("SELECT * FROM vehicle");
@@ -9,29 +9,31 @@ exports.adminAllVehiclesService = async () => {
 
 // ====================================================
 const vehicleSchema = z.object({
-  A_ID : z.number() ,
+  A_ID: z.number(),
   vehicleName: z.string(),
-  plateNumber: z.string().refine(
-    (p) => p.startsWith("ET") || p.startsWith("et"),
-    "Plate must start with ET or et"
-  ),
+  plateNumber: z
+    .string()
+    .refine(
+      (p) => p.startsWith("ET") || p.startsWith("et"),
+      "Plate must start with ET or et"
+    ),
   brandName: z.string(),
   pricePerDay: z.number(),
   modelYear: z.number(),
   seatCapacity: z.number(),
   fuelType: z.string(),
-}); 
+});
 
-exports.adminVehicleRegisterService = async (body, files) => {
-     if (!files || files.length === 0) {
+exports.adminVehicleRegisterService = async (body, files, browser) => {
+  if (!files || files.length === 0) {
     throw new Error("At least one image is required");
   }
 
-  const imagePaths = files.map(file => "/uploads/" + file.filename);
-   console.log(imagePaths)
+  const imagePaths = files.map((file) => "/uploads/" + file.filename);
+  console.log(imagePaths);
   const vehicleBody = {
     ...body,
-    A_ID : parseInt(body.A_ID),
+    A_ID: parseInt(body.A_ID),
     pricePerDay: parseFloat(body.pricePerDay),
     modelYear: parseFloat(body.modelYear),
     seatCapacity: parseFloat(body.seatCapacity),
@@ -59,33 +61,49 @@ exports.adminVehicleRegisterService = async (body, files) => {
     throw new Error("this car Plate Number is already exist.");
   }
 
-  await db.query(
+ const [insert] = await db.query(
     "INSERT INTO vehicle (A_ID, V_Name,Plate_Number,Brand_Name,Price_Per_Day,Model_Year, Seating_Capacity, Fuel_Type, Images ,Updation_Date) VALUES (?,?,?,?,?,?,?,?,?,?)",
     VehicleResult
+  );
+  await db.query(
+    "INSERT INTO user_logs (User_ID, Role, Action, Target_ID, Description,Device) VALUES (?,?,?,?,?,?)",
+    [
+      vehicleData.A_ID,
+      "admin",
+      "Create/add a vehicle",
+      insert.insertId,
+      `Vehicle Add by AdminID ${vehicleData.A_ID}`,
+      browser,
+    ]
   );
 };
 
 // =====================================================
 
-exports.adminVehicleUpdateService = async ({ paramID, updatingData, files }) => {
+exports.adminVehicleUpdateService = async ({
+  paramID,
+  updatingData,
+  files,
+  browser
+}) => {
   const data = new Date().toLocaleString();
-   if (!files || files.length === 0) {
-   console.log("there is no image.")
+  if (!files || files.length === 0) {
+    console.log("there is no image.");
   }
-   const imagePaths = files.map(file => "/uploads/" + file.filename);
+  const imagePaths = files.map((file) => "/uploads/" + file.filename);
   //  console.log(imagePaths)
 
-   const [findID] = await db.query(
-     "SELECT * FROM vehicle WHERE V_ID = ?",
-     paramID
-    );
-    
-    if (findID.length === 0) {
-      throw new Error("there is no vehicle in this ID to update.");
-    }
-    const existing = JSON.parse(findID[0].Images)
+  const [findID] = await db.query(
+    "SELECT * FROM vehicle WHERE V_ID = ?",
+    paramID
+  );
 
-    const updatedImage = [...existing,...imagePaths]
+  if (findID.length === 0) {
+    throw new Error("there is no vehicle in this ID to update.");
+  }
+  const existing = JSON.parse(findID[0].Images);
+
+  const updatedImage = [...existing, ...imagePaths];
 
   const result = [
     updatingData.vehicleName,
@@ -99,36 +117,55 @@ exports.adminVehicleUpdateService = async ({ paramID, updatingData, files }) => 
     data,
     paramID,
   ];
-  
+
   await db.query(
     "UPDATE vehicle SET V_Name=? , Plate_Number=? , Brand_Name=? , Price_Per_Day=? , Model_Year=? , Seating_Capacity=? , Fuel_Type=?, Images=?, Updation_Date=? WHERE V_ID = ?",
     result
   );
+   await db.query(
+    "INSERT INTO user_logs (User_ID, Role, Action, Target_ID, Description,Device) VALUES (?,?,?,?,?,?)",
+    [
+      updatingData.A_ID,
+      "admin",
+      "update a vehicle",
+      paramID,
+      `Vehicle Updated by AdminID ${updatingData.A_ID}`,
+      browser,
+    ]
+  );
 };
-
 
 // ==============================================================
 
-exports.adminDeleteImageService = async ({paramID , updatingData})=>{
-  
-  const [findID] = await  db.query("SELECT Images FROM vehicle WHERE V_ID = ?", paramID)
-  const images = JSON.parse(findID[0].Images)
-  const filteredImages = images.filter((img)=> !img.includes(updatingData.image))
-  console.log(findID)
+exports.adminDeleteImageService = async ({ paramID, updatingData }) => {
+  const [findID] = await db.query(
+    "SELECT Images FROM vehicle WHERE V_ID = ?",
+    paramID
+  );
+  const images = JSON.parse(findID[0].Images);
+  const filteredImages = images.filter(
+    (img) => !img.includes(updatingData.image)
+  );
 
-  await db.query("UPDATE vehicle SET Images = ? WHERE V_ID = ?" , [JSON.stringify(filteredImages) , paramID])
-  
-  const [result] = await  db.query("SELECT Images FROM vehicle WHERE V_ID = ?", paramID)
-  console.log(result)
-    const filePath = path.join(__dirname, "../../uploads", updatingData.image);
+
+  await db.query("UPDATE vehicle SET Images = ? WHERE V_ID = ?", [
+    JSON.stringify(filteredImages),
+    paramID,
+  ]);
+
+  const [result] = await db.query(
+    "SELECT Images FROM vehicle WHERE V_ID = ?",
+    paramID
+  );
+   
+  const filePath = path.join(__dirname, "../../uploads", updatingData.image);
   fs.unlink(filePath, () => {});
-
-
-}
+};
 // ===============================================================
 
-exports.adminVehicleDeleteService = async (id) => {
+exports.adminVehicleDeleteService = async (id, adminID,browser) => {
   const paramID = id;
+  const adminsID = parseInt(adminID.adminID)
   const [findID] = await db.query(
     "SELECT * FROM vehicle WHERE V_ID = ?",
     paramID
@@ -138,4 +175,16 @@ exports.adminVehicleDeleteService = async (id) => {
   }
 
   await db.query("DELETE FROM vehicle WHERE V_ID = ?", paramID);
+
+  await db.query(
+    "INSERT INTO user_logs (User_ID, Role, Action, Target_ID, Description,Device) VALUES (?,?,?,?,?,?)",
+    [
+      adminsID,
+      "admin",
+      "Delete a vehicle",
+      paramID,
+      `Vehicle Deleted by AdminID ${adminsID}`,
+      browser,
+    ]
+  );
 };
