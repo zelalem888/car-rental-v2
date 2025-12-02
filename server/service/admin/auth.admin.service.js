@@ -10,7 +10,10 @@ exports.adminLoginService = async (data, browser) => {
     values
   );
   if(rows.length === 0){
-    throw new Error("invalid email or password.")
+     return {
+      success: false,
+      message: "Invalid username or password",
+    };
   }
 
   await db.query(
@@ -30,28 +33,37 @@ exports.adminLoginService = async (data, browser) => {
 
   const id = rows[0].A_ID;
   const name = rows[0].Username;
+  const type = rows[0].type;
 
   const jwtData = {
     signInTime: Date.now(),
     id,
     name,
+    type,
   };
+//   const token = jwt.sign(jwtData, JWTSecretKey);
+//   const response = {
+//     user: jwtData, token,
+//   };
   const token = jwt.sign(jwtData, JWTSecretKey);
   const response = { rows, token };
 
   return response;
 };
 
+  return response;
+}
+
 // ====================================
 
 exports.adminVerifyService = async (tokenKey) => {
-  const tokenHeaderKey = "jwt-token";
   const jwtSecretKey = process.env.JWT_ADMIN_SECRET;
-  const token = tokenKey;
   try {
-    const verified = jwt.verify(token, jwtSecretKey);
+    if (!tokenKey) throw new Error("No token provided");
+
+    const verified = jwt.verify(tokenKey, jwtSecretKey);
     if (verified) {
-      console.log(verified);
+      console.log("verified = ", verified);
       return verified;
     } else {
       throw new Error("Token is Not verified.");
@@ -63,7 +75,7 @@ exports.adminVerifyService = async (tokenKey) => {
 // ====================================
 
 exports.adminPageService = async (params) => {
-  const id = params.id;
-  const [rows] = await db.query("SELECT * FROM admin WHERE A_ID = ? ", id);
-  return rows;
-};
+  const id = params.id
+  const [rows] = await db.query("SELECT * FROM admin WHERE A_ID = ? ", id)
+  return rows
+}
