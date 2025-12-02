@@ -33,9 +33,11 @@ exports.usersInfoAdminController = async (req, res) => {
 
 exports.usersInfoUpdateController = async (req, res) => {
   try {
+        const browser =  req.headers["user-agent"];
     const result = await usersInfoUpdateService({
       paramID: req.params.id,
       updatingData: req.body,
+      browser:browser
     });
 
     res.status(201).json(result);
@@ -48,7 +50,8 @@ exports.usersInfoUpdateController = async (req, res) => {
 
 exports.usersInfoDeleteController = async (req, res) => {
   try {
-    const result = await usersInfoDeleteService(req.params.id);
+        const browser =  req.headers["user-agent"];
+    const result = await usersInfoDeleteService(req.params.id, browser);
 
     res.status(200).json({ message: "Account Deleted successfully.", ID: result });
   } catch (error) {

@@ -74,7 +74,11 @@ const AdminVehicle = () => {
   const confirmDelete =async ()=>{
     try{
       const responseDelete = await fetch(`http://localhost:3000/api/admin/vehicle/delete/${targetID}`,{
-        method : "DELETE"
+        method : "DELETE",
+         headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ adminID }),
       })
       if(!responseDelete.ok){
         const errorData = await responseDelete.json();
@@ -83,6 +87,8 @@ const AdminVehicle = () => {
 
       const deleteData = await responseDelete.json()
       console.log(deleteData.message)
+      console.log(deleteData)
+
           setDeletePopUp(false)
 
     }catch(e){

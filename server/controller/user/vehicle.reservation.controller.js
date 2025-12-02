@@ -26,10 +26,12 @@ exports.allVehicleReservationController = async (req, res) => {
 // =====================================================================
 exports.vehicleReservationController = async (req, res) => {
   try {
+        const browser =  req.headers["user-agent"];
     const result = await vehicleReservationService({
       reservationData: req.body,
       userId: req.params.id,
       vehicleId: req.params.vehicleid,
+      browser:browser
     });
 
     if (result) {
@@ -51,9 +53,11 @@ exports.vehicleReservationController = async (req, res) => {
 
 exports.vehicleReservationUpdateController = async (req, res) => {
   try {
+        const browser =  req.headers["user-agent"];
     const result = await vehicleReservationUpdateService({
       reservationID: req.params.reservationid,
       updatingData: req.body,
+      browser:browser
     });
     res.send({ message: "Update Success." });
   } catch (error) {
@@ -64,8 +68,10 @@ exports.vehicleReservationUpdateController = async (req, res) => {
 // ======================================================
 exports.vehicleReservationDeleteController = async (req, res) => {
   try {
+        const browser =  req.headers["user-agent"];
     await vehicleReservationDeleteService({
       reservationID: req.params.reservationid,
+      browser:browser
     });
     res.send({ message: "Deleted successfully." });
   } catch (error) {

@@ -42,8 +42,9 @@ const UpdateVehicle = () => {
             return
           }
           const data = await responseVerify.json()
+          console.log(data)
 
-          setFormdata({...formData, A_ID : data.id})
+          // setFormdata({...formData, A_ID : data.id})
         const response = await fetch(
           `http://localhost:3000/api/vehicle/${vname}/${vid}`
         );
@@ -55,7 +56,7 @@ const UpdateVehicle = () => {
         const waitedDate = await response.json();
         console.log(waitedDate);
         setFormdata({
-          A_ID: waitedDate[0].A_ID,
+          A_ID : data.id,
           vehicleName: waitedDate[0].V_Name,
           plateNumber: waitedDate[0].Plate_Number,
           brandName: waitedDate[0].Brand_Name,
@@ -65,7 +66,7 @@ const UpdateVehicle = () => {
           fuelType: waitedDate[0].Fuel_Type,
           image: JSON.parse(waitedDate[0].Images)
         });
-        console.log(formData);
+    
       } catch (e) {
         throw new Error(e);
       }

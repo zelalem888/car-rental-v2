@@ -73,6 +73,7 @@ function App() {
             <Route path="/admin/update/:vname/:vid" element={<UpdateVehicle />} />
             <Route path="/admin/pending" element={<PendingReserve />} />
             <Route path="/admin/confirmed" element={<ConfirmedReservations /> } />
+            <Route path="/admin/*" element={<Errorpage />} />
           
           </Route>
         </Routes>

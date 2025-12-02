@@ -1,89 +1,216 @@
 const db = require("../../db/config");
-const { v4 : uuidv4 } = require('uuid')
-
+const { v4: uuidv4 } = require("uuid");
 
 exports.allVehicleReservationService = async ({ id }) => {
-  const [rows] = await db.query(
-    "SELECT * FROM reservation WHERE C_ID = ? ",
-    [id]
-  );
+  const [rows] = await db.query("SELECT * FROM reservation WHERE C_ID = ? ", [
+    id,
+  ]);
   return rows;
 };
 
-
 // ================================================================================
 
-exports.vehicleReservationService = async ({ reservationData, userId, vehicleId}) => {
+exports.vehicleReservationService = async ({
+  reservationData,
+  userId,
+  vehicleId,
+  browser,
+}) => {
   const status = "pending";
-  const uuid = uuidv4()
+  const uuid = uuidv4();
+
+  const [vehicleData] = await db.query(
+    "SELECT * FROM vehicle WHERE V_ID = ?",
+    vehicleId
+  );
+
   const values = [
     userId,
     vehicleId,
     reservationData.pickUpDate,
     reservationData.returnDate,
+    reservationData.rentDay,
+    reservationData.totalPayment,
     status,
-    uuid
-    
+    uuid,
   ];
 
   const [rows] = await db.query(
-    "INSERT INTO reservation (C_ID, V_ID, Pickup_Date, Return_Date, Status,Confirmation_Number) VALUES(?,?,?,?,?,?) ",
+    "INSERT INTO reservation (C_ID, V_ID, Pickup_Date, Return_Date, Rent_Day, total_payment, Status, Confirmation_Number) VALUES(?,?,?,?,?,?,?,?) ",
     values
   );
+  await db.query(
+    "INSERT INTO user_logs (User_ID, Role, Action, Target_ID, Description,Device) VALUES (?,?,?,?,?,?)",
+    [
+      userId,
+      "customer",
+      "Created Reservation.",
+      rows.insertId,
+      `Created Reservation by userID ${userId}`,
+      browser,
+    ]
+  );
+
+  const [vehicle] = await db.query(
+    "SELECT * FROM vehicle WHERE V_ID = ?",
+    vehicleId
+  );
+
+  const [uuID] = await db.query("SELECT Confirmation_Number FROM reservation WHERE R_ID = ?", rows.insertId)
+
+  await db.query(
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status,New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    [
+      rows.insertId,
+      userId,
+      vehicleId,
+      vehicle[0].A_ID,
+      "created",
+      "No status",
+      "pending",
+      reservationData.pickUpDate,
+      reservationData.returnDate,
+      reservationData.rentDay,
+      vehicle[0].Price_Per_Day,
+      reservationData.totalPayment,
+      uuID[0].Confirmation_Number
+    ]
+  );
+
   return rows;
 };
 
-
 // ==========================================================
 
-exports.vehicleReservationUpdateService = async({reservationID,updatingData})=>{
-const date = new Date().toLocaleString();
+exports.vehicleReservationUpdateService = async ({
+  reservationID,
+  updatingData,
+  browser,
+}) => {
+  const date = new Date().toLocaleString();
 
   const values = [
-    updatingData.pickUpDate, updatingData.returnDate, reservationID
+    updatingData.pickUpDate,
+    updatingData.returnDate,
+    updatingData.rentDay,
+    updatingData.totalPayment,
+    reservationID,
   ];
-   
-    const [findID] = await db.query(
-      "SELECT * FROM reservation WHERE R_ID = ?",
-      reservationID
-    );
-    if (findID.length === 0) {
-        throw new Error("there is no reservation in this ID to update.")
-    }
 
-      await db.query(
-        "UPDATE reservation SET Pickup_Date = ?, Return_Date = ? WHERE R_ID = ?",
-        values
-      );
-}
+  const [findID] = await db.query(
+    "SELECT * FROM reservation WHERE R_ID = ?",
+    reservationID
+  );
+  if (findID.length === 0) {
+    throw new Error("there is no reservation in this ID to update.");
+  }
+
+  await db.query(
+    "UPDATE reservation SET Pickup_Date = ?, Return_Date = ? , 	Rent_Day =?, total_Payment =? WHERE R_ID = ?",
+    values
+  );
+
+  await db.query(
+    "INSERT INTO user_logs (User_ID, Role, Action, Target_ID, Description,Device) VALUES (?,?,?,?,?,?)",
+    [
+      findID[0].C_ID,
+      "customer",
+      "Update Reservation",
+      reservationID,
+      `Updated Reservation by userID ${findID[0].C_ID}`,
+      browser,
+    ]
+  );
+  
+   const [vehicle] = await db.query(
+    "SELECT * FROM vehicle WHERE V_ID = ?",
+    findID[0].V_ID
+  );
+
+  await db.query(
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    [ reservationID,
+      findID[0].C_ID,
+      findID[0].V_ID,
+      vehicle[0].A_ID,
+      "updated",
+      findID[0].Status,
+      "pending",
+      updatingData.pickUpDate,
+      updatingData.returnDate,
+      updatingData.rentDay,
+      vehicle[0].Price_Per_Day,
+      updatingData.totalPayment,
+      findID[0].Confirmation_Number
+    ]
+  );
+
+
+};
 
 // ================================================================
 
-exports.vehicleReservationDeleteService = async({reservationID})=>{
-    const [findID] = await db.query(
-      "SELECT * FROM reservation WHERE R_ID = ?",
-      reservationID
-    );
-    if (findID.length === 0) {
-        throw new Error("there is no reservation in this ID to Delete.")
-    }
+exports.vehicleReservationDeleteService = async ({
+  reservationID,
+  browser,
+}) => {
+  const [findID] = await db.query(
+    "SELECT * FROM reservation WHERE R_ID = ?",
+    reservationID
+  );
+  if (findID.length === 0) {
+    throw new Error("there is no reservation in this ID to Delete.");
+  }
 
-      await db.query("DELETE FROM reservation WHERE R_ID = ?" , reservationID);
-}
+  await db.query("DELETE FROM reservation WHERE R_ID = ?", reservationID);
+
+  await db.query(
+    "INSERT INTO user_logs (User_ID, Role, Action, Target_ID, Description,Device) VALUES (?,?,?,?,?,?)",
+    [
+      findID[0].C_ID,
+      "customer",
+      "Delete Reservation",
+      reservationID,
+      `Deleted Reservation by userID ${findID[0].C_ID}`,
+      browser,
+    ]
+  );
+    const [vehicle] = await db.query(
+    "SELECT * FROM vehicle WHERE V_ID = ?",
+    findID[0].V_ID
+  );
+    await db.query(
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    [ reservationID,
+      findID[0].C_ID,
+      findID[0].V_ID,
+      vehicle[0].A_ID,
+      "deleted",
+      findID[0].Status,
+      "Reservation Deleted",
+      findID[0].Pickup_Date,
+      findID[0].Return_Date,
+      findID[0].Rent_Day,
+      vehicle[0].Price_Per_Day,
+      findID[0].total_Payment,
+      findID[0].Confirmation_Number
+    ]
+  );
+};
 
 // ===============================================================
-exports.SingleVehicleReservationService = async({reservationID}) =>{
-const [rows] = await db.query(
-      "SELECT * FROM reservation WHERE R_ID = ?",
-      reservationID
-    );
-    return rows
-}
+exports.SingleVehicleReservationService = async ({ reservationID }) => {
+  const [rows] = await db.query(
+    "SELECT * FROM reservation WHERE R_ID = ?",
+    reservationID
+  );
+  return rows;
+};
 //  ============================================================
-exports.rentedVehicleService =  async({reservationID}) =>{
-const [rows] = await db.query(
-      "SELECT * FROM rent WHERE Reservation_R_ID  = ?",
-      reservationID
-    );
-    return rows
-}
+exports.rentedVehicleService = async ({ reservationID }) => {
+  const [rows] = await db.query(
+    "SELECT * FROM rent WHERE Reservation_R_ID  = ?",
+    reservationID
+  );
+  return rows;
+};

@@ -3,6 +3,7 @@ import { CheckCircle, FileStack, LoaderIcon } from "lucide-react";
 import { useParams } from "react-router-dom";
 const ConfirmedReservations = () => {
   const { id } = useParams();
+  const [adminID, setAdminID] = useState()
   const [pending, setPending] = useState([]);
   const [detail, setDetail] = useState(false);
   const [vehicle, setVehicle] = useState();
@@ -12,6 +13,28 @@ const ConfirmedReservations = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+
+      const token = localStorage.getItem("jwt-token");
+
+        const responseVerify = await fetch(
+          "http://localhost:3000/api/admin/verify",
+          {
+            method: "POST",
+            headers: {
+              "jwt-token": token,
+            },
+          }
+        );
+
+        if (!responseVerify.ok) {
+          localStorage.removeItem("jwt-token");
+          navigate("/admin/login");
+          return;
+        }
+        const data = await responseVerify.json();
+
+        setAdminID(data.id);
+
       const response = await fetch(
         "http://localhost:3000/api/reservation/vehicle/confirmed"
       );
@@ -42,6 +65,7 @@ const ConfirmedReservations = () => {
       );
       if (!customerResponse.ok) {
         const errorData = await customerResponse.json();
+        setCustomer(null);
         throw new Error(errorData.error);
       }
       const customerResult = await customerResponse.json();
@@ -51,27 +75,29 @@ const ConfirmedReservations = () => {
     }
   };
 
-  const confirmReserve = async ({ id, rid }) => {
+  const vehicleReturned = async ({ id, rid }) => {
     console.log(id, rid);
     try {
-      const ConfirmResponse = await fetch(
-        `http://localhost:3000/api/reservation/confirm/${id}/${rid}`,
+      const confirmResponse = await fetch(
+        `http://localhost:3000/api/reservation/done/${id}/${rid}`,
         {
           method: "PUT",
         }
-      );
-      // console.log( await confirmReserve.json())
-      if (!ConfirmResponse.ok) {
-        const errorData = await ConfirmResponse.json();
+      )
+      
+      setDetail(false);
+      setRefresh(!false);
+
+      console.log( await confirmResponse.json())
+      if (!confirmResponse.ok) {
+        const errorData = await confirmResponse.json();
         throw new Error(errorData);
       }
-      const confirmResult = await ConfirmResponse.json();
-      alert(confirmResult.message);
+      const confirmResult = await confirmResponse.json();
+      alert("The vehicle Available from now.");
     } catch (e) {
-      throw new Error(e.error);
+      throw new Error(e);
     }
-    setDetail(false);
-    setRefresh(!false);
   };
 
   return (
@@ -213,6 +239,14 @@ const ConfirmedReservations = () => {
                   </p>
                 </div>
                 <div className="flex space-x-2">
+                 <button
+                    onClick={() => {
+                      vehicleReturned({ id: adminID, rid: rid })
+                    }}
+                    className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-md"
+                  >
+                    Vehicle Returned
+                  </button>
                   <button
                     onClick={() => {
                       setDetail(false);

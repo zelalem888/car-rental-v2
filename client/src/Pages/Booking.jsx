@@ -14,7 +14,9 @@ const CarDetailPage = () => {
   const [selected, setSelected] = useState();
   const [error, setError] = useState();
   const [index, setIndex] = useState(0);
-  const [imageCount, setImageCount] = useState()
+  const [imageCount, setImageCount] = useState();
+  const [dateDiff, setDateDiff] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
   const year = new Date().getFullYear();
   const month = new Date().getMonth();
 
@@ -43,20 +45,18 @@ const CarDetailPage = () => {
 
         console.log(resultVerify);
 
-        const response = await fetch(
-          `http://localhost:3000/api/vehicle/${id}`
-        );
+        const response = await fetch(`http://localhost:3000/api/vehicle/${id}`);
         if (!response.ok) {
           const errorData = await response.json();
-          console.log(errorData)
+          console.log(errorData);
           throw new Error(errorData.message || "Something went wrong");
         }
 
         const result = await response.json();
-        result[0].image = JSON.parse(result[0].Images)
+        result[0].image = JSON.parse(result[0].Images);
 
         setSelectedCar(result);
-       setImageCount(result[0].image.length)
+        setImageCount(result[0].image.length);
 
         console.log(result);
       } catch (e) {
@@ -69,6 +69,8 @@ const CarDetailPage = () => {
   const [rentalDetails, setRentalDetails] = useState({
     pickUpDate: "",
     returnDate: "",
+    rentDay: 0,
+    totalPayment: 0,
   });
 
   const handleSubmit = async (e) => {
@@ -107,48 +109,65 @@ const CarDetailPage = () => {
 
   const selectHandler = (range) => {
     setSelected(range);
+
+    let pickUpDate = new Date(range.from.toLocaleDateString("en-CA"));
+    let returnDate = new Date(range.to.toLocaleDateString("en-CA"));
+    const diffMs = returnDate - pickUpDate;
+    const totalRentDay = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    setDateDiff(totalRentDay);
+
+    const pricePerDay = selectedCar[0].Price_Per_Day;
+    const totalPay = parseFloat(pricePerDay) * parseFloat(totalRentDay);
+    setTotalPrice(totalPay);
     setRentalDetails({
       pickUpDate: range.from.toLocaleDateString("en-CA"),
-      returnDate: range.to.toLocaleDateString("en-CA")
+      returnDate: range.to.toLocaleDateString("en-CA"),
+      rentDay: parseInt(totalRentDay),
+      totalPayment: parseFloat(totalPay),
     });
-    console.log(range)
   };
   return selectedCar ? (
     <div className="container mx-auto p-6 mt-20">
       <div className="grid grid-cols-[3fr_2fr] max-lg:grid-cols-1">
         {/* Car Image */}
         <div className="w-full  mb-8 md:mb-0">
-            <motion.div
-                  key={selectedCar.V_ID}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="group"
-                >
-                  <div
-                    className={`flex gap-5 rounded-xl p-6 transition-all duration-300 
+          <motion.div
+            key={selectedCar.V_ID}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="group"
+          >
+            <div
+              className={`flex gap-5 rounded-xl p-6 transition-all duration-300 
                                      group-hover:-translate-y-2`}
-                  >
-                    {/* data Image */}
-                      <button 
-                       onClick={() => setIndex((prev) => (prev === 0 ? imageCount - 1 : prev - 1))}
-                      > <ChevronLeft className="text-white bg-green-500 rounded-full w-7 h-7"/> </button>
-                    <div className="flex aspect-[4/3] rounded-lg bg-white mb-6 ">
-                 
-                      <img
-                        src={`http://localhost:3000${selectedCar[0].image[index]}`}
-                        alt=""
-                        className="h-full w-full object-cover rounded-lg"
-                      />
-                  
-                    </div>
-                      <button
-                        onClick={() =>
-                           setIndex((prev) => (prev === imageCount - 1 ? 0 : prev + 1)) }
-                      > <ChevronRight className="text-white bg-green-500 rounded-full w-7 h-7" /></button>
-                      
-                  </div>
-                </motion.div>
+            >
+              {/* data Image */}
+              <button
+                onClick={() =>
+                  setIndex((prev) => (prev === 0 ? imageCount - 1 : prev - 1))
+                }
+              >
+                {" "}
+                <ChevronLeft className="text-white bg-green-500 rounded-full w-7 h-7" />{" "}
+              </button>
+              <div className="flex aspect-[4/3] rounded-lg bg-white mb-6 ">
+                <img
+                  src={`http://localhost:3000${selectedCar[0].image[index]}`}
+                  alt=""
+                  className="h-full w-full object-cover rounded-lg"
+                />
+              </div>
+              <button
+                onClick={() =>
+                  setIndex((prev) => (prev === imageCount - 1 ? 0 : prev + 1))
+                }
+              >
+                {" "}
+                <ChevronRight className="text-white bg-green-500 rounded-full w-7 h-7" />
+              </button>
+            </div>
+          </motion.div>
         </div>
 
         {/* Car Details */}
@@ -220,6 +239,22 @@ const CarDetailPage = () => {
                   <p className="text-red-400">{error} </p>
                 </div>
               )}
+              <table class="w-full border border-gray-300 mt-4">
+                <tbody>
+                  <tr class="border-b">
+                    <td class="p-3 text-green-900 font-semibold">
+                      Days of Rent
+                    </td>
+                    <td class="p-3 text-xl">{dateDiff} day/s</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3 text-green-900 font-semibold">
+                      Total Payment
+                    </td>
+                    <td class="p-3 text-xl">{totalPrice} Birr</td>
+                  </tr>
+                </tbody>
+              </table>
 
               <div className="flex flex-col">
                 <label htmlFor="location" className="text-sm text-gray-600">

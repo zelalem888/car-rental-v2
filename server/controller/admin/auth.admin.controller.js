@@ -3,7 +3,8 @@ const {adminLoginService,adminPageService,adminVerifyService} = require('../../s
 
 exports.adminLoginController = async (req, res)=>{
   try {
-    const rows = await adminLoginService(req.body)
+    const browser =  req.headers["user-agent"];
+    const rows = await adminLoginService(req.body, browser)
 
     if (rows.rows.length > 0) {
     
