@@ -10,20 +10,21 @@ exports.adminLoginService = async (data, browser) => {
     "SELECT * FROM admin WHERE Username = ?",
     values[0]
   );
- if (passChecker.length === 0) {
-    throw new Error("Invalid email or password.");
-  }
 
+ if (passChecker.length === 0) {
+    throw new Error("Invalid email or password..");
+  }
   const password = passChecker[0].Password;
   const match = await bcrypt.compare(values[1], password);
   if (!match) {
     throw new Error("Invalid email or password.");
   }
   const [rows] = await db.query(
-    "SELECT A_ID, Username, type FROM admin WHERE Username = ? AND Password = ?",
-    values
+    "SELECT A_ID, Username, type FROM admin WHERE Username = ?",
+    loginData.username
   );
-  if(rows.length === 0){
+  console.log(rows)
+  if(rows.length == 0){
      return {
       success: false,
       message: "Invalid username or password",

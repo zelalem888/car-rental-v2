@@ -43,7 +43,7 @@ const AdminVehicle = () => {
 
        setAdminID(adminData.user.id)
 
-        const response = await fetch(`http://localhost:3000/api/admin/${adminData.id}`);
+        const response = await fetch(`http://localhost:3000/api/admin/${adminData.user.id}`);
 
         if (!response.ok) {
           const errorData = await response.json();
