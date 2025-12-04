@@ -1,5 +1,7 @@
 const db = require("../../db/config");
 const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt");
+
 
 exports.usersInfoService = async (id) => {
   const paramID = id;
@@ -7,10 +9,11 @@ exports.usersInfoService = async (id) => {
     "SELECT * FROM customer WHERE C_ID = ?",
     paramID
   );
-  console.log(paramID)
+  // console.log(paramID)
   if (findID.length === 0) {
     throw new Error("there is no user in this ID.");
   }
+  // const password = findID[0].Password
   return findID;
 };
 
@@ -22,7 +25,7 @@ exports.usersInfoUpdateService = async ({ paramID, updatingData, browser }) => {
   const result = [
     updatingData.fullName,
     updatingData.email,
-    updatingData.password,
+    // updatingData.password,
     updatingData.phoneNumber,
     updatingData.dateOfBirth,
     updatingData.nationality,
@@ -52,7 +55,7 @@ if(FindEmail > 0){
 
 
   await db.query(
-    "UPDATE customer SET FullName=? , Email=? , Password=? , PhoneNumber=? , DoB=? , Nationality=? , City=? , Update_Date=? WHERE C_ID = ?",
+    "UPDATE customer SET FullName=? , Email=? , PhoneNumber=? , DoB=? , Nationality=? , City=? , Update_Date=? WHERE C_ID = ?",
     result
   );
     const [userData] = await db.query(

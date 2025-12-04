@@ -261,7 +261,7 @@ const UserAccount = () => {
 
             {/* ==================password========================== */}
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
                 Password
               </label>
@@ -295,11 +295,11 @@ const UserAccount = () => {
                   )}
                 </button>
               </div>
-            </div>
+            </div> */}
 
             {/* ================confirm Password===================== */}
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
                 Confirm Password
               </label>
@@ -335,7 +335,7 @@ const UserAccount = () => {
                   )}
                 </button>
               </div>
-            </div>
+            </div> */}
 
             {/* ==============confirm password error================= */}
 
@@ -487,6 +487,9 @@ const UserAccount = () => {
               Update Account
             </motion.button>
           </form>
+          <div>
+            
+          </div>
 
           <p className="mt-8 text-center text-gray-600">
             Do you wanna Delete your account?{" "}
