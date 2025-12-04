@@ -27,6 +27,7 @@ const AdminNavBar = () => {
         }
         const result = await responseVerify.json();
 
+        // console.log(result)
         setUserToken(true);
         setAdminID(result)
       } catch (e) {
@@ -39,7 +40,7 @@ const AdminNavBar = () => {
   const logoutHandler = () => {
     setUserToken(false)
     localStorage.removeItem("jwt-token")
-    localStorage.removeItem("user")
+    // localStorage.removeItem("user")
     navigate("/admin/login")
   }
   return (
@@ -86,7 +87,7 @@ const AdminNavBar = () => {
                 <button
                   className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
                 >
-                  {adminID.name}
+                  {adminID.user.name}
                 </button>
                 <button
                   onClick={logoutHandler}

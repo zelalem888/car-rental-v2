@@ -1,18 +1,42 @@
 const db = require("../../db/config");
 const z = require("zod");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
-exports.userAuthService = async (loginData,browser) => {
+exports.userAuthService = async (loginData, browser) => {
   const values = [loginData.email, loginData.password];
+  // console.log(values)
+  const [passChecker] = await db.query(
+    "SELECT * FROM customer WHERE Email = ?",
+    values[0]
+  );
+  if (passChecker.length === 0) {
+    throw new Error("Invalid email or password.");
+  }
+  const password = passChecker[0].Password;
+  const match = await bcrypt.compare(values[1], password);
+
+  if (!match) {
+    throw new Error("Invalid email or password.");
+  }
   const [rows] = await db.query(
-    "SELECT C_ID, FullName, Email FROM customer WHERE Email = ? AND Password = ?",
-    values
+    "SELECT C_ID, FullName, Email FROM customer WHERE Email = ?",
+    values[0]
   );
   // console.log(rows)
   const JWTSecretKey = process.env.JWT_SECRET;
   // console.log(JWTSecretKey)
-  
-  await db.query("INSERT INTO user_logs (User_ID, Role, Action, Description,Device) VALUES (?,?,?,?,?)",[rows[0].C_ID,"customer" ,"Login.", `Account Logged In by userID ${rows[0].C_ID}`, browser])
+
+  await db.query(
+    "INSERT INTO user_logs (User_ID, Role, Action, Description,Device) VALUES (?,?,?,?,?)",
+    [
+      rows[0].C_ID,
+      "customer",
+      "Login.",
+      `Account Logged In by userID ${rows[0].C_ID}`,
+      browser,
+    ]
+  );
 
   const email = rows[0].email;
   const id = rows[0].C_ID;
@@ -39,7 +63,7 @@ exports.userVerifyService = async (tokenKey) => {
   try {
     const verified = jwt.verify(token, jwtSecretKey);
     if (verified) {
-      console.log(verified);
+      // console.log(verified);
       return verified;
     } else {
       throw new Error("Token is Not verified.");
@@ -67,11 +91,14 @@ const userSchema = z.object({
 exports.userRegisterService = async (body, browser) => {
   const registerData = body;
   const validateRegister = userSchema.parse(registerData);
+  const saltRounds = 10;
+  let hashedPass = await bcrypt.hash(validateRegister.password, saltRounds);
+
   const date = new Date().toLocaleString();
   const result = [
     validateRegister.fullName,
     validateRegister.email,
-    validateRegister.password,
+    hashedPass,
     validateRegister.phoneNumber,
     validateRegister.dateOfBirth,
     validateRegister.nationality,
@@ -96,7 +123,16 @@ exports.userRegisterService = async (body, browser) => {
     result
   );
   // console.log(data.insertId, browser)
-  await db.query("INSERT INTO user_logs (User_ID, Role, Action, Description,Device) VALUES (?,?,?,?,?)",[data.insertId,"customer" ,"Account Created.", `Account created by userID ${data.insertId}`, browser])
+  await db.query(
+    "INSERT INTO user_logs (User_ID, Role, Action, Description,Device) VALUES (?,?,?,?,?)",
+    [
+      data.insertId,
+      "customer",
+      "Account Created.",
+      `Account created by userID ${data.insertId}`,
+      browser,
+    ]
+  );
 
   const [getIdForToken] = await db.query(
     "SELECT C_ID,FullName,Email FROM customer WHERE Email = ?",

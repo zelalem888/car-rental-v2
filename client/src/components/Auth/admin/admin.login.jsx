@@ -52,14 +52,16 @@ function LoginForm() {
 
       const data = await response.json();
 
-      if (!data.success) {
-        setError("Invalid username or password.");
-        return;
-      }
+      // if (!data.success) {
+      //   setError("Invalid username or password..");
+      //   return;
+      // }
+
+      console.log(data)
 
 
       localStorage.setItem("jwt-token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      // localStorage.setItem("user", JSON.stringify(data.user));
 
       if (data.user.type === "superadmin") {
         navigate("/superadmin/manage-admins");

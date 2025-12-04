@@ -40,7 +40,12 @@ const AddVehicle = () => {
           }
           const data = await responseVerify.json()
 
-          setFormdata({...formData, A_ID : data.id})
+          if(data.user.type != "admin"){
+                    // localStorage.removeItem("jwt-token")
+                    navigate(`/superadmin/manage-admins`)
+                }
+
+          setFormdata({...formData, A_ID : data.user.id})
         } catch (e) {
           throw new Error(e);
         }

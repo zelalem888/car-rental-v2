@@ -35,7 +35,13 @@ const AdminVehicle = () => {
           return
         }
         const adminData = await responseVerify.json()
-       setAdminID(adminData.id)
+        
+          if(adminData.user.type != "admin"){
+                    // localStorage.removeItem("jwt-token")
+                    navigate(`/superadmin/manage-admins`)
+                }
+
+       setAdminID(adminData.user.id)
 
         const response = await fetch(`http://localhost:3000/api/admin/${adminData.id}`);
 
@@ -86,8 +92,8 @@ const AdminVehicle = () => {
       }
 
       const deleteData = await responseDelete.json()
-      console.log(deleteData.message)
-      console.log(deleteData)
+      // console.log(deleteData.message)
+      // console.log(deleteData)
 
           setDeletePopUp(false)
 

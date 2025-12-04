@@ -10,9 +10,10 @@ exports.getAllAdminsController = async (req, res) => {
       admins,
     });
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
       success: false,
-      message: error.message || "Internal server error",
+      message:"Internal server error",
     });
   }
 };
@@ -28,6 +29,7 @@ exports.getSingleAdmin = async (req, res) => {
       admins,
     });
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
       success: false,
     })
@@ -39,9 +41,10 @@ exports.superAdminCreateController = async (req, res) => {
 
   try {
     const result = await superAdminCreateService({ adminBody: req.body })
-    res.send({ message: "admin added successfully." });
+    res.status(200).json({ message: "admin registered successfully." });
   } catch (error) {
-    res.send({ message: error });
+    console.log(error)
+    res.status(500).json({ message:"internal Error" });
   }
 }
 // ================================================
@@ -50,10 +53,11 @@ exports.superAdminUpdateController = async (req, res) => {
 
   try {
     const result = await superAdminUpdateService({ paramID: req.params.id, updatingData: req.body })
-    res.send({ message: "Update admin Success." });
+    res.json({ message: "Update admin Success." });
 
   } catch (error) {
-    res.send({ message: error });
+    console.log(error)
+    res.status(401).json({ message: "internal error" });
   }
 }
 // ===============================================
@@ -63,7 +67,8 @@ exports.superAdminDeleteController = async (req, res) => {
     await superAdminDeleteService({ paramID: req.params.id });
     return res.status(200).json({ success: true, message: "Admin deleted successfully." });
   } catch (error) {
-    return res.status(400).json({ success: false, message: error.message });
+    console.log(error)
+    return res.status(400).json({ success: false, message: "internal error" });
   }
 };
 

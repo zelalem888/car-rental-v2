@@ -33,7 +33,13 @@ const ConfirmedReservations = () => {
         }
         const data = await responseVerify.json();
 
-        setAdminID(data.id);
+        
+          if(data.user.type != "admin"){
+                    // localStorage.removeItem("jwt-token")
+                    navigate(`/superadmin/manage-admins`)
+                }
+
+        setAdminID(data.user.id);
 
       const response = await fetch(
         "http://localhost:3000/api/reservation/vehicle/confirmed"

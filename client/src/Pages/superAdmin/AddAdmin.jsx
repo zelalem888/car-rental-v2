@@ -23,7 +23,7 @@ const AddAdmin = () => {
         const verifySuperAdmin = async () => {
             try {
                 const token = localStorage.getItem("jwt-token");
-                if (!token) return navigate("/superadmin/login");
+                if (!token) return navigate("/admin/login");
 
                 const res = await fetch("http://localhost:3000/api/admin/verify", {
                     method: "POST",
@@ -32,10 +32,14 @@ const AddAdmin = () => {
 
                 if (!res.ok) {
                     localStorage.removeItem("jwt-token");
-                    return navigate("/superadmin/login");
+                    return navigate("/admin/login");
                 }
 
                 const data = await res.json();
+                if(data.user.type !="superadmin"){
+                    // localStorage.removeItem("jwt-token")
+                    navigate(`/admin`)
+                }
                 setSuperAdminId(data.user.id);
             } catch (e) {
                 console.error("Verification error:", e);

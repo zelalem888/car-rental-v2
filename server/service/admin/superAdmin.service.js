@@ -1,18 +1,22 @@
 const db = require("../../db/config");
 const z = require("zod");
+const bcrypt = require('bcrypt')
 
 const adminSchema = z.object({
   type: z.string(),
   fullName: z.string().min(3).max(50),
   userName: z.string().trim(),
   password: z.string(),
-  phoneNumber: z.number(),
+  phoneNumber:  z
+      .string()
+      .regex(/^\+?\d{10,15}$/, "Invalid phone number format"),
   address: z.string(),
   status: z.string(),
   registrationDate: z.string(),
 });
 
 exports.getSingleAdminService = async ({ paramID }) => {
+
   console.log("Fetching admin with ID =", paramID);
   const [rows] = await db.query(
     "SELECT A_ID, FullName, Username, PhoneNumber, Address, Status, type, Updation_Date FROM admin WHERE A_ID = ?",
@@ -33,16 +37,18 @@ exports.getAllAdminsService = async () => {
 
 exports.superAdminCreateService = async ({ adminBody }) => {
   const adminData = adminSchema.parse(adminBody);
+  const saltRounds = 10;
+  let hashedPass = await bcrypt.hash(adminData.password, saltRounds);
   const date = new Date().toLocaleString();
   const adminResult = [
     adminData.type,
     adminData.fullName,
     adminData.userName,
-    adminData.password,
+    hashedPass,
     adminData.phoneNumber,
     adminData.address,
     adminData.status,
-    date,
+
   ];
 
   // Check if username already exists
@@ -57,7 +63,7 @@ exports.superAdminCreateService = async ({ adminBody }) => {
 
   // Insert into database
   await db.query(
-    "INSERT INTO admin (type, FullName, Username, Password, PhoneNumber, Address, Status, Updation_Date) VALUES (?,?,?,?,?,?,?,?)",
+    "INSERT INTO admin (type, FullName, Username, Password, PhoneNumber, Address, Status) VALUES (?,?,?,?,?,?,?)",
     adminResult
   );
 

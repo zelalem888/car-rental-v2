@@ -35,7 +35,13 @@ const ManageAdmins = () => {
                 }
 
 
+
                 const adminData = await responseVerify.json();
+
+                if(adminData.user.type !="superadmin"){
+                    // localStorage.removeItem("jwt-token")
+                    navigate(`/admin`)
+                }
                 setSuperAdminData(adminData.user);
 
                 const adminsRes = await fetch("http://localhost:3000/api/superadmin/admins");

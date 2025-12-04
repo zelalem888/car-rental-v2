@@ -33,6 +33,7 @@ import RequireRole from "./components/Role/RequireRole";
 import ManageAdmins from "./Pages/superAdmin/ManageAdmins";
 import AddAdmin from "./Pages/superAdmin/AddAdmin";
 import UpdateAdmin from "./Pages/superAdmin/UpdateAdmin";
+import DigitalID from "./Pages/DigitalID";
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
             <Route path="/booking/:id" element={<Booking />} />
             <Route path="/myreservation/:id" element={<MyReservation />} />
             <Route path="/booking/update/:rid" element={<UpdateBooking />} />
+            <Route path="/verifyid/:id" element={<DigitalID />} />
           </Route>
 
           <Route path="*" element={<Errorpage />} />
@@ -76,18 +78,18 @@ function App() {
           <Route element={<AdminLayout />}>
 
             <Route path="/admin" element={<AdminVehicle />} />
-            <Route path="/admin/add" element={<RequireRole allowed={["admin"]}><AddVehicle /></RequireRole>} />
-            <Route path="/admin/update/:vname/:vid" element={<RequireRole allowed={["admin"]}><UpdateVehicle /></RequireRole>} />
-            <Route path="/admin/pending" element={<RequireRole allowed={["admin"]}><PendingReserve /></RequireRole>} />
-            <Route path="/admin/confirmed" element={<RequireRole allowed={["admin"]}><ConfirmedReservations /></RequireRole>} />
+            <Route path="/admin/add" element={<AddVehicle />} />
+            <Route path="/admin/update/:vname/:vid" element={<UpdateVehicle />} />
+            <Route path="/admin/pending" element={<PendingReserve />} />
+            <Route path="/admin/confirmed" element={<ConfirmedReservations />} />
           </Route>
 
           {/* super admin Main layout */}
 
           <Route element={<SuperAdminLayout />}>
-            <Route path="/superadmin/manage-admins" element={<RequireRole allowed={["superadmin"]}><ManageAdmins /></RequireRole>} />
-            <Route path="/superadmin/add-admin" element={<RequireRole allowed={["superadmin"]}><AddAdmin /></RequireRole>} />
-            <Route path="/superadmin/update-admin/:id" element={<RequireRole allowed={["superadmin"]}><UpdateAdmin /></RequireRole>} />
+            <Route path="/superadmin/manage-admins" element={<ManageAdmins />} />
+            <Route path="/superadmin/add-admin" element={<AddAdmin />} />
+            <Route path="/superadmin/update-admin/:id" element={<UpdateAdmin />} />
 
           </Route>
         </Routes>

@@ -92,6 +92,11 @@ const UpdateAdmin = () => {
             }
 
             const data = await response.json();
+            
+            if(data.user.type != "superadmin"){
+                    // localStorage.removeItem("jwt-token")
+                    navigate(`/admin`)
+                }
 
             alert(data.message)
             navigate("/superadmin/manage-admins");

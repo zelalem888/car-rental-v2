@@ -1,12 +1,26 @@
 const db = require("../../db/config");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 exports.adminLoginService = async (data, browser) => {
   const loginData = data;
   const values = [loginData.username, loginData.password];
 
+    const [passChecker] = await db.query(
+    "SELECT * FROM admin WHERE Username = ?",
+    values[0]
+  );
+ if (passChecker.length === 0) {
+    throw new Error("Invalid email or password.");
+  }
+
+  const password = passChecker[0].Password;
+  const match = await bcrypt.compare(values[1], password);
+  if (!match) {
+    throw new Error("Invalid email or password.");
+  }
   const [rows] = await db.query(
-    "SELECT A_ID, Username, Password FROM admin WHERE Username = ? AND Password = ?",
+    "SELECT A_ID, Username, type FROM admin WHERE Username = ? AND Password = ?",
     values
   );
   if(rows.length === 0){
@@ -39,17 +53,18 @@ exports.adminLoginService = async (data, browser) => {
     signInTime: Date.now(),
     id,
     name,
-    type,
+    type
   };
-//   const token = jwt.sign(jwtData, JWTSecretKey);
-//   const response = {
-//     user: jwtData, token,
-//   };
   const token = jwt.sign(jwtData, JWTSecretKey);
-  const response = { rows, token };
+  const response = {
+    user: rows[0], token,
+  };
+  // console.log("eere zeleke " + response.user)
+  // const token = jwt.sign(jwtData, JWTSecretKey);
+  // const response = { rows, token };
 
-  return response;
-};
+//   return response;
+// };
 
   return response;
 }
@@ -63,7 +78,7 @@ exports.adminVerifyService = async (tokenKey) => {
 
     const verified = jwt.verify(tokenKey, jwtSecretKey);
     if (verified) {
-      console.log("verified = ", verified);
+      // console.log("verified = ", verified);
       return verified;
     } else {
       throw new Error("Token is Not verified.");

@@ -22,7 +22,7 @@ exports.adminVehicleRegisterController = async (req, res) => {
 
     res.status(201).json({ message: "vehicle add successfully." });
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(404).json({ error: error });
   }
 };
 
