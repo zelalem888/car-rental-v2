@@ -87,7 +87,7 @@ const AdminNavBar = () => {
                 <button
                   className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
                 >
-                  {adminID.user.name}
+                  {adminID.user.name}{"(Admin)"}
                 </button>
                 <button
                   onClick={logoutHandler}

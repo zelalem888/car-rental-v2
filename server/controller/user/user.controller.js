@@ -2,6 +2,7 @@ const {
   usersInfoService,
   usersInfoUpdateService,
   usersInfoDeleteService,
+  usersUpdatePasswordService
 } = require("../../service/user/user.service");
 
 exports.usersInfoController = async (req, res) => {
@@ -43,6 +44,24 @@ exports.usersInfoUpdateController = async (req, res) => {
     res.status(201).json(result);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+// ================================================================
+
+exports.userUpdatePasswordController = async (req, res) => {
+  try {
+        const browser =  req.headers["user-agent"];
+    const result = await usersUpdatePasswordService({
+      paramID: req.params.id,
+      updatingData: req.body,
+      browser:browser
+    });
+
+    res.status(201).json({success: true , message : "password updated"});
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ success: false, message: "internal Error." });
   }
 };
 

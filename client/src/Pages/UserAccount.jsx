@@ -21,15 +21,16 @@ const UserAccount = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    password: "",
     phoneNumber: "",
     dateOfBirth: "",
     nationality: "Ethiopian",
     city: "Addis Ababa",
   });
-  const [confirmPassword, setConfirmPassword] = useState({
-    confirmPassworder: "",
-  });
+  const [formPass ,setFormPass] = useState({
+    oldPassword : "",
+    newPassword: ""
+  })
+
 
   const [showPassword, setShowPassword] = useState({
     password: false,
@@ -40,6 +41,7 @@ const UserAccount = () => {
   const [emailCheck, setEmailCheck] = useState();
   const [passwordError, setPasswordError] = useState(null);
   const [phoneError, setPhoneError] = useState(null);
+  const [account , setAccount] = useState("account")
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -89,7 +91,6 @@ const UserAccount = () => {
         setFormData({
           fullName: userResult[0].FullName,
           email: userResult[0].Email,
-          password: userResult[0].Password,
           phoneNumber: pNumber,
           dateOfBirth: userResult[0].DoB.slice(0, 10),
           nationality: userResult[0].Nationality,
@@ -100,20 +101,10 @@ const UserAccount = () => {
     fetchData();
   }, [navigate]);
 
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password != confirmPassword.confirmPassworder) {
-      setPasswordError("Passwords do not match!");
-      return;
-    } else {
-      setPasswordError(null);
-    }
-    if (formData.password.length < 8) {
-      setPasswordError("length must be greeter than 8 characters.");
-      return;
-    } else {
-      setPasswordError(null);
-    }
     if (
       String(formData.phoneNumber).length != 12 &&
       String(formData.phoneNumber).length != 10
@@ -151,6 +142,44 @@ const UserAccount = () => {
       console.log("network error", error);
     }
   };
+
+  const passwordHandler = async(e)=>{
+   e.preventDefault();
+    if (formPass.newPassword.length < 8 && 
+        formPass.oldPassword.length < 8 ) {
+      setPasswordError("length must be greeter than 8 characters.");
+      return;
+    } else {
+      setPasswordError(null);
+    }
+    console.log(formPass)
+    // console.log("heelo")
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/user/updatepassword/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(formPass),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        setPasswordError("Password Incorrect.")
+        console.log(errorData);
+        return;
+      }
+      const result = await response.json();
+      console.log(result);
+      navigate("/");
+    } catch (error) {
+      console.log("network error", error);
+    }
+    
+  }
 
   const deleteHandler = async () => {
     try {
@@ -197,11 +226,39 @@ const UserAccount = () => {
               </span>
             </Link>
           </motion.div>
+          <div className="flex justify-evenly mb-12">
+               <a
+                onClick={()=> setAccount("account")}
+                className={`text-2xl font-medium transition-all hover:text-green-500 relative
+                  ${
+                    account === "account"
+                      ? "text-green-500"
+                      : "text-gray-700"
+                  } cursor-pointer select-none
+                  after:content-[''] after:absolute after:w-0 after:h-1 after:bg-green-500 
+                  after:left-0 after:-bottom-1 after:transition-all hover:after:w-full
+                  ${account === "account" ? "after:w-full" : ""}`}
+              >
+                Account Detail
+                </a>
+                  <a
+                    onClick={()=> setAccount("password")}
+                className={`text-2xl font-medium transition-all hover:text-green-500 relative
+                  ${
+                    account === "password"
+                      ? "text-green-500"
+                      : "text-gray-700"
+                  } cursor-pointer select-none
+                  after:content-[''] after:absolute after:w-0 after:h-1 after:bg-green-500 
+                  after:left-0 after:-bottom-1 after:transition-all hover:after:w-full
+                  ${account === "password" ? "after:w-full" : ""}`}
+              >
+                password
+                </a>  
+              </div>
 
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-2">Account Details</h2>
-          </div>
-
+          {account == "account" ? (
+            <>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* =============full name=============== */}
 
@@ -256,97 +313,6 @@ const UserAccount = () => {
               >
                 <AlertCircle className="w-5 h-5" />
                 <p className="text-sm"> {emailError || emailCheck}</p>
-              </motion.div>
-            )}
-
-            {/* ==================password========================== */}
-
-            {/* <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword.password ? "text" : "password"}
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  required
-                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 
-                           focus:border-transparent transition-all"
-                  placeholder="Create a password"
-                />
-                <Lock className="w-5 h-5 text-gray-400 absolute left-4 top-3.5" />
-                <button
-                  type="button"
-                  onClick={() =>
-                    setShowPassword({
-                      ...showPassword,
-                      password: !showPassword.password,
-                    })
-                  }
-                  className="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  {showPassword.password ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
-                </button>
-              </div>
-            </div> */}
-
-            {/* ================confirm Password===================== */}
-
-            {/* <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword.confirmPassword ? "text" : "password"}
-                  value={confirmPassword.confirmPassworder}
-                  onChange={(e) =>
-                    setConfirmPassword({
-                      confirmPassworder: e.target.value,
-                    })
-                  }
-                  required
-                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 
-                           focus:border-transparent transition-all"
-                  placeholder="Confirm your password"
-                />
-                <Lock className="w-5 h-5 text-gray-400 absolute left-4 top-3.5" />
-                <button
-                  type="button"
-                  onClick={() =>
-                    setShowPassword({
-                      ...showPassword,
-                      confirmPassword: !showPassword.confirmPassword,
-                    })
-                  }
-                  className="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  {showPassword.confirmPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
-                </button>
-              </div>
-            </div> */}
-
-            {/* ==============confirm password error================= */}
-
-            {passwordError && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg"
-              >
-                <AlertCircle className="w-5 h-5" />
-                <p className="text-sm">{passwordError}</p>
               </motion.div>
             )}
 
@@ -432,25 +398,6 @@ const UserAccount = () => {
               </div>
             </div>
 
-            {/* ===================Address====================== */}
-
-            {/* <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Address</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  required
-                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
-                           focus:border-transparent transition-all"
-                  placeholder="Enter your Address"
-                />
-                <Map className="w-5 h-5 text-gray-400 absolute left-4 top-3.5" />
-              </div>
-            </div> */}
 
             {/* ====================City======================= */}
 
@@ -487,11 +434,7 @@ const UserAccount = () => {
               Update Account
             </motion.button>
           </form>
-          <div>
-            
-          </div>
-
-          <p className="mt-8 text-center text-gray-600">
+            <p className="mt-8 text-center text-gray-600">
             Do you wanna Delete your account?{" "}
             <button
               className="text-green-500 font-semibold hover:text-green-600 transition-colors 
@@ -533,6 +476,126 @@ const UserAccount = () => {
               </div>
             )}
           </p>
+          </>
+          ) : (
+            <>
+                 {/* ==================password========================== */}
+
+            <form onSubmit={passwordHandler}>
+
+            <div className="space-y-2">
+              <h1 className="text-sm font-medium text-gray-700">
+               Old Password
+              </h1>
+              <div className="relative">
+                <input
+                  type={showPassword.password ? "text" : "password"}
+                  onChange={(e) =>
+                    setFormPass({...formPass, oldPassword : e.target.value})
+                  }
+                  value={formPass.oldPassword || ""}
+                  name="password"
+                   autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                  
+                  required
+                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 
+                           focus:border-transparent transition-all"
+                  placeholder="input old password"
+                />
+                <Lock className="w-5 h-5 text-gray-400 absolute left-4 top-3.5" />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowPassword({
+                      ...showPassword,
+                      password: !showPassword.password,
+                    })
+                  }
+                  className="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showPassword.password ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* ================new Password===================== */}
+
+            <div className="space-y-2">
+              <h1 className="text-sm font-medium text-gray-700">
+                New Password
+              </h1>
+              <div className="relative">
+                <input
+                  type={showPassword.confirmPassword ? "text" : "password"}
+                  onChange={(e) =>
+                    setFormPass({...formPass, newPassword : e.target.value})
+                  }
+                  value={formPass.newPassword || ""}
+                   autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                  required
+                  className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 
+                           focus:border-transparent transition-all"
+                  placeholder="input New password"
+                />
+                <Lock className="w-5 h-5 text-gray-400 absolute left-4 top-3.5" />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowPassword({
+                      ...showPassword,
+                      confirmPassword: !showPassword.confirmPassword,
+                    })
+                  }
+                  className="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showPassword.confirmPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* ==============confirm password error================= */}
+
+            {passwordError && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg"
+              >
+                <AlertCircle className="w-5 h-5" />
+                <p className="text-sm">{passwordError}</p>
+              </motion.div>
+            )}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              className="w-full mt-8 px-4 py-3 bg-green-500 text-white rounded-lg font-medium 
+                       hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <UserPlus className="w-5 h-5" />
+              Update Password
+            </motion.button>
+            </form>
+            </>
+          ) }
+          <div>
+          </div>
+
+        
         </div>
       </motion.div>
     </>

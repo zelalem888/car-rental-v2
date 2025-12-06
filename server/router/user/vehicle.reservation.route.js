@@ -29,7 +29,7 @@ router.delete("/reservation/delete/:reservationid",vehicleReservationDeleteContr
 router.get('/reservation/single/:reservationid', SingleVehicleReservationController)
 
 // ================rented vehicle details api============================
-router.get("/rented/:reservationid", rentedVehicleController)
+router.get("/history/:userid", rentedVehicleController)
 
 
 module.exports = router;

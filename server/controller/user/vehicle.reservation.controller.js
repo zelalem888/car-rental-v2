@@ -95,7 +95,7 @@ exports.SingleVehicleReservationController = async (req, res) => {
 exports.rentedVehicleController = async (req, res) => {
   try {
     const result = await rentedVehicleService({
-      reservationID: req.params.reservationid,
+      userId: req.params.userid,
     });
     res.status(200).json(result);
   } catch (error) {

@@ -85,7 +85,7 @@ const SuperAdminNavBar = () => {
 
                     {/* Right side */}
                     <div className="flex items-center gap-3">
-                        <span className="text-gray-300">{superAdmin.name}</span>
+                        <span className="text-gray-300">{superAdmin.name} {"(SuperAdmin)"}</span>
 
                         <button
                             onClick={logoutHandler}

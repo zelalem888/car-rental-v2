@@ -85,6 +85,43 @@ const jwtData = {
 
 };
 
+// ============================================================
+
+
+exports.usersUpdatePasswordService = async ({ paramID, updatingData, browser }) => {
+  const date = new Date().toLocaleString();
+  const saltRounds = 10;
+
+  const oldPassword = updatingData.oldPassword
+  const newPassword = updatingData.newPassword
+
+  const [findID] = await db.query(
+    "SELECT * FROM customer WHERE C_ID = ?",
+    paramID
+  );
+  if (findID.length === 0) {
+    throw new Error("there is no user in this ID to update password.");
+  }
+
+  const hashPassword = findID[0].Password
+  const match = await bcrypt.compare(oldPassword, hashPassword);
+  console.log(match)
+    if (!match) {
+    throw new Error("incorrect password.");
+  }
+
+  let hashedPass = await bcrypt.hash(newPassword, saltRounds);
+  
+  await db.query(
+    "UPDATE customer SET Password = ? , Update_Date=? WHERE C_ID = ?",
+    [hashedPass, date ,paramID]
+  );
+
+  await db.query("INSERT INTO user_logs (User_ID, Role, Action, Description,Device) VALUES (?,?,?,?,?)",[paramID,"customer" ,"Update Account Password", `Updated Account Password by userID ${paramID}`, browser])
+
+};
+
+
 // =============================================================
 
 exports.usersInfoDeleteService = async (id,browser) => {
