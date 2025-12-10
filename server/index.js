@@ -35,7 +35,8 @@ app.use('/api', userInfoRoute)
 app.use('/api', vehicleReservationRoute)
 app.use('/api', vehicleRoute)
 
-app.listen(port, (req, res) => {
+
+app.listen(port,"0.0.0.0", (req, res) => {
     console.log(`backend is running on port ${port}`)
 
 })
