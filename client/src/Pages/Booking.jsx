@@ -72,12 +72,17 @@ const CarDetailPage = () => {
     rentDay: 0,
     totalPayment: 0,
   });
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (rentalDetails.pickUpDate === "" || rentalDetails.returnDate === "") {
       setError("invalid date.");
+      return;
+    }
+    if (!acceptedTerms) {
+      setError("Please accept the Terms & Conditions before confirming.");
       return;
     }
     try {
@@ -270,9 +275,34 @@ const CarDetailPage = () => {
               </div>
             </div>
 
+            <div className="mt-4 flex items-start gap-3">
+              <input
+                id="terms"
+                type="checkbox"
+                checked={acceptedTerms}
+                onChange={(e) => {
+                  setAcceptedTerms(e.target.checked);
+                  if (e.target.checked) setError(null);
+                }}
+                className="w-4 h-4 mt-1"
+              />
+              <label htmlFor="terms" className="text-sm text-gray-700">
+                I agree to the
+                <a
+                  href="/terms-and-conditions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline ml-1"
+                >
+                  Terms &amp; Conditions
+                </a>
+              </label>
+            </div>
+
             <button
               type="submit"
-              className="mt-6 w-full py-3 bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-600 transition ease-in-out duration-200"
+              disabled={!acceptedTerms}
+              className="mt-6 w-full py-3 bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-600 transition ease-in-out duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Confirm Booking
             </button>

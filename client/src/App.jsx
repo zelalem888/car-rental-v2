@@ -29,11 +29,11 @@ import MyReservation from "./Pages/MyReservation";
 import UpdateBooking from "./Pages/UpdateBooking";
 import ConfirmedReservations from "./Pages/admin/confirmedReservations";
 import { SuperAdminLayout } from "./layout/SuperAdminLayout";
-import RequireRole from "./components/Role/RequireRole";
 import ManageAdmins from "./Pages/superAdmin/ManageAdmins";
 import AddAdmin from "./Pages/superAdmin/AddAdmin";
 import UpdateAdmin from "./Pages/superAdmin/UpdateAdmin";
 import DigitalID from "./Pages/DigitalID";
+import TermAndCondition from "./components/default/TermAndCondition";
 
 function App() {
   return (
@@ -66,7 +66,7 @@ function App() {
             <Route path="/verifyid/:id" element={<DigitalID />} />
           </Route>
 
-          <Route path="*" element={<Errorpage />} />
+
 
           {/* Admin and Super admin Auth Layout */}
           <Route element={<AuthAdminLayout />}>
@@ -92,6 +92,8 @@ function App() {
             <Route path="/superadmin/update-admin/:id" element={<UpdateAdmin />} />
 
           </Route>
+          <Route path="/terms-and-conditions" element={<TermAndCondition />} />
+          <Route path="*" element={<Errorpage />} />
         </Routes>
       </AnimatePresence>
     </>
