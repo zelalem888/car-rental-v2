@@ -5,6 +5,7 @@ const {
   vehicleReservationDeleteService,
   allVehicleReservationService,
   rentedVehicleService,
+  singleRentedService
 } = require("../../service/user/vehicle.reservation.service");
 
 exports.allVehicleReservationController = async (req, res) => {
@@ -96,6 +97,19 @@ exports.rentedVehicleController = async (req, res) => {
   try {
     const result = await rentedVehicleService({
       userId: req.params.userid,
+    });
+    res.status(200).json(result);
+  } catch (error) {
+    res.send({ message: error });
+  }
+};
+
+// ===========================================================
+
+exports.singleRentedController = async (req, res) => {
+  try {
+    const result = await singleRentedService({
+      rid: req.params.rid,
     });
     res.status(200).json(result);
   } catch (error) {

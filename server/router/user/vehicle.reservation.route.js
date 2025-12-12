@@ -5,6 +5,7 @@ const {SingleVehicleReservationController,
      ,vehicleReservationDeleteController
      ,allVehicleReservationController
      ,rentedVehicleController
+     ,singleRentedController
      } = require("../../controller/user/vehicle.reservation.controller");
 const { verifyToken } = require("../../middleware/auth");
 const router = express.Router();
@@ -30,6 +31,10 @@ router.get('/reservation/single/:reservationid', SingleVehicleReservationControl
 
 // ================rented vehicle details api============================
 router.get("/history/:userid", rentedVehicleController)
+
+// =================single rented car details api ====================
+
+router.get("/history/single/:rid", singleRentedController)
 
 
 module.exports = router;
