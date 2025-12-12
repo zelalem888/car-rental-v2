@@ -210,10 +210,19 @@ exports.SingleVehicleReservationService = async ({ reservationID }) => {
   );
   return rows;
 };
+
 //  ============================================================
 exports.rentedVehicleService = async ({ userId }) => {
   const [rows] = await db.query(
     "SELECT * FROM rent WHERE C_ID  = ?",
+    userId
+  );
+  return rows;
+};
+//  ============================================================
+exports.rejectedVehicleService = async ({ userId }) => {
+  const [rows] = await db.query(
+    "SELECT * FROM reservation_logs WHERE C_ID  = ?",
     userId
   );
   return rows;

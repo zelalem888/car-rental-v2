@@ -5,7 +5,8 @@ const {
   vehicleReservationDeleteService,
   allVehicleReservationService,
   rentedVehicleService,
-  singleRentedService
+  singleRentedService,
+  rejectedVehicleService,
 } = require("../../service/user/vehicle.reservation.service");
 
 exports.allVehicleReservationController = async (req, res) => {
@@ -13,13 +14,13 @@ exports.allVehicleReservationController = async (req, res) => {
     const user = req.user
     const paramsId = req.params.id
     console.log(user, paramsId)
-    if(user.id != paramsId){
-      res.status(403).json({message : "SOME ONE CHANGED THE LINK."})
+    if (user.id != paramsId) {
+      res.status(403).json({ message: "SOME ONE CHANGED THE LINK." })
     }
     const result = await allVehicleReservationService({ id: req.params.id });
     res.status(200).json(result);
   } catch (error) {
-        console.error("Error in allVehicleReservationController:", error);
+    console.error("Error in allVehicleReservationController:", error);
     res.status(500).json({ message: error.message || "Server error" });
   }
 };
@@ -27,12 +28,12 @@ exports.allVehicleReservationController = async (req, res) => {
 // =====================================================================
 exports.vehicleReservationController = async (req, res) => {
   try {
-        const browser =  req.headers["user-agent"];
+    const browser = req.headers["user-agent"];
     const result = await vehicleReservationService({
       reservationData: req.body,
       userId: req.params.id,
       vehicleId: req.params.vehicleid,
-      browser:browser
+      browser: browser
     });
 
     if (result) {
@@ -54,11 +55,11 @@ exports.vehicleReservationController = async (req, res) => {
 
 exports.vehicleReservationUpdateController = async (req, res) => {
   try {
-        const browser =  req.headers["user-agent"];
+    const browser = req.headers["user-agent"];
     const result = await vehicleReservationUpdateService({
       reservationID: req.params.reservationid,
       updatingData: req.body,
-      browser:browser
+      browser: browser
     });
     res.send({ message: "Update Success." });
   } catch (error) {
@@ -69,10 +70,10 @@ exports.vehicleReservationUpdateController = async (req, res) => {
 // ======================================================
 exports.vehicleReservationDeleteController = async (req, res) => {
   try {
-        const browser =  req.headers["user-agent"];
+    const browser = req.headers["user-agent"];
     await vehicleReservationDeleteService({
       reservationID: req.params.reservationid,
-      browser:browser
+      browser: browser
     });
     res.send({ message: "Deleted successfully." });
   } catch (error) {
@@ -96,6 +97,18 @@ exports.SingleVehicleReservationController = async (req, res) => {
 exports.rentedVehicleController = async (req, res) => {
   try {
     const result = await rentedVehicleService({
+      userId: req.params.userid,
+    });
+    res.status(200).json(result);
+  } catch (error) {
+    res.send({ message: error });
+  }
+};
+// =======================================================
+
+exports.rejectedVehicleController = async (req, res) => {
+  try {
+    const result = await rejectedVehicleService({
       userId: req.params.userid,
     });
     res.status(200).json(result);
