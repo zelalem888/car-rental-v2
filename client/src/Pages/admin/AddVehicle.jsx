@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const AddVehicle = () => {
   const navigate = useNavigate()
   const [formData, setFormdata] = useState({
-    A_ID:null,
+    A_ID: null,
     vehicleName: "",
     plateNumber: "",
     brandName: "",
@@ -15,43 +15,43 @@ const AddVehicle = () => {
   });
   const [images, setImages] = useState()
   const [plateError, setPlateError] = useState(null);
-    useEffect(() => {
-      const fetchAdmin = async () => {
-        try {
-           const token = localStorage.getItem("jwt-token");
-           if(!token){
-            navigate("/admin/login");
-            return
-           }
-          const responseVerify = await fetch(
-            "http://localhost:3000/api/admin/verify",
-            {
-              method: "POST",
-              headers: {
-                "jwt-token": token,
-              },
-            }
-          );
-  
-          if (!responseVerify.ok) {
-            localStorage.removeItem("jwt-token")
-            navigate("/admin/login");
-            return
-          }
-          const data = await responseVerify.json()
-
-          if(data.user.type != "admin"){
-                    // localStorage.removeItem("jwt-token")
-                    navigate(`/superadmin/manage-admins`)
-                }
-
-          setFormdata({...formData, A_ID : data.user.id})
-        } catch (e) {
-          throw new Error(e);
+  useEffect(() => {
+    const fetchAdmin = async () => {
+      try {
+        const token = localStorage.getItem("jwt-token");
+        if (!token) {
+          navigate("/admin/login");
+          return
         }
-      };
-      fetchAdmin();
-    }, []);
+        const responseVerify = await fetch(
+          "http://localhost:3000/api/admin/verify",
+          {
+            method: "POST",
+            headers: {
+              "jwt-token": token,
+            },
+          }
+        );
+
+        if (!responseVerify.ok) {
+          localStorage.removeItem("jwt-token")
+          navigate("/admin/login");
+          return
+        }
+        const data = await responseVerify.json()
+
+        if (data.user.type != "admin") {
+          // localStorage.removeItem("jwt-token")
+          navigate(`/superadmin/manage-admins`)
+        }
+
+        setFormdata({ ...formData, A_ID: data.user.id })
+      } catch (e) {
+        throw new Error(e);
+      }
+    };
+    fetchAdmin();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,35 +61,35 @@ const AddVehicle = () => {
     }
     const form = new FormData()
 
-    form.append( "A_ID",parseInt(formData.A_ID))
-    form.append( "brandName",formData.brandName)
-    form.append( "fuelType",formData.fuelType)
-    form.append( "modelYear",formData.modelYear)
-    form.append( "plateNumber",formData.plateNumber)
-    form.append( "pricePerDay",formData.pricePerDay)
-    form.append( "seatCapacity",formData.seatCapacity)
-    form.append( "vehicleName",formData.vehicleName)
-     for (let i = 0; i < images.length; i++) {
+    form.append("A_ID", parseInt(formData.A_ID))
+    form.append("brandName", formData.brandName)
+    form.append("fuelType", formData.fuelType)
+    form.append("modelYear", formData.modelYear)
+    form.append("plateNumber", formData.plateNumber)
+    form.append("pricePerDay", formData.pricePerDay)
+    form.append("seatCapacity", formData.seatCapacity)
+    form.append("vehicleName", formData.vehicleName)
+    for (let i = 0; i < images.length; i++) {
       form.append("images", images[i]);
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/admin/registervehicle",{
-          method: "POST",
-          body:form,
-        }
-      );
-      if(!response.ok){
+      const response = await fetch("http://localhost:3000/api/admin/registervehicle", {
+        method: "POST",
+        body: form,
+      });
+      if (!response.ok) {
         const errorData = await response.json()
         throw new Error(errorData.error)
       }
       const successData = await response.json()
-      alert(successData.message)
+      // alert(successData.message)
+      console.log(successData)
       navigate(`/admin`)
 
     } catch (e) {
-        alert(e)
-        throw new Error(e)
+      // alert(e)
+      throw new Error(e)
 
     }
   };
@@ -103,7 +103,7 @@ const AddVehicle = () => {
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           {/* <!-- Vehicle Name --> */}
-               <div>
+          <div>
             <label className="block text-gray-700 font-medium mb-1">
               Vehicle Images
             </label>
@@ -112,7 +112,7 @@ const AddVehicle = () => {
               accept="image/*"
               multiple
               max={6}
-              onChange={(e)=>{setImages(e.target.files)}}
+              onChange={(e) => { setImages(e.target.files) }}
               placeholder="Add Vehicle Name"
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
               required

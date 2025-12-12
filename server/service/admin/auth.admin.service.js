@@ -6,12 +6,12 @@ exports.adminLoginService = async (data, browser) => {
   const loginData = data;
   const values = [loginData.username, loginData.password];
 
-    const [passChecker] = await db.query(
+  const [passChecker] = await db.query(
     "SELECT * FROM admin WHERE Username = ?",
     values[0]
   );
 
- if (passChecker.length === 0) {
+  if (passChecker.length === 0) {
     throw new Error("Invalid email or password..");
   }
   const password = passChecker[0].Password;
@@ -24,8 +24,8 @@ exports.adminLoginService = async (data, browser) => {
     loginData.username
   );
   console.log(rows)
-  if(rows.length == 0){
-     return {
+  if (rows.length == 0) {
+    return {
       success: false,
       message: "Invalid username or password",
     };
@@ -64,8 +64,8 @@ exports.adminLoginService = async (data, browser) => {
   // const token = jwt.sign(jwtData, JWTSecretKey);
   // const response = { rows, token };
 
-//   return response;
-// };
+  //   return response;
+  // };
 
   return response;
 }

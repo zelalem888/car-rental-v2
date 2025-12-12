@@ -17,18 +17,19 @@ exports.adminAllVehiclesController = async (req, res) => {
 
 exports.adminVehicleRegisterController = async (req, res) => {
   try {
-    const browser =  req.headers["user-agent"];
-    await adminVehicleRegisterService(req.body , req.files, browser);
+    const browser = req.headers["user-agent"];
+    await adminVehicleRegisterService(req.body, req.files, browser);
 
     res.status(201).json({ message: "vehicle add successfully." });
   } catch (error) {
     res.status(404).json({ error: error });
+    console.log(error)
   }
 };
 
 exports.adminVehicleUpdateController = async (req, res) => {
   try {
-    const browser =  req.headers["user-agent"];
+    const browser = req.headers["user-agent"];
     await adminVehicleUpdateService({
       paramID: req.params.id,
       updatingData: req.body,
@@ -41,7 +42,7 @@ exports.adminVehicleUpdateController = async (req, res) => {
   }
 };
 
-exports.adminDeleteImageController =  async (req, res) => {
+exports.adminDeleteImageController = async (req, res) => {
   try {
     await adminDeleteImageService({
       paramID: req.params.id,
@@ -56,9 +57,9 @@ exports.adminDeleteImageController =  async (req, res) => {
 
 exports.adminVehicleDeleteController = async (req, res) => {
   try {
-    const browser =  req.headers["user-agent"];
+    const browser = req.headers["user-agent"];
     await adminVehicleDeleteService(req.params.id, req.body, browser);
-    res.status(200).json({ message: "Vehicle Deleted successfully."});
+    res.status(200).json({ message: "Vehicle Deleted successfully." });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

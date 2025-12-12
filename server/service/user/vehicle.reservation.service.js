@@ -1,5 +1,5 @@
 const db = require("../../db/config");
-const { v4: uuidv4 } = require("uuid");
+// const { v4: uuidv4 } = require("uuid");
 // const { v4 : uuidv4 } = require('uuid')
 
 
@@ -19,7 +19,7 @@ exports.vehicleReservationService = async ({
   browser,
 }) => {
   const status = "pending";
-  const uuid = uuidv4();
+  const uuid = '1324';
 
   const [vehicleData] = await db.query(
     "SELECT * FROM vehicle WHERE V_ID = ?",
@@ -123,15 +123,15 @@ exports.vehicleReservationUpdateService = async ({
       browser,
     ]
   );
-  
-   const [vehicle] = await db.query(
+
+  const [vehicle] = await db.query(
     "SELECT * FROM vehicle WHERE V_ID = ?",
     findID[0].V_ID
   );
 
   await db.query(
     "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-    [ reservationID,
+    [reservationID,
       findID[0].C_ID,
       findID[0].V_ID,
       vehicle[0].A_ID,
@@ -177,13 +177,13 @@ exports.vehicleReservationDeleteService = async ({
       browser,
     ]
   );
-    const [vehicle] = await db.query(
+  const [vehicle] = await db.query(
     "SELECT * FROM vehicle WHERE V_ID = ?",
     findID[0].V_ID
   );
-    await db.query(
+  await db.query(
     "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-    [ reservationID,
+    [reservationID,
       findID[0].C_ID,
       findID[0].V_ID,
       vehicle[0].A_ID,
