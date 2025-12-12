@@ -90,7 +90,6 @@ const PendingReserve = () => {
   };
 
   const confirmReserve = async ({ id, rid }) => {
-    console.log(id, rid);
     try {
       const ConfirmResponse = await fetch(
         `http://localhost:3000/api/reservation/confirm/${id}/${rid}`,
@@ -98,13 +97,34 @@ const PendingReserve = () => {
           method: "PUT",
         }
       );
-      // console.log( await confirmReserve.json())
+
       if (!ConfirmResponse.ok) {
         const errorData = await ConfirmResponse.json();
         throw new Error(errorData);
       }
       const confirmResult = await ConfirmResponse.json();
       alert(confirmResult.message);
+    } catch (e) {
+      throw new Error(e.error);
+    }
+    setDetail(false);
+    setRefresh(!false);
+  };
+  const rejectReserve = async ({ id, rid }) => {
+    try {
+      const RejectResponse = await fetch(
+        `http://localhost:3000/api/reservation/reject/${id}/${rid}`,
+        {
+          method: "PUT",
+        }
+      );
+
+      if (!RejectResponse.ok) {
+        const errorData = await RejectResponse.json();
+        throw new Error(errorData);
+      }
+      const rejectResult = await RejectResponse.json();
+      alert(rejectResult.message);
     } catch (e) {
       throw new Error(e.error);
     }
@@ -268,7 +288,7 @@ const PendingReserve = () => {
                     Approve
                   </button>
                   <button
-                    onClick={() => confirmReserve({ id: adminID, rid: rid })}
+                    onClick={() => rejectReserve({ id: adminID, rid: rid })}
                     className="px-4 py-2 bg-red-500 hover:bg-green-600 text-white rounded-md"
                   >
                     Reject

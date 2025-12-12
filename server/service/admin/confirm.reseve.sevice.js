@@ -94,7 +94,6 @@ exports.doneReservationService = async (params) => {
   const reservationID = params.reservationid;
   const date = new Date().toLocaleString();
 
-
   const [findID] = await db.query(
     "SELECT * FROM reservation WHERE R_ID = ?",
     reservationID
@@ -147,7 +146,7 @@ exports.doneReservationService = async (params) => {
 
   await db.query("DELETE FROM reservation WHERE R_ID=?", reservationID);
 
-  
+
   await db.query(
     "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Overpayment, Refund, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
     [
@@ -176,4 +175,49 @@ exports.doneReservationService = async (params) => {
   );
 
   return rows;
+};
+
+// =============================================================
+exports.rejectReservationService = async (params) => {
+  const adminID = params.adminid;
+  const reservationID = params.reservationid;
+  let overPay = 0;
+  let refund = 0;
+
+  const [findID] = await db.query(
+    "SELECT * FROM reservation WHERE R_ID = ?",
+    reservationID
+  );
+  if (findID.length === 0) {
+    throw new Error("there is no reservation in this ID to delete/done.");
+  }
+
+  const [vehicleData] = await db.query(
+    "SELECT * FROM vehicle WHERE V_ID = ?",
+    findID[0].V_ID
+  );
+
+  await db.query("DELETE FROM reservation WHERE R_ID=?", reservationID);
+
+
+  await db.query(
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Overpayment, Refund, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    [
+      reservationID,
+      findID[0].C_ID,
+      findID[0].V_ID,
+      vehicleData[0].A_ID,
+      "rejected",
+      findID[0].Status,
+      `Reservation Rejected by AdminID ${adminID}`,
+      findID[0].Pickup_Date,
+      findID[0].Return_Date,
+      findID[0].Rent_Day,
+      vehicleData[0].Price_Per_Day,
+      findID[0].total_Payment,
+      overPay,
+      refund,
+      findID[0].Confirmation_Number,
+    ]
+  );
 };

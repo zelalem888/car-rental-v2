@@ -106,21 +106,30 @@ const CarDetailPage = () => {
 
   const selectHandler = (range) => {
     setSelected(range);
+
     const pickUpDate = new Date(range.from.toLocaleDateString("en-CA"));
     const returnDate = new Date(range.to.toLocaleDateString("en-CA"));
+
     const diffMs = returnDate - pickUpDate;
     const totalRentDay = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
     setDateDiff(totalRentDay);
 
-    const pricePerDay = selectedCar[0].Price_Per_Day;
-    const payAmount = parseFloat(pricePerDay) * totalRentDay;
-    const taxAmount = payAmount * 0.15; // 15% tax
-    const totalPayment = payAmount + taxAmount;
+    // convert to number safely
+    const pricePerDay = parseFloat(selectedCar[0].Price_Per_Day);
 
+    // base price
+    const payAmount = pricePerDay * totalRentDay;
+
+    // tax and total with rounding
+    const taxAmount = parseFloat((payAmount * 0.15).toFixed(2));
+    const totalPayment = parseFloat((payAmount + taxAmount).toFixed(2));
+
+    // show on UI
     setPay(payAmount);
     setTax(taxAmount);
     setTotalPrice(totalPayment);
 
+    // SEND TO BACKEND (you removed this!)
     setRentalDetails({
       pickUpDate: range.from.toLocaleDateString("en-CA"),
       returnDate: range.to.toLocaleDateString("en-CA"),
@@ -130,6 +139,7 @@ const CarDetailPage = () => {
       TotalPayment: totalPayment,
     });
   };
+
 
   return selectedCar ? (
     <div className="container mx-auto p-6 mt-20">
