@@ -32,13 +32,14 @@ exports.vehicleReservationService = async ({
     reservationData.pickUpDate,
     reservationData.returnDate,
     reservationData.rentDay,
-    reservationData.totalPayment,
+    reservationData.tax,
+    reservationData.TotalPayment,
     status,
     uuid,
   ];
-
+  console.log('values in service ', reservationData)
   const [rows] = await db.query(
-    "INSERT INTO reservation (C_ID, V_ID, Pickup_Date, Return_Date, Rent_Day, total_payment, Status, Confirmation_Number) VALUES(?,?,?,?,?,?,?,?) ",
+    "INSERT INTO reservation (C_ID, V_ID, Pickup_Date, Return_Date, Rent_Day, Tax_Amount, total_Payment, Status, Confirmation_Number) VALUES(?,?,?,?,?,?,?,?,?) ",
     values
   );
   await db.query(
@@ -61,7 +62,7 @@ exports.vehicleReservationService = async ({
   const [uuID] = await db.query("SELECT Confirmation_Number FROM reservation WHERE R_ID = ?", rows.insertId)
 
   await db.query(
-    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status,New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status,New_Status, Tax_Amount, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
     [
       rows.insertId,
       userId,
@@ -73,6 +74,7 @@ exports.vehicleReservationService = async ({
       reservationData.pickUpDate,
       reservationData.returnDate,
       reservationData.rentDay,
+      reservationData.tax,
       vehicle[0].Price_Per_Day,
       reservationData.totalPayment,
       uuID[0].Confirmation_Number
