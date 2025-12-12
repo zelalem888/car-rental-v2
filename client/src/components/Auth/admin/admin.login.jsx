@@ -76,88 +76,113 @@ function LoginForm() {
 
 
   return (
-    <div className="flex mt-10 justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="sm:w-[350px] w-ful text-center border border-gray-300/60 rounded-2xl px-8 bg-white py-3"
-      >
-        <h1 className="text-gray-900 text-3xl mt-10 font-medium">
-          Login
-        </h1>
-        <p className="text-gray-500 text-sm mt-2">Please login to continue in admin</p>
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
 
-        <div className="flex items-center w-full mt-4 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#6B7280"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-mail-icon lucide-mail"
-          >
-            <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
-            <rect x="2" y="4" width="20" height="16" rx="2" />
-          </svg>
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            className="border-none outline-none ring-0"
-            value={formData.username}
-            onChange={(e) => {
-              setFormData(
-                { ...formData, username: e.target.value }
-              )
-            }}
-            required
-          />
+      {/* Left Side: Illustration / Welcome */}
+      <div className="hidden md:flex flex-1 bg-orange-500 items-center justify-center p-10 rounded-l-3xl">
+        <div className="text-white max-w-md">
+          <h1 className="text-4xl font-bold mb-4">Welcome Back, Admin!</h1>
+          <p className="text-lg">
+            Manage your vehicles, reservations, and more with ease.
+          </p>
         </div>
-        <div className="flex items-center mt-4 w-full bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#6B7280"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-lock-icon lucide-lock"
-          >
-            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-          </svg>
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            className="border-none outline-none ring-0"
-            value={formData.password}
-            onChange={(e) => {
-              setFormData({ ...formData, password: e.target.value })
-            }}
-            required
-          />
-        </div>
-        {error && (
-          <div>
-            <p>{error}</p>
-          </div>
-        )}
-        <button
-          type="submit"
-          className="mt-2 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
+      </div>
+
+      {/* Right Side: Login Form */}
+      <div className="flex flex-1 justify-center items-center p-6">
+        <form
+          onSubmit={handleSubmit}
+          className="sm:w-[350px] w-full text-center border border-gray-200 rounded-2xl px-8 py-8 bg-white shadow-lg"
         >
-          Login
-        </button>
-      </form>
+          <h1 className="text-gray-800 text-3xl font-bold mb-2">Admin Login</h1>
+          <p className="text-gray-500 text-sm mb-6">
+            Enter your credentials to continue
+          </p>
+
+          {/* Username */}
+          <div className="flex items-center w-full mb-4 bg-white border border-gray-300 h-12 rounded-full overflow-hidden pl-4 gap-2 focus-within:ring-2 focus-within:ring-orange-400 transition">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#6B7280"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-mail-icon"
+            >
+              <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+            </svg>
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              className="border-none outline-none ring-0 w-full"
+              value={formData.username}
+              onChange={(e) =>
+                setFormData({ ...formData, username: e.target.value })
+              }
+              required
+            />
+          </div>
+
+          {/* Password */}
+          <div className="flex items-center w-full mb-4 bg-white border border-gray-300 h-12 rounded-full overflow-hidden pl-4 gap-2 focus-within:ring-2 focus-within:ring-orange-400 transition">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#6B7280"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-lock-icon"
+            >
+              <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              className="border-none outline-none ring-0 w-full"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              required
+            />
+          </div>
+
+          {error && (
+            <div className="mb-4 text-red-500 text-sm">
+              <p>{error}</p>
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="mt-2 w-full h-12 rounded-full text-white bg-orange-500 hover:bg-orange-600 shadow-md transition"
+          >
+            Login
+          </button>
+
+          {/* Footer Text */}
+          <p className="text-gray-400 text-xs mt-6">
+            &copy; 2025 Sami Car Rental System. All rights reserved.
+          </p>
+        </form>
+      </div>
     </div>
   );
+
+
 }
 
 export default LoginForm;
