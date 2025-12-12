@@ -16,6 +16,8 @@ const CarDetailPage = () => {
   const [index, setIndex] = useState(0);
   const [imageCount, setImageCount] = useState();
   const [dateDiff, setDateDiff] = useState(0);
+  const [pay, setPay] = useState(0);
+  const [tax, setTax] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const year = new Date().getFullYear();
   const month = new Date().getMonth();
@@ -28,9 +30,7 @@ const CarDetailPage = () => {
           "http://localhost:3000/api/user/verify",
           {
             method: "POST",
-            headers: {
-              "jwt-token": token,
-            },
+            headers: { "jwt-token": token },
           }
         );
 
@@ -43,12 +43,9 @@ const CarDetailPage = () => {
         const resultVerify = await responseVerify.json();
         setUserData(resultVerify);
 
-        console.log(resultVerify);
-
         const response = await fetch(`http://localhost:3000/api/vehicle/${id}`);
         if (!response.ok) {
           const errorData = await response.json();
-          console.log(errorData);
           throw new Error(errorData.message || "Something went wrong");
         }
 
@@ -57,10 +54,8 @@ const CarDetailPage = () => {
 
         setSelectedCar(result);
         setImageCount(result[0].image.length);
-
-        console.log(result);
       } catch (e) {
-        throw new Error(e);
+        console.error(e);
       }
     };
     fetchData();
@@ -70,15 +65,16 @@ const CarDetailPage = () => {
     pickUpDate: "",
     returnDate: "",
     rentDay: 0,
-    totalPayment: 0,
+    Payment: 0,
+    tax: 0,
+    TotalPayment: 0,
   });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (rentalDetails.pickUpDate === "" || rentalDetails.returnDate === "") {
-      setError("invalid date.");
+      setError("Invalid date.");
       return;
     }
     if (!acceptedTerms) {
@@ -90,52 +86,56 @@ const CarDetailPage = () => {
         `http://localhost:3000/api/user/reservation/${userData.id}/${id}`,
         {
           method: "POST",
-          headers: {
-            "content-type": "application/json",
-          },
+          headers: { "content-type": "application/json" },
           body: JSON.stringify(rentalDetails),
         }
       );
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData);
       }
 
       const result = await response.json();
-      console.log(result);
-      alert("Booking confirmed!. redirecting to home page.");
-      setTimeout(() => {
-        navigate("/models");
-      }, 1000);
+      alert("Booking confirmed! Redirecting to home page.");
+      setTimeout(() => navigate("/models"), 1000);
     } catch (e) {
-      throw new Error(e);
+      console.error(e);
     }
   };
 
   const selectHandler = (range) => {
     setSelected(range);
-
-    let pickUpDate = new Date(range.from.toLocaleDateString("en-CA"));
-    let returnDate = new Date(range.to.toLocaleDateString("en-CA"));
+    const pickUpDate = new Date(range.from.toLocaleDateString("en-CA"));
+    const returnDate = new Date(range.to.toLocaleDateString("en-CA"));
     const diffMs = returnDate - pickUpDate;
     const totalRentDay = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
     setDateDiff(totalRentDay);
 
     const pricePerDay = selectedCar[0].Price_Per_Day;
-    const totalPay = parseFloat(pricePerDay) * parseFloat(totalRentDay);
-    setTotalPrice(totalPay);
+    const payAmount = parseFloat(pricePerDay) * totalRentDay;
+    const taxAmount = payAmount * 0.15; // 15% tax
+    const totalPayment = payAmount + taxAmount;
+
+    setPay(payAmount);
+    setTax(taxAmount);
+    setTotalPrice(totalPayment);
+
     setRentalDetails({
       pickUpDate: range.from.toLocaleDateString("en-CA"),
       returnDate: range.to.toLocaleDateString("en-CA"),
-      rentDay: parseInt(totalRentDay),
-      totalPayment: parseFloat(totalPay),
+      rentDay: totalRentDay,
+      Payment: payAmount,
+      tax: taxAmount,
+      TotalPayment: totalPayment,
     });
   };
+
   return selectedCar ? (
     <div className="container mx-auto p-6 mt-20">
       <div className="grid grid-cols-[3fr_2fr] max-lg:grid-cols-1">
         {/* Car Image */}
-        <div className="w-full  mb-8 md:mb-0">
+        <div className="w-full mb-8 md:mb-0">
           <motion.div
             key={selectedCar.V_ID}
             initial={{ opacity: 0, y: 20 }}
@@ -143,20 +143,15 @@ const CarDetailPage = () => {
             viewport={{ once: true }}
             className="group"
           >
-            <div
-              className={`flex gap-5 rounded-xl p-6 transition-all duration-300 
-                                     group-hover:-translate-y-2`}
-            >
-              {/* data Image */}
+            <div className="flex gap-5 rounded-xl p-6 transition-all duration-300 group-hover:-translate-y-2">
               <button
                 onClick={() =>
                   setIndex((prev) => (prev === 0 ? imageCount - 1 : prev - 1))
                 }
               >
-                {" "}
-                <ChevronLeft className="text-white bg-green-500 rounded-full w-7 h-7" />{" "}
+                <ChevronLeft className="text-white bg-green-500 rounded-full w-7 h-7" />
               </button>
-              <div className="flex aspect-[4/3] rounded-lg bg-white mb-6 ">
+              <div className="flex aspect-[4/3] rounded-lg bg-white mb-6">
                 <img
                   src={`http://localhost:3000${selectedCar[0].image[index]}`}
                   alt=""
@@ -168,7 +163,6 @@ const CarDetailPage = () => {
                   setIndex((prev) => (prev === imageCount - 1 ? 0 : prev + 1))
                 }
               >
-                {" "}
                 <ChevronRight className="text-white bg-green-500 rounded-full w-7 h-7" />
               </button>
             </div>
@@ -181,19 +175,8 @@ const CarDetailPage = () => {
             {selectedCar[0].V_Name}
           </h2>
           <p className="text-xl text-gray-600 mb-4">
-            {selectedCar[0].Brand_Name} - {selectedCar[0].Price_Per_Day}{" "}
-            Birr/day
+            {selectedCar[0].Brand_Name} - {selectedCar[0].Price_Per_Day} Birr/day
           </p>
-
-          {/* Car Rating */}
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="flex items-center space-x-1">
-              <span className="text-2xl font-semibold text-gray-500">
-                {selectedCar[0].Plate_Number}
-              </span>
-            </div>
-            <span className="text-sm text-gray-500"> (Plate Number)</span>
-          </div>
 
           {/* Car Features */}
           <div className="grid grid-cols-2 gap-6 mb-8">
@@ -215,10 +198,8 @@ const CarDetailPage = () => {
           <form onSubmit={handleSubmit}>
             <div className="space-y-6">
               <div className="flex flex-col">
-                <label htmlFor="dropOffDate" className="text-sm text-gray-600">
-                  Pick a Date
-                </label>
-                <p className="bg-green-400 w-fit px-2 rounded-md">Ethiopian </p>
+                <label className="text-sm text-gray-600">Pick a Date</label>
+                <p className="bg-green-400 w-fit px-2 rounded-md">Ethiopian</p>
                 <EthiopicDayPicker
                   mode="range"
                   selected={selected}
@@ -228,7 +209,7 @@ const CarDetailPage = () => {
                   numerals="latn"
                   disabled={{ before: new Date() }}
                 />
-                <p className="bg-green-400 w-fit px-2 rounded-md">Gregorian </p>
+                <p className="bg-green-400 w-fit px-2 rounded-md">Gregorian</p>
                 <USDayPicker
                   mode="range"
                   selected={selected}
@@ -239,35 +220,38 @@ const CarDetailPage = () => {
                   disabled={{ before: new Date() }}
                 />
               </div>
-              {error && (
-                <div>
-                  <p className="text-red-400">{error} </p>
-                </div>
-              )}
-              <table class="w-full border border-gray-300 mt-4">
+
+              {error && <p className="text-red-400">{error}</p>}
+
+              <table className="w-full border border-gray-300 mt-4">
                 <tbody>
-                  <tr class="border-b">
-                    <td class="p-3 text-green-900 font-semibold">
+                  <tr className="border-b">
+                    <td className="p-3 text-green-900 font-semibold">
                       Days of Rent
                     </td>
-                    <td class="p-3 text-xl">{dateDiff} day/s</td>
+                    <td className="p-3 text-xl">{dateDiff} day/s</td>
                   </tr>
                   <tr>
-                    <td class="p-3 text-green-900 font-semibold">
+                    <td className="p-3 text-green-900 font-semibold">Payment</td>
+                    <td className="p-3 text-xl">{pay} Birr</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 text-green-900 font-semibold">Tax (15%)</td>
+                    <td className="p-3 text-xl">{tax} Birr</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 text-green-900 font-semibold">
                       Total Payment
                     </td>
-                    <td class="p-3 text-xl">{totalPrice} Birr</td>
+                    <td className="p-3 text-xl">{totalPrice} Birr</td>
                   </tr>
                 </tbody>
               </table>
 
               <div className="flex flex-col">
-                <label htmlFor="location" className="text-sm text-gray-600">
-                  Pickup Location
-                </label>
+                <label className="text-sm text-gray-600">Pickup Location</label>
                 <input
                   type="text"
-                  name="location"
                   value="Main Office"
                   className="p-3 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   disabled
@@ -277,7 +261,6 @@ const CarDetailPage = () => {
 
             <div className="mt-4 flex items-start gap-3">
               <input
-                id="terms"
                 type="checkbox"
                 checked={acceptedTerms}
                 onChange={(e) => {
@@ -286,7 +269,7 @@ const CarDetailPage = () => {
                 }}
                 className="w-4 h-4 mt-1"
               />
-              <label htmlFor="terms" className="text-sm text-gray-700">
+              <label className="text-sm text-gray-700">
                 I agree to the
                 <a
                   href="/terms-and-conditions"

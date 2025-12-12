@@ -37,7 +37,7 @@ exports.vehicleReservationService = async ({
     status,
     uuid,
   ];
-  console.log('values in service ', reservationData)
+
   const [rows] = await db.query(
     "INSERT INTO reservation (C_ID, V_ID, Pickup_Date, Return_Date, Rent_Day, Tax_Amount, total_Payment, Status, Confirmation_Number) VALUES(?,?,?,?,?,?,?,?,?) ",
     values

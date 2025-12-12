@@ -35,10 +35,10 @@ const PendingReserve = () => {
         }
         const data = await responseVerify.json();
 
-          if(data.user.type != "admin"){
-                    // localStorage.removeItem("jwt-token")
-                    navigate(`/superadmin/manage-admins`)
-                }
+        if (data.user.type != "admin") {
+          // localStorage.removeItem("jwt-token")
+          navigate(`/superadmin/manage-admins`)
+        }
 
         setAdminID(data.user.id);
 
@@ -137,9 +137,8 @@ const PendingReserve = () => {
               pending.map((r, index) => (
                 <tr
                   key={r.R_ID}
-                  className={`border-b hover:bg-gray-50 transition ${
-                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                  }`}
+                  className={`border-b hover:bg-gray-50 transition ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                    }`}
                 >
                   <td className="py-2 px-4">{index + 1}</td>
                   <td className="py-2 px-4 font-medium text-gray-800">
@@ -244,30 +243,36 @@ const PendingReserve = () => {
               </div>
 
               <div className="flex justify-between space-x-3 pt-6">
-              <div>
-                 <p
-                  className="flex gap-2 px-4 py-2 text-gray-800 rounded-md"
-                >
-                <LoaderIcon className="text-yellow-900"/>
-                  Pending
-                </p>
-              </div>
-              <div className="flex space-x-2">
+                <div>
+                  <p
+                    className="flex gap-2 px-4 py-2 text-gray-800 rounded-md"
+                  >
+                    <LoaderIcon className="text-yellow-900" />
+                    Pending
+                  </p>
+                </div>
+                <div className="flex space-x-2">
 
-                <button
-                  onClick={() => {
-                    setDetail(false);
-                  }}
-                  className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => confirmReserve({ id: adminID, rid: rid })}
-                  className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md"
-                >
-                  Confirm Reservation
-                </button>
+                  <button
+                    onClick={() => {
+                      setDetail(false);
+                    }}
+                    className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => confirmReserve({ id: adminID, rid: rid })}
+                    className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => confirmReserve({ id: adminID, rid: rid })}
+                    className="px-4 py-2 bg-red-500 hover:bg-green-600 text-white rounded-md"
+                  >
+                    Reject
+                  </button>
                 </div>
               </div>
             </div>
