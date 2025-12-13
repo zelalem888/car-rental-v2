@@ -12,6 +12,7 @@ const CarDetailPage = () => {
   const [userData, setUserData] = useState();
   const navigate = useNavigate();
   const [selected, setSelected] = useState();
+  const [driver, setDriver] = useState()
   const [error, setError] = useState();
   const [index, setIndex] = useState(0);
   const [imageCount, setImageCount] = useState();
@@ -43,7 +44,7 @@ const CarDetailPage = () => {
         const resultVerify = await responseVerify.json();
         setUserData(resultVerify);
 
-        console.log(resultVerify);
+        // console.log(resultVerify);
 
         const response = await fetch(`http://localhost:3000/api/vehicle/${id}`);
         if (!response.ok) {
@@ -58,7 +59,16 @@ const CarDetailPage = () => {
         setSelectedCar(result);
         setImageCount(result[0].image.length);
 
-        console.log(result);
+        // console.log(result);
+
+        const driverResult = await fetch(`http://localhost:3000/api/driver/active`)
+        if(!driverResult.ok){
+          console.log("there is no driver available right now.")
+          return
+        }
+
+        setDriver(await driverResult.json())
+
       } catch (e) {
         throw new Error(e);
       }
@@ -71,6 +81,7 @@ const CarDetailPage = () => {
     returnDate: "",
     rentDay: 0,
     totalPayment: 0,
+    vehicleDriver: "NoDriver"
   });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
@@ -102,7 +113,7 @@ const CarDetailPage = () => {
       }
 
       const result = await response.json();
-      console.log(result);
+      // console.log(result);
       alert("Booking confirmed!. redirecting to home page.");
       setTimeout(() => {
         navigate("/models");
@@ -124,12 +135,16 @@ const CarDetailPage = () => {
     const pricePerDay = selectedCar[0].Price_Per_Day;
     const totalPay = parseFloat(pricePerDay) * parseFloat(totalRentDay);
     setTotalPrice(totalPay);
-    setRentalDetails({
+    setRentalDetails((prev)=>({
+      ...prev,
       pickUpDate: range.from.toLocaleDateString("en-CA"),
       returnDate: range.to.toLocaleDateString("en-CA"),
       rentDay: parseInt(totalRentDay),
       totalPayment: parseFloat(totalPay),
-    });
+   }));
+
+ 
+
   };
   return selectedCar ? (
     <div className="container mx-auto p-6 mt-20">
@@ -244,19 +259,19 @@ const CarDetailPage = () => {
                   <p className="text-red-400">{error} </p>
                 </div>
               )}
-              <table class="w-full border border-gray-300 mt-4">
+              <table className="w-full border border-gray-300 mt-4">
                 <tbody>
-                  <tr class="border-b">
-                    <td class="p-3 text-green-900 font-semibold">
+                  <tr className="border-b">
+                    <td className="p-3 text-green-900 font-semibold">
                       Days of Rent
                     </td>
-                    <td class="p-3 text-xl">{dateDiff} day/s</td>
+                    <td className="p-3 text-xl">{dateDiff} day/s</td>
                   </tr>
                   <tr>
-                    <td class="p-3 text-green-900 font-semibold">
+                    <td className="p-3 text-green-900 font-semibold">
                       Total Payment
                     </td>
-                    <td class="p-3 text-xl">{totalPrice} Birr</td>
+                    <td className="p-3 text-xl">{totalPrice} Birr</td>
                   </tr>
                 </tbody>
               </table>
@@ -273,6 +288,20 @@ const CarDetailPage = () => {
                   disabled
                 />
               </div>
+            </div>
+
+            <div className="flex flex-col  mt-4">
+              <label className="text-sm text-gray-600">Pick a Driver</label>
+              <select onChange={(e)=> setRentalDetails((prev)=>( {...prev, vehicleDriver : e.target.value}))}
+              value={rentalDetails.driver}
+              name="driver"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none">
+                <option value="NoDriver">No Driver</option>
+                <option value="random" >Random</option>
+                {driver?.map((drivers)=>(
+                  <option key={drivers.D_ID} value={drivers.D_ID}>{drivers.full_name}</option>
+                ))}
+              </select>
             </div>
 
             <div className="mt-4 flex items-start gap-3">

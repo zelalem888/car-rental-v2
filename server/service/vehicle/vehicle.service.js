@@ -41,4 +41,16 @@ exports.vehicleByIdService = async ({ paramsId }) => {
   return searchedVehicle
 };
 
+// =============================================
 
+exports.activeDriverService = async () => {
+  const [activeDriver] = await db.query(
+    "SELECT * FROM driver WHERE status = ? ",
+    ["active"]
+  );
+
+  if (activeDriver.length < 1) {
+    throw new Error(`there is no driver available`);
+  }
+  return activeDriver
+};

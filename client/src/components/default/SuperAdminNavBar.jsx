@@ -68,10 +68,10 @@ const SuperAdminNavBar = () => {
                             </Link>
 
                             <Link
-                                to="/superadmin/add-admin"
+                                to="/superadmin/manage-drivers"
                                 className="text-gray-300 hover:text-white transition px-2 py-2"
                             >
-                                Add Admin
+                                Manage Drivers
                             </Link>
 
                             <Link

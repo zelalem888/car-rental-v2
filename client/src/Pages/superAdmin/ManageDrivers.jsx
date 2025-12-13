@@ -1,11 +1,11 @@
+import { LogOutIcon , Plus ,Edit, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Edit, Plus, Trash2 } from "lucide-react";
-import AdminNavBar from "../../components/default/AdminNavBar";
+import { Link, useNavigate } from "react-router-dom";
 
-const ManageAdmins = () => {
-    const [superAdminData, setSuperAdminData] = useState();
-    const [allAdmins, setAllAdmins] = useState([]);
+
+const ManageDrivers = () => {
+ const [superAdminData, setSuperAdminData] = useState();
+    const [allDrivers, setAllDrivers] = useState([]);
     const [deletePopUp, setDeletePopUp] = useState(false);
     const [targetID, setTargetID] = useState(null);
     const navigate = useNavigate();
@@ -44,11 +44,11 @@ const ManageAdmins = () => {
                 }
                 setSuperAdminData(adminData.user);
 
-                const adminsRes = await fetch("http://localhost:3000/api/superadmin/admins");
+                const driverResponse = await fetch("http://localhost:3000/api/superadmin/drivers");
 
-                if (!adminsRes.ok) throw new Error("Failed to fetch admins");
-                const admins = await adminsRes.json();
-                setAllAdmins(admins.admins);
+                if (!driverResponse.ok) throw new Error("Failed to fetch admins");
+                const drivers = await driverResponse.json();
+                setAllDrivers(drivers.drivers);
             } catch (e) {
                 console.error(e);
             }
@@ -58,16 +58,16 @@ const ManageAdmins = () => {
     }, [deletePopUp, navigate]);
 
     // Delete handlers
-    const handleDelete = (A_ID) => {
+    const handleDelete = (D_ID) => {
         setDeletePopUp(true);
-        setTargetID(A_ID);
+        setTargetID(D_ID);
     };
 
     const cancelDelete = () => setDeletePopUp(false);
 
     const confirmDelete = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/superadmin/delete/${targetID}`, {
+            const res = await fetch(`http://localhost:3000/api/superadmin/delete/driver/${targetID}`, {
                 method: "DELETE",
             });
 
@@ -116,36 +116,34 @@ const ManageAdmins = () => {
                         <tr>
                             <th className="py-3 px-4 text-left">#</th>
                             <th className="py-3 px-4 text-left">Full Name</th>
-                            <th className="py-3 px-4 text-left">Username</th>
                             <th className="py-3 px-4 text-left">Phone</th>
-                            <th className="py-3 px-4 text-left">Address</th>
+                            <th className="py-3 px-4 text-left">License Number</th>
+                            <th className="py-3 px-4 text-left">Experience Years</th>
                             <th className="py-3 px-4 text-left">Status</th>
-                            <th className="py-3 px-4 text-left">Role</th>
                             <th className="py-3 px-4 text-center">Actions</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {allAdmins &&
-                            allAdmins.map((admin, index) => (
+                        {allDrivers &&
+                            allDrivers.map((driver, index) => (
                                 <tr
-                                    key={admin.A_ID}
+                                    key={index}
                                     className={`border-b hover:bg-gray-50 transition ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
                                         }`}
                                 >
                                     <td className="py-2 px-4">{index + 1}</td>
-                                    <td className="py-2 px-4 font-medium text-gray-800">{admin.FullName}</td>
-                                    <td className="py-2 px-4">{admin.Username}</td>
-                                    <td className="py-2 px-4">{admin.PhoneNumber}</td>
-                                    <td className="py-2 px-4">{admin.Address}</td>
-                                    <td className="py-2 px-4">{admin.Status}</td>
-                                    <td className="py-2 px-4">{admin.type}</td>
+                                    <td className="py-2 px-4 font-medium text-gray-800">{driver.full_name}</td>
+                                    <td className="py-2 px-4">{driver.phone}</td>
+                                    <td className="py-2 px-4">{driver.license_number}</td>
+                                    <td className="py-2 px-4">{driver.experience_years}</td>
+                                    <td className="py-2 px-4">{driver.status}</td>
 
                                     {/* Actions */}
                                     <td className="py-2 px-4 text-center flex justify-center gap-2">
                                         {/* Edit */}
                                         <button
-                                            onClick={() => navigate(`/superadmin/update-admin/${admin.A_ID}`)}
+                                            onClick={() => navigate(`/superadmin/update-driver/${driver.D_ID}`)}
                                             className="flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
                                         >
                                             <Edit size={16} />
@@ -154,7 +152,7 @@ const ManageAdmins = () => {
 
                                         {/* Delete */}
                                         <button
-                                            onClick={() => handleDelete(admin.A_ID)}
+                                            onClick={() => handleDelete(driver.D_ID)}
                                             className="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
                                         >
                                             <Trash2 size={16} />
@@ -194,6 +192,6 @@ const ManageAdmins = () => {
             </div>
         </div>
     );
-};
+}
 
-export default ManageAdmins;
+export default ManageDrivers
