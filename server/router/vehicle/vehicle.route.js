@@ -1,5 +1,5 @@
 const express = require('express');
-const { allVehicleInfoController,vehicleSearchController,oneVehicleInfoController,vehicleByIdController } = require('../../controller/vehicle/vehicle.controller');
+const { allVehicleInfoController,vehicleSearchController,oneVehicleInfoController,vehicleByIdController,activeDriverController } = require('../../controller/vehicle/vehicle.controller');
 const { verifyToken } = require("../../middleware/auth")
 
 const router = express.Router()
@@ -17,6 +17,12 @@ router.get("/vehicles/:name",vehicleSearchController)
 router.get('/vehicle/:name/:id', oneVehicleInfoController)
 
 // ============search vehicle info by id only===========================
+
 router.get('/vehicle/:id', vehicleByIdController)
+
+// ==============driver list api=============================
+
+router.get('/driver/active', activeDriverController)
+
 
 module.exports = router

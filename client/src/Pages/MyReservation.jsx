@@ -16,6 +16,7 @@ const MyReservation = () => {
   const [confirmed, setConfirmed] = useState([]);
   const [old, setOld] = useState([]);
   const [reject, setReject] = useState([]);
+  const [findDriver ,  setFindDriver]  = useState()
   const [history, setHistory] = useState("pending");
 
   const navigate = useNavigate();
@@ -68,6 +69,8 @@ const MyReservation = () => {
         }
 
         const result = await response.json();
+
+        // console.log(result)
         let allData = [];
         let historyData = [];
         let rejectData = [];
@@ -113,6 +116,7 @@ const MyReservation = () => {
         const filteredHIstory = historyResult.filter(
           (item) => item.Refund != null
         );
+        // console.log(historyResult)
         for (let vID of filteredHIstory) {
           const data = await vehicleSearch(vID.V_ID);
           // console.log(data);
@@ -146,7 +150,7 @@ const MyReservation = () => {
           }
         }
 
-        setReject(rejectData);
+        setReject(rejectData)
 
 
       } catch (e) {
@@ -156,11 +160,11 @@ const MyReservation = () => {
     fetchData();
   }, [tokenId, id, navigate]);
 
-  const printHandler = async () => {
+  const printHandler = async (id) => {
 
     const token = localStorage.getItem("jwt-token");
     const response = await fetch(
-      `http://localhost:3000/api/user/reservation/${id}`,
+      `http://localhost:3000/api/reservation/single/${id}`,
       {
         headers: {
           authorization: `Bearer ${token}`,
@@ -173,6 +177,7 @@ const MyReservation = () => {
     }
 
     const result = await response.json();
+    
     print(result)
   }
 
@@ -207,7 +212,7 @@ const MyReservation = () => {
                   after:left-0 after:-bottom-1 after:transition-all hover:after:w-full
                   ${history === "pending" ? "after:w-full" : ""}`}
         >
-          pending
+          Awaiting
         </a>
         <a
           onClick={() => setHistory("confirm")}
@@ -218,7 +223,7 @@ const MyReservation = () => {
                   after:left-0 after:-bottom-1 after:transition-all hover:after:w-full
                   ${history === "confirm" ? "after:w-full" : ""}`}
         >
-          Confirmed
+          Approved
         </a>
         <a
           onClick={() => setHistory("history")}
@@ -229,7 +234,7 @@ const MyReservation = () => {
                   after:left-0 after:-bottom-1 after:transition-all hover:after:w-full
                   ${history === "history" ? "after:w-full" : ""}`}
         >
-          history
+          Archive
         </a>
         <a
           onClick={() => setHistory("rejected")}
@@ -240,7 +245,7 @@ const MyReservation = () => {
                   after:left-0 after:-bottom-1 after:transition-all hover:after:w-full
                   ${history === "rejected" ? "after:w-full" : ""}`}
         >
-          rejected
+          Declined
         </a>
       </div>
       {history && history === "pending" ? (
@@ -300,6 +305,19 @@ const MyReservation = () => {
                   <p>
                     <strong>Total Payment:</strong> {item.total_Payment} Birr
                   </p>
+                  {item.D_ID === null ? 
+                   <p>
+                    <strong>Driver: </strong> No
+                  </p> : (
+                  <p>
+                    <strong>Driver: </strong> {item.driverDetail.full_name}
+                  </p>
+                  )}
+                   {item.D_ID === null ? "" : (
+                  <p>
+                    <strong>Driver Phone Number: </strong> {item.driverDetail.phone}
+                  </p>
+                  )}
                   <p>
                     <strong>Posted:</strong>{" "}
                     {new Date(item.Posting_Date).toLocaleDateString("en-CA")}
@@ -389,6 +407,19 @@ const MyReservation = () => {
                   <p>
                     <strong>Total Payment:</strong> {item.total_Payment} Birr
                   </p>
+                  {item.D_ID === null ? 
+                   <p>
+                    <strong>Driver: </strong> No
+                  </p> : (
+                  <p>
+                    <strong>Driver: </strong> {item.driverDetail.full_name}
+                  </p>
+                  )}
+                   {item.D_ID === null ? "" : (
+                  <p>
+                    <strong>Driver Phone Number: </strong> {item.driverDetail.phone}
+                  </p>
+                  )}
                   <p>
                     <strong>Posted:</strong>{" "}
                     {new Date(item.Posting_Date).toLocaleDateString("en-CA")}
@@ -426,7 +457,7 @@ const MyReservation = () => {
           old.map((item) => (
 
             <div
-              key={item.R_ID}
+              key={item.V_ID}
               className="mt-6 mb-4 w-[96%] mx-auto bg-white border border-gray-300 rounded-lg shadow-md overflow-hidden flex"
             >
               {/* LEFT SIDE IMAGE */}
@@ -473,6 +504,19 @@ const MyReservation = () => {
                   <p>
                     <strong>Refund:</strong> {item.Refund || 0} birr
                   </p>
+                  {item.D_ID === null ? 
+                   <p>
+                    <strong>Driver: </strong> No
+                  </p> : (
+                  <p>
+                    <strong>Driver: </strong> {item.driverDetail.full_name}
+                  </p>
+                  )}
+                   {item.D_ID === null ? "" : (
+                  <p>
+                    <strong>Driver Phone Number: </strong> {item.driverDetail.phone}
+                  </p>
+                  )}
                 </div>
               </div>
               {/* RIGHT SIDE PRICE & BUTTON */}
@@ -506,7 +550,7 @@ const MyReservation = () => {
           reject.map((item) => (
 
             <div
-              key={item.R_ID}
+              key={item.V_ID}
               className="mt-6 mb-4 w-[96%] mx-auto bg-white border border-gray-300 rounded-lg shadow-md overflow-hidden flex"
             >
               {/* LEFT SIDE IMAGE */}
@@ -556,6 +600,19 @@ const MyReservation = () => {
                   <p>
                     <strong>Refund:</strong> {item.Refund || 0} birr
                   </p>
+                  {item.D_ID === null ? 
+                   <p>
+                    <strong>Driver: </strong> No
+                  </p> : (
+                  <p>
+                    <strong>Driver: </strong> {item.driverDetail.full_name}
+                  </p>
+                  )}
+                   {item.D_ID === null ? "" : (
+                  <p>
+                    <strong>Driver Phone Number: </strong> {item.driverDetail.phone}
+                  </p>
+                  )}
                 </div>
               </div>
               {/* RIGHT SIDE PRICE & BUTTON */}

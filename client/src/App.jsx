@@ -23,6 +23,7 @@ import { MouseTrail } from "@stichiboi/react-elegant-mouse-trail";
 import LoginForm from "./components/Auth/admin/admin.login";
 import AdminVehicle from "./Pages/admin/Vehicles";
 import AddVehicle from "./Pages/admin/AddVehicle";
+import AddDriver from "./Pages/superAdmin/AddDriver";
 import PendingReserve from "./Pages/admin/pendingReserve";
 import UserAccount from "./Pages/UserAccount";
 import MyReservation from "./Pages/MyReservation";
@@ -34,6 +35,8 @@ import AddAdmin from "./Pages/superAdmin/AddAdmin";
 import UpdateAdmin from "./Pages/superAdmin/UpdateAdmin";
 import DigitalID from "./Pages/DigitalID";
 import TermAndCondition from "./components/default/TermAndCondition";
+import ManageDrivers from "./Pages/superAdmin/manageDrivers";
+import UpdateDriver from "./Pages/superAdmin/UpdateDriver";
 
 function App() {
   return (
@@ -88,8 +91,11 @@ function App() {
 
           <Route element={<SuperAdminLayout />}>
             <Route path="/superadmin/manage-admins" element={<ManageAdmins />} />
+            <Route path="/superadmin/manage-drivers" element={<ManageDrivers />} />
             <Route path="/superadmin/add-admin" element={<AddAdmin />} />
             <Route path="/superadmin/update-admin/:id" element={<UpdateAdmin />} />
+            <Route path="/superadmin/update-driver/:id" element={<UpdateDriver />} />
+            <Route path="/superadmin/add-driver" element = {<AddDriver />} />
 
           </Route>
           <Route path="/terms-and-conditions" element={<TermAndCondition />} />
