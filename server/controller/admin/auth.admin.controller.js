@@ -10,7 +10,6 @@ exports.adminLoginController = async (req, res) => {
     const browser = req.headers["user-agent"];
     const rows = await adminLoginService(req.body, browser);
 
-    console.log(rows);
     if (rows.success === false) {
       // console.log("zelalem error")
       return res

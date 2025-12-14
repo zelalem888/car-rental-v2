@@ -5,6 +5,13 @@ const print = async (result) => {
   try {
     const r = result[0];
 
+
+    if(r.D_ID != null){
+      var driver = await fetch(`http://localhost:3000/api/superadmin/driver/${r.D_ID}`)
+      .then((data)=> data.json())
+      
+    }
+
     // -----------------------------
     // FETCH VEHICLE
     // -----------------------------
@@ -236,6 +243,7 @@ const print = async (result) => {
       ["Return Date", new Date(r.Return_Date).toLocaleString()],
       ["Rent Days", r.Rent_Day],
       ["Total Payment", r.total_Payment + " birr"],
+      ["Driver" , r.D_ID == null ? "No driver" : driver.driver.full_name ],
       ["Status", r.Status],
       ["Confirmation Number", r.Confirmation_Number],
     ];

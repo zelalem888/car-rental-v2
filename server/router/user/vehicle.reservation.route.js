@@ -1,21 +1,22 @@
 const express = require("express");
-const {SingleVehicleReservationController,
+const { SingleVehicleReservationController,
      vehicleReservationController
-     ,vehicleReservationUpdateController
-     ,vehicleReservationDeleteController
-     ,allVehicleReservationController
-     ,rentedVehicleController
-     ,singleRentedController
-     } = require("../../controller/user/vehicle.reservation.controller");
+     , vehicleReservationUpdateController
+     , vehicleReservationDeleteController
+     , allVehicleReservationController
+     , rentedVehicleController
+     , singleRentedController
+     , rejectedVehicleController
+} = require("../../controller/user/vehicle.reservation.controller");
 const { verifyToken } = require("../../middleware/auth");
 const router = express.Router();
 
 // ==================all reserved for user====================
-router.get("/user/reservation/:id" ,verifyToken, allVehicleReservationController)
+router.get("/user/reservation/:id", verifyToken, allVehicleReservationController)
 
 // ==================reservation api===========================
 
-router.post("/user/reservation/:id/:vehicleid",vehicleReservationController);
+router.post("/user/reservation/:id/:vehicleid", vehicleReservationController);
 
 // ======================user update reservation info api===========================
 
@@ -23,7 +24,7 @@ router.put("/reservation/update/:reservationid", vehicleReservationUpdateControl
 
 // ================user reservation delete  api =============================
 
-router.delete("/reservation/delete/:reservationid",vehicleReservationDeleteController);
+router.delete("/reservation/delete/:reservationid", vehicleReservationDeleteController);
 
 // ================single reservation api ==============================
 
@@ -31,6 +32,9 @@ router.get('/reservation/single/:reservationid', SingleVehicleReservationControl
 
 // ================rented vehicle details api============================
 router.get("/history/:userid", rentedVehicleController)
+
+// ================rejected vehicle details api============================
+router.get("/reject/:userid", rejectedVehicleController)
 
 // =================single rented car details api ====================
 
