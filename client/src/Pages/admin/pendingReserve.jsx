@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FileStack, LoaderIcon } from "lucide-react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 const PendingReserve = () => {
+  const navigate = useNavigate();
   const [adminID, setAdminID] = useState()
   const [pending, setPending] = useState([]);
   const [detail, setDetail] = useState(false);
