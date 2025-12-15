@@ -1,9 +1,23 @@
 const {
+  allUsersService,
   usersInfoService,
+  UsersDetailService,
   usersInfoUpdateService,
   usersInfoDeleteService,
   usersUpdatePasswordService
 } = require("../../service/user/user.service");
+
+exports.allUsersController = async (req, res) => {
+  try {
+    const result = await allUsersService();
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// =======================================================================
 
 exports.usersInfoController = async (req, res) => {
   try {
@@ -19,6 +33,19 @@ exports.usersInfoController = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+// ===============================================================
+
+exports.UsersDetailController =  async (req, res) => {
+  try {
+    const paramID = req.params.id;
+    const result = await UsersDetailService(paramID);
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 // ===============================================================
 exports.usersInfoAdminController = async (req, res) => {
   try {

@@ -29,7 +29,7 @@ exports.vehicleReservationService = async ({
   browser,
 }) => {
   const status = "pending";
-  const uuid = "1234"
+  const uuid = "1234567890"; // uuidv4();
 
   const [vehicleData] = await db.query(
     "SELECT * FROM vehicle WHERE V_ID = ?",
