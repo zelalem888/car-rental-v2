@@ -12,6 +12,7 @@ const CarDetailPage = () => {
   const [userData, setUserData] = useState();
   const navigate = useNavigate();
   const [selected, setSelected] = useState();
+  const [driver, setDriver] = useState()
   const [error, setError] = useState();
   const [index, setIndex] = useState(0);
   const [imageCount, setImageCount] = useState();
@@ -43,6 +44,9 @@ const CarDetailPage = () => {
         const resultVerify = await responseVerify.json();
         setUserData(resultVerify);
 
+        // console.log(resultVerify);
+
+
         const response = await fetch(`http://localhost:3000/api/vehicle/${id}`);
         if (!response.ok) {
           const errorData = await response.json();
@@ -54,6 +58,17 @@ const CarDetailPage = () => {
 
         setSelectedCar(result);
         setImageCount(result[0].image.length);
+
+
+        // console.log(result);
+
+        const driverResult = await fetch(`http://localhost:3000/api/driver/active`)
+        if(!driverResult.ok){
+          console.log("there is no driver available right now.")
+          return
+        }
+
+        setDriver(await driverResult.json())
       } catch (e) {
         console.error(e);
       }
@@ -65,9 +80,11 @@ const CarDetailPage = () => {
     pickUpDate: "",
     returnDate: "",
     rentDay: 0,
+    vehicleDriver: "NoDriver",
     Payment: 0,
     tax: 0,
     TotalPayment: 0,
+
   });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
@@ -97,8 +114,11 @@ const CarDetailPage = () => {
       }
 
       const result = await response.json();
-      alert("Booking confirmed! Redirecting to home page.");
-      setTimeout(() => navigate("/models"), 1000);
+      // console.log(result);
+      alert("Booking confirmed!. redirecting to home page.");
+      setTimeout(() => {
+        navigate("/models");
+      }, 1000);
     } catch (e) {
       console.error(e);
     }
@@ -130,14 +150,15 @@ const CarDetailPage = () => {
     setTotalPrice(totalPayment);
 
     // SEND TO BACKEND (you removed this!)
-    setRentalDetails({
+    setRentalDetails((prev)=>( {
+      ...prev,
       pickUpDate: range.from.toLocaleDateString("en-CA"),
       returnDate: range.to.toLocaleDateString("en-CA"),
       rentDay: totalRentDay,
       Payment: payAmount,
       tax: taxAmount,
       TotalPayment: totalPayment,
-    });
+    }));
   };
 
 
@@ -230,9 +251,11 @@ const CarDetailPage = () => {
                   disabled={{ before: new Date() }}
                 />
               </div>
-
-              {error && <p className="text-red-400">{error}</p>}
-
+              {error && (
+                <div>
+                  <p className="text-red-400">{error} </p>
+                </div>
+              )}
               <table className="w-full border border-gray-300 mt-4">
                 <tbody>
                   <tr className="border-b">
@@ -267,6 +290,20 @@ const CarDetailPage = () => {
                   disabled
                 />
               </div>
+            </div>
+
+            <div className="flex flex-col  mt-4">
+              <label className="text-sm text-gray-600">Pick a Driver</label>
+              <select onChange={(e)=> setRentalDetails((prev)=>( {...prev, vehicleDriver : e.target.value}))}
+              value={rentalDetails.vehicleDriver}
+              name="driver"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none">
+                <option value="NoDriver">No Driver</option>
+                <option value="random" >Random</option>
+                {driver?.map((drivers)=>(
+                  <option key={drivers.D_ID} value={drivers.D_ID}>{drivers.full_name}</option>
+                ))}
+              </select>
             </div>
 
             <div className="mt-4 flex items-start gap-3">

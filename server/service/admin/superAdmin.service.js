@@ -25,7 +25,19 @@ exports.getSingleAdminService = async ({ paramID }) => {
   console.log("Rows fetched for admin ID", paramID, ":", rows);
   return rows[0];
 }
+// =====================================================================
 
+exports.getSingleDriverService = async ({ paramID }) => {
+
+  const [rows] = await db.query(
+    "SELECT * FROM driver WHERE D_ID = ?",
+    [paramID]
+  );
+  // console.log("Rows fetched for Driver ID", paramID, ":", rows);
+  return rows[0];
+}
+
+// =====================================================================
 exports.getAllAdminsService = async () => {
   const [rows] = await db.query(
     "SELECT A_ID, FullName, Username, PhoneNumber, Address, Status, type, Updation_Date FROM admin WHERE type != 'superadmin'"
@@ -33,6 +45,17 @@ exports.getAllAdminsService = async () => {
 
   return rows;
 };
+
+
+// ======================================================================
+
+exports.getAllDriversService = async () => {
+  const [rows] = await db.query(
+    "SELECT * FROM driver"
+  );
+  return rows;
+};
+// ======================================================================
 
 
 exports.superAdminCreateService = async ({ adminBody }) => {
@@ -101,6 +124,35 @@ exports.superAdminUpdateService = async ({ paramID, updatingData }) => {
   );
 };
 
+// =====================================================
+exports.superAdminUpdateDriverService =  async ({ paramID, updatingData }) => {
+  const data = new Date().toLocaleString();
+
+  const result = [
+    updatingData.fullName,
+    updatingData.phoneNumber,
+    updatingData.license_number,
+    updatingData.experience_years,
+    updatingData.status,
+    data,
+    paramID, 
+  ];
+
+  const [findID] = await db.query(
+    "SELECT * FROM driver WHERE D_ID = ?",
+    paramID
+  );
+  if (findID.length === 0) {
+    throw new Error("there is no Driver in this ID to update.")
+  }
+
+
+  await db.query(
+    "UPDATE driver SET full_name=? , phone=? , license_number=? , experience_years=? , status=?, Updation_Date=? WHERE D_ID = ?",
+    result
+  );
+};
+
 // =============================================
 exports.superAdminDeleteService = async ({ paramID }) => {
   const [rows] = await db.query(
@@ -114,4 +166,33 @@ exports.superAdminDeleteService = async ({ paramID }) => {
 
   await db.query("DELETE FROM admin WHERE A_ID = ?", [paramID]);
   return
+};
+
+// ====================================================
+
+exports.superAdminDeleteDriverService = async ({ paramID }) => {
+  const [rows] = await db.query(
+    "SELECT * FROM driver WHERE D_ID = ?",
+    [paramID]
+  );
+
+  if (rows.length === 0) {
+    throw new Error("driver not found.");
+  }
+
+  await db.query("DELETE FROM driver WHERE D_ID = ?", [paramID]);
+  return
+};
+
+// =================================================
+
+exports.addDriverService =  async (body) => {
+
+  const driverInfo = [body.fullName, body.phoneNumber, body.license_number,body.experience_years, body.status]
+
+  const [rows] = await db.query(
+    "INSERT INTO driver (full_name, phone, license_number, experience_years, status  ) VALUES (?,?,?,?,?)",
+    driverInfo
+  );
+
 };

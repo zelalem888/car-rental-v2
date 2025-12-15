@@ -53,6 +53,7 @@ exports.confirmReservationService = async (params) => {
     data[0].V_ID,
     adminID,
     data[0].R_ID,
+    data[0].D_ID,
     data[0].Pickup_Date,
     data[0].Return_Date,
     data[0].Rent_Day,
@@ -62,17 +63,18 @@ exports.confirmReservationService = async (params) => {
   ];
 
   await db.query(
-    "INSERT INTO rent (C_ID, V_ID, A_ID,Reservation_R_ID, Pickup_Date,Return_Date,Total_Rent_Day,Daily_Fee,Total_paid,Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO rent (C_ID, V_ID, A_ID,Reservation_R_ID, D_ID, Pickup_Date,Return_Date,Total_Rent_Day,Daily_Fee,Total_paid,Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
     result
   );
 
   await db.query(
-    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, D_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
     [
       reservationID,
       findID[0].C_ID,
       findID[0].V_ID,
       vehicleData[0].A_ID,
+      data[0].D_ID,
       "confirmed",
       findID[0].Status,
       `Reservation confirmed by AdminID ${adminID}`,
@@ -148,12 +150,13 @@ exports.doneReservationService = async (params) => {
 
 
   await db.query(
-    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Overpayment, Refund, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, D_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Overpayment, Refund, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
     [
       reservationID,
       findID[0].C_ID,
       findID[0].V_ID,
       vehicleData[0].A_ID,
+      findID[0].D_ID,
       "done",
       findID[0].Status,
       `Reservation completed by AdminID ${adminID}`,
@@ -201,12 +204,13 @@ exports.rejectReservationService = async (params) => {
 
 
   await db.query(
-    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Overpayment, Refund, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, D_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Overpayment, Refund, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
     [
       reservationID,
       findID[0].C_ID,
       findID[0].V_ID,
       vehicleData[0].A_ID,
+      findID[0].D_ID,
       "rejected",
       findID[0].Status,
       `Reservation Rejected by AdminID ${adminID}`,

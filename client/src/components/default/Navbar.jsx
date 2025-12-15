@@ -43,7 +43,7 @@ const Navbar = () => {
             const result = await response.json()
             setUserData(result)
 
-            console.log(result)
+            // console.log(result)
 
           } catch (e) {
             // throw new Error(e)
