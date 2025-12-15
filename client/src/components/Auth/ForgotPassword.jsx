@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import emailjs from "emailjs-com";
 
 const ForgotPassword = ({ onClose }) => {
   const [email, setEmail] = useState('');
@@ -15,13 +16,45 @@ const ForgotPassword = ({ onClose }) => {
     setIsError(false);
 
     try {
-      await authService.sendPasswordResetEmail(email);
-      setMessage('Password reset link sent! Please check your email.');
+
+      const res = await fetch(
+        "http://localhost:3000/api/auth/forgot-password",
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ email: email.trim() })
+        }
+      )
+      const response = await res.json();
+
+      if (!response.token) {
+        setMessage("Please try again later.");
+        return;
+      }
+      const resetLink = `http://localhost:5173/reset-password?token=${response.token}`;
+
+      await emailjs.send(
+        "service_04n9b1o",
+        "template_3fd0egd",
+        // import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        // import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          email: email,
+          link: resetLink,
+        },
+        "ij6znEh0E_12jo44a"
+        // import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+
+
+
+      setMessage('Password reset link has been sent.');
       setIsError(false);
       setTimeout(() => {
         onClose();
       }, 3000);
     } catch (error) {
+      console.error("EmailJS Error:", error);
       setIsError(true);
       setMessage(error.message || 'An error occurred. Please try again later.');
     } finally {
@@ -44,7 +77,7 @@ const ForgotPassword = ({ onClose }) => {
             disabled={isLoading}
           />
           {message && (
-            <div 
+            <div
               style={{
                 ...styles.message,
                 backgroundColor: isError ? '#ffebee' : '#e8f5e9',

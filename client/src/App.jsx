@@ -35,6 +35,8 @@ import AddAdmin from "./Pages/superAdmin/AddAdmin";
 import UpdateAdmin from "./Pages/superAdmin/UpdateAdmin";
 import DigitalID from "./Pages/DigitalID";
 import TermAndCondition from "./components/default/TermAndCondition";
+import ForgotPassword from "./components/Auth/ForgotPassword";
+import ResetPassword from "./components/Auth/ResetPassword";
 import ManageDrivers from "./Pages/superAdmin/manageDrivers";
 import UpdateDriver from "./Pages/superAdmin/UpdateDriver";
 
@@ -50,6 +52,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/account/:id" element={<UserAccount />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Route>
 
           {/* Main routes with Navbar and Footer */}
