@@ -3,6 +3,16 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt");
 
 
+
+exports.allUsersService = async () => {
+  const [findID] = await db.query(
+    "SELECT * FROM customer"
+  );
+  return findID;
+};
+
+// =========================================================
+
 exports.usersInfoService = async (id) => {
   const paramID = id;
   const [findID] = await db.query(
@@ -16,6 +26,26 @@ exports.usersInfoService = async (id) => {
   // const password = findID[0].Password
   return findID;
 };
+
+// ===========================================================
+
+exports.UsersDetailService = async (id) => {
+  const paramID = id;
+  const [findID] = await db.query(
+    "SELECT * FROM customer WHERE C_ID = ?",
+    paramID
+  );
+  // console.log(paramID)
+  if (findID.length === 0) {
+    throw new Error("there is no user in this ID.");
+  }
+const [userReservationHistory] = await db.query("SELECT * FROM reservation WHERE C_ID = ? ", paramID)
+
+const [userLog] = await db.query("SELECT * FROM reservation_logs WHERE C_ID = ? ", paramID)
+
+  return {userReservedH : userReservationHistory, usersLog: userLog , customerName : findID};
+};
+
 
 // ========================================================
 

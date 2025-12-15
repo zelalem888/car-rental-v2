@@ -39,6 +39,8 @@ import ForgotPassword from "./components/Auth/ForgotPassword";
 import ResetPassword from "./components/Auth/ResetPassword";
 import ManageDrivers from "./Pages/superAdmin/manageDrivers";
 import UpdateDriver from "./Pages/superAdmin/UpdateDriver";
+import Users from "./Pages/admin/Users";
+import UserDetail from "./Pages/admin/UserDetail";
 
 function App() {
   return (
@@ -89,6 +91,8 @@ function App() {
             <Route path="/admin/update/:vname/:vid" element={<UpdateVehicle />} />
             <Route path="/admin/pending" element={<PendingReserve />} />
             <Route path="/admin/confirmed" element={<ConfirmedReservations />} />
+            <Route path="/admin/users" element= {<Users />} />
+            <Route path="/admin/user/:id" element = {<UserDetail />} />
           </Route>
 
           {/* super admin Main layout */}
