@@ -106,10 +106,12 @@ exports.vehicleReservationUpdateService = async ({
   const date = new Date().toLocaleString();
 
   const values = [
+    parseInt(updatingData.vehicleDriver),
     updatingData.pickUpDate,
     updatingData.returnDate,
     updatingData.rentDay,
     updatingData.totalPayment,
+    updatingData.tax,
     reservationID,
   ];
 
@@ -122,7 +124,7 @@ exports.vehicleReservationUpdateService = async ({
   }
 
   await db.query(
-    "UPDATE reservation SET Pickup_Date = ?, Return_Date = ? , 	Rent_Day =?, total_Payment =? WHERE R_ID = ?",
+    "UPDATE reservation SET D_ID = ?, Pickup_Date = ?, Return_Date = ? , 	Rent_Day =?, total_Payment =? , Tax_Amount = ? WHERE R_ID = ?",
     values
   );
 
@@ -144,11 +146,12 @@ exports.vehicleReservationUpdateService = async ({
   );
 
   await db.query(
-    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID,D_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
     [reservationID,
       findID[0].C_ID,
       findID[0].V_ID,
       vehicle[0].A_ID,
+      parseInt(updatingData.vehicleDriver),
       "updated",
       findID[0].Status,
       "pending",
@@ -220,6 +223,10 @@ exports.SingleVehicleReservationService = async ({ reservationID }) => {
     "SELECT * FROM reservation WHERE R_ID = ?",
     reservationID
   );
+
+  const [driver] = await db.query("SELECT * FROM driver WHERE D_ID = ?", [rows[0].D_ID])
+  rows[0].driverDetail = driver[0]
+
   return rows;
 };
 
