@@ -1,24 +1,24 @@
 const db = require("../../db/config");
-const { v4: uuidv4, v4 } = require("uuid");
+// const { v4: uuidv4, v4 } = require("uuid");
 // const { v4 : uuidv4 } = require('uuid')
 
 
-  exports.allVehicleReservationService = async ({ id }) => {
-    const [rows] = await db.query("SELECT * FROM reservation WHERE C_ID = ? ", [
-      id,
-    ]);
+exports.allVehicleReservationService = async ({ id }) => {
+  const [rows] = await db.query("SELECT * FROM reservation WHERE C_ID = ? ", [
+    id,
+  ]);
 
-    for(let items of rows){
-      let DriverID = items.D_ID
-      if(DriverID == null){
-        continue
-      }
-      const [driver] = await db.query("SELECT * FROM driver WHERE D_ID = ?", [DriverID])
-      items.driverDetail = driver[0] 
-
+  for (let items of rows) {
+    let DriverID = items.D_ID
+    if (DriverID == null) {
+      continue
     }
-    return rows;
-  };
+    const [driver] = await db.query("SELECT * FROM driver WHERE D_ID = ?", [DriverID])
+    items.driverDetail = driver[0]
+
+  }
+  return rows;
+};
 
 // ================================================================================
 
@@ -29,7 +29,7 @@ exports.vehicleReservationService = async ({
   browser,
 }) => {
   const status = "pending";
-  const uuid = v4()
+  const uuid = "1234"
 
   const [vehicleData] = await db.query(
     "SELECT * FROM vehicle WHERE V_ID = ?",
@@ -237,15 +237,15 @@ exports.rentedVehicleService = async ({ userId }) => {
     userId
   );
 
-  for(let items of rows){
-      let DriverID = items.D_ID
-      if(DriverID == null){
-        continue
-      }
-      const [driver] = await db.query("SELECT * FROM driver WHERE D_ID = ?", [DriverID])
-      items.driverDetail = driver[0]
-
+  for (let items of rows) {
+    let DriverID = items.D_ID
+    if (DriverID == null) {
+      continue
     }
+    const [driver] = await db.query("SELECT * FROM driver WHERE D_ID = ?", [DriverID])
+    items.driverDetail = driver[0]
+
+  }
 
   return rows;
 };
@@ -255,15 +255,15 @@ exports.rejectedVehicleService = async ({ userId }) => {
     "SELECT * FROM reservation_logs WHERE C_ID  = ?",
     userId
   );
-  for(let items of rows){
-      let DriverID = items.D_ID
-      if(DriverID == null){
-        continue
-      }
-      const [driver] = await db.query("SELECT * FROM driver WHERE D_ID = ?", [DriverID])
-      items.driverDetail = driver[0] 
-
+  for (let items of rows) {
+    let DriverID = items.D_ID
+    if (DriverID == null) {
+      continue
     }
+    const [driver] = await db.query("SELECT * FROM driver WHERE D_ID = ?", [DriverID])
+    items.driverDetail = driver[0]
+
+  }
   return rows;
 };
 
