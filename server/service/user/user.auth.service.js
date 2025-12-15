@@ -156,3 +156,66 @@ exports.userRegisterService = async (body, browser) => {
 
   return token;
 };
+
+exports.forgotPasswordService = async (email) => {
+
+  const [user] = await db.query(
+    "SELECT C_ID, Email FROM customer WHERE Email = ?",
+    [email]
+  );
+
+  if (user.length === 0) {
+    throw new Error("Email doesn't exist");
+  }
+
+  function generateToken(length = 16) {
+    const chars = '0123456789abcdef';
+    let token = '';
+    for (let i = 0; i < length; i++) {
+      token += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return token;
+  }
+
+  const token = generateToken(32);
+  const expiry = Date.now() + 15 * 60 * 1000;
+
+  await db.query(
+    "UPDATE customer SET reset_token = ?, reset_token_expiry = ? WHERE Email = ?",
+    [token, expiry, email]
+  );
+
+  return { token, email };
+}
+
+exports.tokenExistService = async (token) => {
+  const [user] = await db.query(
+    "SELECT C_ID, reset_token, reset_token_expiry FROM customer WHERE reset_token = ?",
+    [token]
+  );
+  if (user.length === 0) {
+    throw new Error("Invalid token");
+  }
+  const currentTime = Date.now();
+  if (currentTime > user[0].reset_token_expiry) {
+    throw new Error("Token has expired");
+  }
+  return true;
+}
+
+exports.resetPasswordService = async (token, newPassword) => {
+  const [user] = await db.query(
+    "SELECT C_ID FROM customer WHERE reset_token = ?",
+    [token]
+  );
+  if (user.length === 0) {
+    throw new Error("Invalid token");
+  }
+  const saltRounds = 10;
+  let hashedPass = await bcrypt.hash(newPassword, saltRounds);
+  await db.query(
+    "UPDATE customer SET Password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE reset_token = ?",
+    [hashedPass, token]
+  );
+  return true;
+};
