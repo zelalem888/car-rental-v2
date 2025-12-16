@@ -38,6 +38,7 @@ const AnalysisDashboard = () => {
 
                 const data = await res.json();
 
+                console.log("Admin Activity Data:", data.data);
                 setAdminActivity(data.data);
             } catch (err) {
                 console.error(err);
@@ -86,7 +87,7 @@ const AnalysisDashboard = () => {
         <div className="min-h-screen bg-gray-100">
             <div className="relative p-8">
                 {/* --- Summary Cards --- */}
-                {/* <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
                     <div className="bg-white p-4 rounded-lg shadow flex flex-col items-center">
                         <span className="text-gray-500">Total Reservations</span>
                         <span className="text-2xl font-bold text-gray-800">{summary.total}</span>
@@ -106,7 +107,7 @@ const AnalysisDashboard = () => {
                         <span className="text-gray-500">Cancelled</span>
                         <span className="text-2xl font-bold text-red-500">{summary.rejected}</span>
                     </div>
-                </div> */}
+                </div>
 
                 {/* --- Reservation Trend Line Chart --- */}
                 <div className="bg-white shadow rounded-lg p-5 mb-8">
@@ -130,8 +131,12 @@ const AnalysisDashboard = () => {
                             <tr>
                                 <th className="py-3 px-4 text-left">Admin</th>
                                 <th className="py-3 px-4 text-left">Total Actions</th>
+                                <th className="py-3 px-4 text-left">Created</th>
                                 <th className="py-3 px-4 text-left">Approved</th>
+                                <th className="py-3 px-4 text-left">Updated</th>
+                                <th className="py-3 px-4 text-left">Rejected</th>
                                 <th className="py-3 px-4 text-left">Cancelled</th>
+                                <th className="py-3 px-4 text-left">Done</th>
                             </tr>
                         </thead>
 
@@ -158,12 +163,12 @@ const AnalysisDashboard = () => {
                                     >
                                         <td className="py-2 px-4">{admin.adminName}</td>
                                         <td className="py-2 px-4">{admin.totalActions}</td>
-                                        <td className="py-2 px-4 text-green-600">
-                                            {admin.confirmedCount}
-                                        </td>
-                                        <td className="py-2 px-4 text-red-500">
-                                            {admin.cancelledCount}
-                                        </td>
+                                        <td className="py-2 px-4 text-green-600"> {admin.createdCount}</td>
+                                        <td className="py-2 px-4 text-green-600">{admin.confirmedCount}</td>
+                                        <td className="py-2 px-4 text-blue-500"> {admin.updatedCount}</td>
+                                        <td className="py-2 px-4 text-red-500">{admin.rejectedCount}</td>
+                                        <td className="py-2 px-4 text-yellow-500">{admin.cancelledCount}</td>
+                                        <td className="py-2 px-4 text-green-600"> {admin.doneCount}</td>
                                     </tr>
                                 ))
                             )}

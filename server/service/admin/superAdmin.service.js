@@ -217,10 +217,9 @@ exports.AdminActivityService = async () => {
     INNER JOIN admin AS admin
       ON admin.A_ID = log.Admin_ID
     WHERE log.Admin_ID IS NOT NULL
-    GROUP BY admin.A_ID
+    GROUP BY <admin className="A_ID"></admin>
     ORDER BY totalActions DESC
   `;
-
   const [rows] = await db.query(query);
   return rows;
 };
