@@ -7,9 +7,9 @@ const adminSchema = z.object({
   fullName: z.string().min(3).max(50),
   userName: z.string().trim(),
   password: z.string(),
-  phoneNumber:  z
-      .string()
-      .regex(/^\+?\d{10,15}$/, "Invalid phone number format"),
+  phoneNumber: z
+    .string()
+    .regex(/^\+?\d{10,15}$/, "Invalid phone number format"),
   address: z.string(),
   status: z.string(),
   registrationDate: z.string(),
@@ -125,7 +125,7 @@ exports.superAdminUpdateService = async ({ paramID, updatingData }) => {
 };
 
 // =====================================================
-exports.superAdminUpdateDriverService =  async ({ paramID, updatingData }) => {
+exports.superAdminUpdateDriverService = async ({ paramID, updatingData }) => {
   const data = new Date().toLocaleString();
 
   const result = [
@@ -135,7 +135,7 @@ exports.superAdminUpdateDriverService =  async ({ paramID, updatingData }) => {
     updatingData.experience_years,
     updatingData.status,
     data,
-    paramID, 
+    paramID,
   ];
 
   const [findID] = await db.query(
@@ -186,9 +186,9 @@ exports.superAdminDeleteDriverService = async ({ paramID }) => {
 
 // =================================================
 
-exports.addDriverService =  async (body) => {
+exports.addDriverService = async (body) => {
 
-  const driverInfo = [body.fullName, body.phoneNumber, body.license_number,body.experience_years, body.status]
+  const driverInfo = [body.fullName, body.phoneNumber, body.license_number, body.experience_years, body.status]
 
   const [rows] = await db.query(
     "INSERT INTO driver (full_name, phone, license_number, experience_years, status  ) VALUES (?,?,?,?,?)",
@@ -196,3 +196,81 @@ exports.addDriverService =  async (body) => {
   );
 
 };
+
+// ==================================================
+
+exports.AdminActivityService = async () => {
+  const query = `
+    SELECT
+      admin.A_ID AS adminId,
+      admin.FullName AS adminName,
+      COUNT(log.Log_ID) AS totalActions,
+      SUM(log.Action_Type = 'created') AS createdCount,
+      SUM(log.Action_Type = 'updated') AS updatedCount,
+      SUM(log.Action_Type = 'confirmed') AS confirmedCount,
+      SUM(log.Action_Type = 'cancelled') AS cancelledCount,
+      SUM(log.Action_Type = 'rejected') AS rejectedCount,
+      SUM(log.Action_Type = 'done') AS doneCount,
+      SUM(log.Action_Type = 'overdue') AS overdueCount,
+      SUM(log.Action_Type = 'deleted') AS deletedCount
+    FROM reservation_logs AS log
+    INNER JOIN admin AS admin
+      ON admin.A_ID = log.Admin_ID
+    WHERE log.Admin_ID IS NOT NULL
+    GROUP BY admin.A_ID
+    ORDER BY totalActions DESC
+  `;
+
+  const [rows] = await db.query(query);
+  return rows;
+};
+
+// ==================================================
+exports.ReservationSummaryService = async () => {
+
+  const reservationQuery = `
+    SELECT 
+        COUNT(*) AS total_reservations,
+        SUM(Status = 'pending') AS pending,
+        SUM(Status = 'confirmed') AS approved
+    FROM reservation;
+  `;
+  const [reservationRows] = await db.query(reservationQuery);
+  const reservationData = reservationRows[0];
+
+
+  const rejectedQuery = `
+    SELECT COUNT(*) AS rejected
+    FROM reservation_logs
+    WHERE Action_Type = 'rejected';
+  `;
+  const [rejectedRows] = await db.query(rejectedQuery);
+  const rejectedData = rejectedRows[0];
+
+
+  const total = reservationData.total_reservations + rejectedData.rejected;
+
+  return {
+    total,
+    pending: reservationData.pending,
+    approved: reservationData.approved,
+    rejected: rejectedData.rejected
+  };
+};
+
+// ==================================================
+
+exports.VehicleDemandService = async (req, res) => {
+  const query = `
+     SELECT 
+    vehicle.V_ID AS vehicleId,
+    vehicle.V_Name AS vehicleName,
+    COUNT(rent.Rent_ID) AS totalReservations
+FROM rent AS rent
+JOIN vehicle AS vehicle ON vehicle.V_ID = rent.V_ID
+GROUP BY vehicle.V_ID, vehicle.V_Name
+ORDER BY totalReservations DESC;
+  `;
+  const [rows] = await db.query(query);
+  return rows;
+}

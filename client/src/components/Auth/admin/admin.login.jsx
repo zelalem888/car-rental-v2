@@ -57,9 +57,6 @@ function LoginForm() {
       //   return;
       // }
 
-      console.log(data)
-
-
       localStorage.setItem("jwt-token", data.token);
       // localStorage.setItem("user", JSON.stringify(data.user));
 
