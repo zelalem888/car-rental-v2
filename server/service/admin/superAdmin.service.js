@@ -200,28 +200,33 @@ exports.addDriverService = async (body) => {
 // ==================================================
 
 exports.AdminActivityService = async () => {
-  const query = `
-    SELECT
-      admin.A_ID AS adminId,
-      admin.FullName AS adminName,
-      COUNT(log.Log_ID) AS totalActions,
-      SUM(log.Action_Type = 'created') AS createdCount,
-      SUM(log.Action_Type = 'updated') AS updatedCount,
-      SUM(log.Action_Type = 'confirmed') AS confirmedCount,
-      SUM(log.Action_Type = 'cancelled') AS cancelledCount,
-      SUM(log.Action_Type = 'rejected') AS rejectedCount,
-      SUM(log.Action_Type = 'done') AS doneCount,
-      SUM(log.Action_Type = 'overdue') AS overdueCount,
-      SUM(log.Action_Type = 'deleted') AS deletedCount
-    FROM reservation_logs AS log
-    INNER JOIN admin AS admin
-      ON admin.A_ID = log.Admin_ID
-    WHERE log.Admin_ID IS NOT NULL
-    GROUP BY <admin className="A_ID"></admin>
-    ORDER BY totalActions DESC
-  `;
-  const [rows] = await db.query(query);
-  return rows;
+  try {
+    const query = `
+      SELECT
+        admin.A_ID AS adminId,
+        admin.FullName AS adminName,
+        COUNT(log.Log_ID) AS totalActions,
+        SUM(CASE WHEN log.Action_Type = 'created' THEN 1 ELSE 0 END) AS createdCount,
+        SUM(CASE WHEN log.Action_Type = 'updated' THEN 1 ELSE 0 END) AS updatedCount,
+        SUM(CASE WHEN log.Action_Type = 'confirmed' THEN 1 ELSE 0 END) AS confirmedCount,
+        SUM(CASE WHEN log.Action_Type = 'cancelled' THEN 1 ELSE 0 END) AS cancelledCount,
+        SUM(CASE WHEN log.Action_Type = 'rejected' THEN 1 ELSE 0 END) AS rejectedCount,
+        SUM(CASE WHEN log.Action_Type = 'done' THEN 1 ELSE 0 END) AS doneCount,
+        SUM(CASE WHEN log.Action_Type = 'overdue' THEN 1 ELSE 0 END) AS overdueCount,
+        SUM(CASE WHEN log.Action_Type = 'deleted' THEN 1 ELSE 0 END) AS deletedCount
+      FROM reservation_logs AS log
+      INNER JOIN admin AS admin
+        ON admin.A_ID = log.Admin_ID
+      WHERE log.Admin_ID IS NOT NULL
+      GROUP BY admin.A_ID
+      ORDER BY totalActions DESC
+    `;
+    const [rows] = await db.query(query);
+    return rows;
+  } catch (err) {
+    console.error("AdminActivityService Error:", err);
+    throw err;
+  }
 };
 
 // ==================================================
@@ -273,3 +278,26 @@ ORDER BY totalReservations DESC;
   const [rows] = await db.query(query);
   return rows;
 }
+
+// ==================================================
+
+exports.MonthlyReservationTrendService = async () => {
+  const query = `
+    SELECT 
+      MONTH(Pickup_Date) AS month_number,
+      COUNT(*) AS reservations_count
+    FROM rent
+    GROUP BY MONTH(Pickup_Date)
+    ORDER BY MONTH(Pickup_Date);
+  `;
+
+  const [rows] = await db.query(query);
+
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const formattedData = rows.map(row => ({
+    month: monthNames[row.month_number - 1],
+    reservations: row.reservations_count
+  }));
+
+  return formattedData;
+};

@@ -11,7 +11,8 @@ const {
   addDriverService,
   AdminActivityService,
   ReservationSummaryService,
-  VehicleDemandService
+  VehicleDemandService,
+  MonthlyReservationTrendService,
 } = require("../../service/admin/superAdmin.service");
 
 exports.getAllAdminsController = async (req, res) => {
@@ -203,5 +204,17 @@ exports.vehicleDemandController = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// ====================================================
+
+exports.MonthlyReservationTrendController = async (req, res) => {
+  try {
+    const trendData = await MonthlyReservationTrendService();
+    res.json({ success: true, data: trendData });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Failed to fetch reservation trend" });
   }
 };

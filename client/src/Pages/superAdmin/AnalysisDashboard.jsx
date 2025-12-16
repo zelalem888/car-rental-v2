@@ -5,6 +5,7 @@ const AnalysisDashboard = () => {
     const [adminActivity, setAdminActivity] = useState([]);
     const [loadingAdmins, setLoadingAdmins] = useState(true);
     const [vehicleDemand, setVehicleDemand] = useState([]);
+    const [reservationTrend, setReservationTrend] = useState([]);
 
     const [error, setError] = useState(null);
 
@@ -33,7 +34,6 @@ const AnalysisDashboard = () => {
                 const res = await fetch("http://localhost:3000/api/superadmin/admin-activity", {
                     headers: { "jwt-token": token }
                 });
-
                 if (!res.ok) throw new Error("Failed to fetch admin activity");
 
                 const data = await res.json();
@@ -47,24 +47,8 @@ const AnalysisDashboard = () => {
                 setLoadingAdmins(false);
             }
         };
-
         fetchAdminActivity();
     }, []);
-
-    const [reservationTrend, setReservationTrend] = useState([
-        { month: "Jan", reservations: 20 },
-        { month: "Feb", reservations: 35 },
-        { month: "Mar", reservations: 50 },
-        { month: "Apr", reservations: 60 },
-        { month: "May", reservations: 45 },
-        { month: "Jun", reservations: 55 },
-        { month: "Jul", reservations: 70 },
-        { month: "Aug", reservations: 65 },
-        { month: "Sep", reservations: 80 },
-        { month: "Oct", reservations: 90 },
-        { month: "Nov", reservations: 75 },
-        { month: "Dec", reservations: 95 },
-    ]);
 
     useEffect(() => {
         const fetchVehicleDemand = async () => {
@@ -82,6 +66,21 @@ const AnalysisDashboard = () => {
 
         fetchVehicleDemand();
     }, []);
+
+    useEffect(() => {
+        const fetchReservationTrend = async () => {
+            try {
+                const res = await fetch("http://localhost:3000/api/superadmin/reservation-trend");
+                const data = await res.json();
+                if (data.success) setReservationTrend(data.data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchReservationTrend();
+    }, []);
+
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -112,15 +111,19 @@ const AnalysisDashboard = () => {
                 {/* --- Reservation Trend Line Chart --- */}
                 <div className="bg-white shadow rounded-lg p-5 mb-8">
                     <h3 className="text-gray-700 text-lg font-semibold mb-4">Monthly Reservation Trend</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <LineChart data={reservationTrend}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="month" />
-                            <YAxis />
-                            <Tooltip />
-                            <Line type="monotone" dataKey="reservations" stroke="#7F00FF" strokeWidth={3} />
-                        </LineChart>
-                    </ResponsiveContainer>
+                    {reservationTrend.length < 0 ? (
+                        <div>No reservation trend data available</div>
+                    ) : (
+                        <ResponsiveContainer width="100%" height={300}>
+                            <LineChart data={reservationTrend}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="month" />
+                                <YAxis />
+                                <Tooltip />
+                                <Line type="monotone" dataKey="reservations" stroke="#7F00FF" strokeWidth={3} />
+                            </LineChart>
+                        </ResponsiveContainer>)
+                    }
                 </div>
 
                 {/* --- Admin Activity Table --- */}
