@@ -119,6 +119,7 @@ const ConfirmedReservations = () => {
           <thead className="bg-gray-800 text-white">
             <tr>
               <th className="py-3 px-4 text-left">#</th>
+              <th className="py-3 px-4 text-left">Name</th>
               <th className="py-3 px-4 text-left">Date</th>
               <th className="py-3 px-4 text-left">Pickup Date</th>
               <th className="py-3 px-4 text-left">Return Date</th>
@@ -136,6 +137,9 @@ const ConfirmedReservations = () => {
                   }`}
                 >
                   <td className="py-2 px-4">{index + 1}</td>
+                  <td className="py-2 px-4 font-medium text-gray-800">
+                    {r.userName}
+                  </td>
                   <td className="py-2 px-4 font-medium text-gray-800">
                     {r.Posting_Date.slice(0, 10)}
                   </td>

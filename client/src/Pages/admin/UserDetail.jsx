@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import AdminPrintReservation from "../../components/printPDF/AdminPrintReservation";
 
 const UserDetail = () => {
   const navigate = useNavigate();
@@ -49,37 +50,7 @@ const UserDetail = () => {
   ======================= */
 
   const printReservation = (r) => {
-    const win = window.open("", "_blank");
-    win.document.write(`
-      <html>
-        <head>
-          <title>Reservation #${r.R_ID}</title>
-          <style>
-            body { font-family: Arial; padding: 40px; }
-            h1 { margin-bottom: 20px; }
-            table { width: 100%; border-collapse: collapse; }
-            td { padding: 10px; border-bottom: 1px solid #ddd; }
-          </style>
-        </head>
-        <body>
-          <h1>Reservation Receipt</h1>
-          <table>
-            <tr><td>Reservation ID</td><td>${r.R_ID}</td></tr>
-            <tr><td>Status</td><td>${r.Status}</td></tr>
-            <tr><td>Pickup Date</td><td>${new Date(r.Pickup_Date).toDateString()}</td></tr>
-            <tr><td>Return Date</td><td>${new Date(r.Return_Date).toDateString()}</td></tr>
-            <tr><td>Days</td><td>${r.Rent_Day}</td></tr>
-            <tr><td>Total Payment</td><td>$${r.total_Payment}</td></tr>
-            <tr><td>Confirmation</td><td>${r.Confirmation_Number}</td></tr>
-          </table>
-          <script>
-            window.print();
-            window.onafterprint = () => window.close();
-          </script>
-        </body>
-      </html>
-    `);
-    win.document.close();
+   AdminPrintReservation(r)
   };
 
   const printAllLogs = () => {
@@ -160,6 +131,18 @@ const UserDetail = () => {
               Print All Logs
             </button>
           </div>
+          {/* PRINT HEADER (only visible when printing) */}
+            <div className="hidden print:block text-center mb-6">
+              <h1 className="text-2xl font-bold">User Reservation Logs</h1>
+              <p className="text-sm mt-1">
+                Name: {userData[0].FullName} | Email: {userData[0].Email}
+              </p>
+              <p className="text-xs text-gray-600 mt-1">
+                Printed on: {new Date().toLocaleString()}
+              </p>
+              <hr className="mt-4" />
+            </div>
+
 
           <table className="w-full text-sm">
             <thead className="bg-gray-100">

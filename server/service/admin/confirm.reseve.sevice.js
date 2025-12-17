@@ -10,6 +10,12 @@ exports.pendingReservationService = async () => {
     "SELECT * FROM reservation WHERE status = ? ",
     "pending"
   );
+
+  for(let name of rows){
+    const [namedata] = await db.query("SELECT FullName FROM customer WHERE C_ID = ?", name.C_ID)
+    name.userName = namedata[0].FullName
+  }
+
   return rows;
 };
 // ==============================================================
@@ -18,6 +24,11 @@ exports.confirmedReservationService = async () => {
     "SELECT * FROM reservation WHERE status = ? ",
     "confirmed"
   );
+  for(let name of rows){
+    const [namedata] = await db.query("SELECT FullName FROM customer WHERE C_ID = ?", name.C_ID)
+    name.userName = namedata[0].FullName
+  }
+ 
   return rows;
 };
 // ===============================================================

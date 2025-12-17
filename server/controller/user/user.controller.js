@@ -4,7 +4,8 @@ const {
   UsersDetailService,
   usersInfoUpdateService,
   usersInfoDeleteService,
-  usersUpdatePasswordService
+  usersUpdatePasswordService,
+  UserDocumentService
 } = require("../../service/user/user.service");
 
 exports.allUsersController = async (req, res) => {
@@ -100,6 +101,19 @@ exports.usersInfoDeleteController = async (req, res) => {
     const result = await usersInfoDeleteService(req.params.id, browser);
 
     res.status(200).json({ message: "Account Deleted successfully.", ID: result });
+  } catch (error) {
+    res.status(400).json({ message: error });
+  }
+};
+
+// =======================================================
+
+exports.UserDocumentController =  async (req, res) => {
+  try {
+    const browser =  req.headers["user-agent"];
+    const result = await UserDocumentService(req.params.id, req.files,browser);
+
+    res.status(200).json({ message: "Document add successfully."});
   } catch (error) {
     res.status(400).json({ message: error });
   }

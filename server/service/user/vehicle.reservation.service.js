@@ -73,7 +73,9 @@ exports.vehicleReservationService = async ({
   const [uuID] = await db.query("SELECT Confirmation_Number FROM reservation WHERE R_ID = ?", rows.insertId)
 
   await db.query(
+
     "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID,D_ID, Admin_ID, Action_Type, Old_Status,New_Status, Tax_Amount, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+
     [
       rows.insertId,
       userId,
@@ -200,11 +202,12 @@ exports.vehicleReservationDeleteService = async ({
     findID[0].V_ID
   );
   await db.query(
-    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, D_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
     [reservationID,
       findID[0].C_ID,
       findID[0].V_ID,
       vehicle[0].A_ID,
+      findID[0].D_ID,
       "deleted",
       findID[0].Status,
       "Reservation Deleted",
