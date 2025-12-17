@@ -9,7 +9,11 @@ const {
   getAllDriversController,
   superAdminDeleteDriverController,
   getSingleDriverController,
-  superAdminUpdateDriverController
+  superAdminUpdateDriverController,
+  adminActiviyController,
+  reservationSummeryController,
+  vehicleDemandController,
+  MonthlyReservationTrendController
 } = require("../../controller/admin/superAdmin.controller");
 
 const router = express.Router();
@@ -53,5 +57,21 @@ router.delete("/superadmin/delete/driver/:id", superAdminDeleteDriverController)
 // ===============add driver api=====================
 
 router.post('/superadmin/driveradd', addDriverController)
+
+// ==================Admin Activity=====================
+
+router.get("/superadmin/admin-activity", adminActiviyController)
+
+// ==================reservation summery=====================
+
+router.get("/superadmin/reservation-summary", reservationSummeryController)
+
+// ==================vehicle demand=====================
+
+router.get("/superadmin/vehicle-demand", vehicleDemandController)
+
+// ==================monthly reservation trend=====================
+
+router.get("/superadmin/reservation-trend", MonthlyReservationTrendController)
 
 module.exports = router;

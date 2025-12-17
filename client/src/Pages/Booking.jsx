@@ -20,6 +20,7 @@ const CarDetailPage = () => {
   const [pay, setPay] = useState(0);
   const [tax, setTax] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [driverPrice, setDriverPrice] = useState(0);
   const year = new Date().getFullYear();
   const month = new Date().getMonth();
 
@@ -44,9 +45,6 @@ const CarDetailPage = () => {
         const resultVerify = await responseVerify.json();
         setUserData(resultVerify);
 
-        // console.log(resultVerify);
-
-
         const response = await fetch(`http://localhost:3000/api/vehicle/${id}`);
         if (!response.ok) {
           const errorData = await response.json();
@@ -60,10 +58,8 @@ const CarDetailPage = () => {
         setImageCount(result[0].image.length);
 
 
-        // console.log(result);
-
         const driverResult = await fetch(`http://localhost:3000/api/driver/active`)
-        if(!driverResult.ok){
+        if (!driverResult.ok) {
           console.log("there is no driver available right now.")
           return
         }
@@ -81,10 +77,8 @@ const CarDetailPage = () => {
     returnDate: "",
     rentDay: 0,
     vehicleDriver: "NoDriver",
-    Payment: 0,
     tax: 0,
     TotalPayment: 0,
-
   });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
@@ -124,6 +118,8 @@ const CarDetailPage = () => {
     }
   };
 
+  const DRIVER_FEE_PER_DAY = 100;
+
   const selectHandler = (range) => {
     setSelected(range);
 
@@ -140,24 +136,35 @@ const CarDetailPage = () => {
     // base price
     const payAmount = pricePerDay * totalRentDay;
 
+    // driver fee (ONLY if selected)
+    let driverFee = 0;
+
+    if (rentalDetails.vehicleDriver !== "NoDriver") {
+      driverFee = DRIVER_FEE_PER_DAY * totalRentDay;
+    }
+    setDriverPrice(driverFee);
+
+    const subTotal = payAmount + driverFee;
+
     // tax and total with rounding
-    const taxAmount = parseFloat((payAmount * 0.15).toFixed(2));
-    const totalPayment = parseFloat((payAmount + taxAmount).toFixed(2));
+    const taxAmount = parseFloat((subTotal * 0.15).toFixed(2));
+    const totalPayment = parseFloat((subTotal + taxAmount).toFixed(2));
 
     // show on UI
-    setPay(payAmount);
+    setPay(subTotal);
     setTax(taxAmount);
     setTotalPrice(totalPayment);
 
-    // SEND TO BACKEND (you removed this!)
-    setRentalDetails((prev)=>( {
+    // SEND TO BACKEND 
+    setRentalDetails((prev) => ({
       ...prev,
       pickUpDate: range.from.toLocaleDateString("en-CA"),
       returnDate: range.to.toLocaleDateString("en-CA"),
       rentDay: totalRentDay,
-      Payment: payAmount,
+      Payment: subTotal,
       tax: taxAmount,
       TotalPayment: totalPayment,
+      vehicleDriver: prev.vehicleDriver
     }));
   };
 
@@ -268,6 +275,12 @@ const CarDetailPage = () => {
                     <td className="p-3 text-green-900 font-semibold">Payment</td>
                     <td className="p-3 text-xl">{pay} Birr</td>
                   </tr>
+                  {driverPrice > 0 && (
+                    <tr>
+                      <td className="p-3 text-green-900 font-semibold">Driver</td>
+                      <td className="p-3 text-xl">{driverPrice} Birr</td>
+                    </tr>
+                  )}
                   <tr>
                     <td className="p-3 text-green-900 font-semibold">Tax (15%)</td>
                     <td className="p-3 text-xl">{tax} Birr</td>
@@ -294,13 +307,39 @@ const CarDetailPage = () => {
 
             <div className="flex flex-col  mt-4">
               <label className="text-sm text-gray-600">Pick a Driver</label>
-              <select onChange={(e)=> setRentalDetails((prev)=>( {...prev, vehicleDriver : e.target.value}))}
-              value={rentalDetails.vehicleDriver}
-              name="driver"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none">
+              <select
+                value={rentalDetails.vehicleDriver}
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  let newDriverPrice = 0;
+
+                  if (value !== "NoDriver") {
+                    newDriverPrice = DRIVER_FEE_PER_DAY * dateDiff;
+                  }
+
+                  setDriverPrice(newDriverPrice);
+
+                  setRentalDetails((prev) => ({
+                    ...prev,
+                    vehicleDriver: value,
+                  }));
+
+                  const baseRent = selectedCar[0].Price_Per_Day * dateDiff;
+                  const subTotal = baseRent + newDriverPrice;
+                  const taxAmount = parseFloat((subTotal * 0.15).toFixed(2));
+                  const totalPayment = parseFloat((subTotal + taxAmount).toFixed(2));
+
+                  setPay(subTotal);
+                  setTax(taxAmount);
+                  setTotalPrice(totalPayment);
+                }}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2"
+              >
+
                 <option value="NoDriver">No Driver</option>
                 <option value="random" >Random</option>
-                {driver?.map((drivers)=>(
+                {driver?.map((drivers) => (
                   <option key={drivers.D_ID} value={drivers.D_ID}>{drivers.full_name}</option>
                 ))}
               </select>

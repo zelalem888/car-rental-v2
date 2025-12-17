@@ -1,5 +1,19 @@
-const { getSingleAdminService, getAllAdminsService, getAllDriversService, superAdminCreateService, superAdminUpdateService, superAdminUpdateDriverService , getSingleDriverService, superAdminDeleteService, superAdminDeleteDriverService, addDriverService } = require("../../service/admin/superAdmin.service");
-
+const {
+  getSingleAdminService,
+  getAllAdminsService,
+  getAllDriversService,
+  superAdminCreateService,
+  superAdminUpdateService,
+  superAdminUpdateDriverService,
+  getSingleDriverService,
+  superAdminDeleteService,
+  superAdminDeleteDriverService,
+  addDriverService,
+  AdminActivityService,
+  ReservationSummaryService,
+  VehicleDemandService,
+  MonthlyReservationTrendService,
+} = require("../../service/admin/superAdmin.service");
 
 exports.getAllAdminsController = async (req, res) => {
   try {
@@ -13,7 +27,7 @@ exports.getAllAdminsController = async (req, res) => {
     console.log(error)
     return res.status(500).json({
       success: false,
-      message:"Internal server error",
+      message: "Internal server error",
     });
   }
 };
@@ -32,7 +46,7 @@ exports.getAllDriversController = async (req, res) => {
     console.log(error)
     return res.status(500).json({
       success: false,
-      message:"Internal server error",
+      message: "Internal server error",
     });
   }
 };
@@ -85,7 +99,7 @@ exports.superAdminCreateController = async (req, res) => {
     res.status(200).json({ message: "admin registered successfully." });
   } catch (error) {
     console.log(error)
-    res.status(500).json({ message:"internal Error" });
+    res.status(500).json({ message: "internal Error" });
   }
 }
 // ================================================
@@ -103,7 +117,7 @@ exports.superAdminUpdateController = async (req, res) => {
 }
 // ========================================================
 
-exports.superAdminUpdateDriverController =  async (req, res) => {
+exports.superAdminUpdateDriverController = async (req, res) => {
 
   try {
     const result = await superAdminUpdateDriverService({ paramID: req.params.id, updatingData: req.body })
@@ -149,3 +163,58 @@ exports.addDriverController = async (req, res) => {
   }
 };
 
+// ====================================================
+
+exports.adminActiviyController = async (req, res) => {
+  try {
+    const data = await AdminActivityService();
+    res.status(200).json({
+      success: true,
+      data
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// ====================================================
+
+exports.reservationSummeryController = async (req, res) => {
+  try {
+    const summary = await ReservationSummaryService();
+    res.json(summary);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ====================================================
+
+exports.vehicleDemandController = async (req, res) => {
+  try {
+    const demandData = await VehicleDemandService();
+    res.status(200).json({
+      success: true,
+      data: demandData
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// ====================================================
+
+exports.MonthlyReservationTrendController = async (req, res) => {
+  try {
+    const trendData = await MonthlyReservationTrendService();
+    res.json({ success: true, data: trendData });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Failed to fetch reservation trend" });
+  }
+};
