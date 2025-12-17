@@ -42,9 +42,7 @@ exports.adminLoginService = async (data, browser) => {
     ]
   );
 
-  // console.log(rows)
   const JWTSecretKey = process.env.JWT_ADMIN_SECRET;
-  // console.log(JWTSecretKey)
 
   const id = rows[0].A_ID;
   const name = rows[0].Username;
@@ -60,12 +58,6 @@ exports.adminLoginService = async (data, browser) => {
   const response = {
     user: rows[0], token,
   };
-  // console.log("eere zeleke " + response.user)
-  // const token = jwt.sign(jwtData, JWTSecretKey);
-  // const response = { rows, token };
-
-  //   return response;
-  // };
 
   return response;
 }

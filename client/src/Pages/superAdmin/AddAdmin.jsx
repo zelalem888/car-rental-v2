@@ -36,7 +36,7 @@ const AddAdmin = () => {
                 }
 
                 const data = await res.json();
-                if(data.user.type !="superadmin"){
+                if (data.user.type != "superadmin") {
                     // localStorage.removeItem("jwt-token")
                     navigate(`/admin`)
                 }

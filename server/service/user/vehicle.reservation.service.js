@@ -39,8 +39,7 @@ exports.vehicleReservationService = async ({
   const values = [
     userId,
     vehicleId,
-    reservationData.vehicleDriver == "NoDriver" ? null : reservationData.vehicleDriver
-    ,
+    reservationData.vehicleDriver == "NoDriver" ? null : reservationData.vehicleDriver,
     reservationData.pickUpDate,
     reservationData.returnDate,
     reservationData.rentDay,
@@ -59,9 +58,9 @@ exports.vehicleReservationService = async ({
     [
       userId,
       "customer",
-      "Created Reservation.",
+      "Reservation Created.",
       rows.insertId,
-      `Created Reservation by userID ${userId}`,
+      `Reservation Created by userID ${userId}`,
       browser,
     ]
   );
@@ -74,22 +73,24 @@ exports.vehicleReservationService = async ({
   const [uuID] = await db.query("SELECT Confirmation_Number FROM reservation WHERE R_ID = ?", rows.insertId)
 
   await db.query(
-    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, D_ID, Action_Type, Old_Status,New_Status, Tax_Amount, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID,D_ID, Admin_ID, Action_Type, Old_Status,New_Status, Tax_Amount, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+
     [
       rows.insertId,
       userId,
       vehicleId,
-      vehicle[0].A_ID,
       reservationData.vehicleDriver == "NoDriver" ? null : reservationData.vehicleDriver,
+      vehicle[0].A_ID,
       "created",
       "No status",
       "pending",
+      reservationData.tax,
       reservationData.pickUpDate,
       reservationData.returnDate,
       reservationData.rentDay,
-      reservationData.tax,
       vehicle[0].Price_Per_Day,
-      reservationData.totalPayment,
+      reservationData.TotalPayment,
       uuID[0].Confirmation_Number
     ]
   );
@@ -147,7 +148,7 @@ exports.vehicleReservationUpdateService = async ({
   );
 
   await db.query(
-    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, D_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID,D_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day,Tax_Amount, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
     [reservationID,
       findID[0].C_ID,
       findID[0].V_ID,
@@ -160,6 +161,7 @@ exports.vehicleReservationUpdateService = async ({
       updatingData.returnDate,
       updatingData.rentDay,
       vehicle[0].Price_Per_Day,
+      updatingData.tax,
       updatingData.totalPayment,
       findID[0].Confirmation_Number
     ]

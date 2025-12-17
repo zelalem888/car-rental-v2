@@ -14,7 +14,6 @@ import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import LearnMore from "./Pages/LearnMore";
 import UpdateVehicle from "./Pages/admin/UpdateVehicle";
-// import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import { MainLayout } from "./layout/MainLayout";
 import { AuthLayout } from "./layout/AuthLayout";
 import { AdminLayout } from "./layout/AdminLayout";
@@ -24,6 +23,7 @@ import LoginForm from "./components/Auth/admin/admin.login";
 import AdminVehicle from "./Pages/admin/Vehicles";
 import AddVehicle from "./Pages/admin/AddVehicle";
 import AddDriver from "./Pages/superAdmin/AddDriver";
+import AnalysisDashboard from "./Pages/superAdmin/AnalysisDashboard";
 import PendingReserve from "./Pages/admin/pendingReserve";
 import UserAccount from "./Pages/UserAccount";
 import MyReservation from "./Pages/MyReservation";
@@ -91,8 +91,8 @@ function App() {
             <Route path="/admin/update/:vname/:vid" element={<UpdateVehicle />} />
             <Route path="/admin/pending" element={<PendingReserve />} />
             <Route path="/admin/confirmed" element={<ConfirmedReservations />} />
-            <Route path="/admin/users" element= {<Users />} />
-            <Route path="/admin/user/:id" element = {<UserDetail />} />
+            <Route path="/admin/users" element={<Users />} />
+            <Route path="/admin/user/:id" element={<UserDetail />} />
           </Route>
 
           {/* super admin Main layout */}
@@ -103,7 +103,8 @@ function App() {
             <Route path="/superadmin/add-admin" element={<AddAdmin />} />
             <Route path="/superadmin/update-admin/:id" element={<UpdateAdmin />} />
             <Route path="/superadmin/update-driver/:id" element={<UpdateDriver />} />
-            <Route path="/superadmin/add-driver" element = {<AddDriver />} />
+            <Route path="/superadmin/add-driver" element={<AddDriver />} />
+            <Route path="superadmin/analytics" element={<AnalysisDashboard />} />
 
           </Route>
           <Route path="/terms-and-conditions" element={<TermAndCondition />} />

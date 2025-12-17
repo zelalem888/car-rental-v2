@@ -16,7 +16,7 @@ const MyReservation = () => {
   const [confirmed, setConfirmed] = useState([]);
   const [old, setOld] = useState([]);
   const [reject, setReject] = useState([]);
-  const [findDriver ,  setFindDriver]  = useState()
+  const [findDriver, setFindDriver] = useState()
   const [history, setHistory] = useState("pending");
 
   const navigate = useNavigate();
@@ -177,7 +177,7 @@ const MyReservation = () => {
     }
 
     const result = await response.json();
-    
+
     print(result)
   }
 
@@ -305,18 +305,18 @@ const MyReservation = () => {
                   <p>
                     <strong>Total Payment:</strong> {item.total_Payment} Birr
                   </p>
-                  {item.D_ID === null ? 
-                   <p>
-                    <strong>Driver: </strong> No
-                  </p> : (
-                  <p>
-                    <strong>Driver: </strong> {item.driverDetail.full_name}
-                  </p>
-                  )}
-                   {item.D_ID === null ? "" : (
-                  <p>
-                    <strong>Driver Phone Number: </strong> {item.driverDetail.phone}
-                  </p>
+                  {item.D_ID === null ?
+                    <p>
+                      <strong>Driver: </strong> No
+                    </p> : (
+                      <p>
+                        <strong>Driver: </strong> {item.driverDetail.full_name}
+                      </p>
+                    )}
+                  {item.D_ID === null ? "" : (
+                    <p>
+                      <strong>Driver Phone Number: </strong> {item.driverDetail.phone}
+                    </p>
                   )}
                   <p>
                     <strong>Posted:</strong>{" "}
@@ -407,18 +407,18 @@ const MyReservation = () => {
                   <p>
                     <strong>Total Payment:</strong> {item.total_Payment} Birr
                   </p>
-                  {item.D_ID === null ? 
-                   <p>
-                    <strong>Driver: </strong> No
-                  </p> : (
-                  <p>
-                    <strong>Driver: </strong> {item.driverDetail.full_name}
-                  </p>
-                  )}
-                   {item.D_ID === null ? "" : (
-                  <p>
-                    <strong>Driver Phone Number: </strong> {item.driverDetail.phone}
-                  </p>
+                  {item.D_ID === null ?
+                    <p>
+                      <strong>Driver: </strong> No
+                    </p> : (
+                      <p>
+                        <strong>Driver: </strong> {item.driverDetail.full_name}
+                      </p>
+                    )}
+                  {item.D_ID === null ? "" : (
+                    <p>
+                      <strong>Driver Phone Number: </strong> {item.driverDetail.phone}
+                    </p>
                   )}
                   <p>
                     <strong>Posted:</strong>{" "}
@@ -504,18 +504,18 @@ const MyReservation = () => {
                   <p>
                     <strong>Refund:</strong> {item.Refund || 0} birr
                   </p>
-                  {item.D_ID === null ? 
-                   <p>
-                    <strong>Driver: </strong> No
-                  </p> : (
-                  <p>
-                    <strong>Driver: </strong> {item.driverDetail.full_name}
-                  </p>
-                  )}
-                   {item.D_ID === null ? "" : (
-                  <p>
-                    <strong>Driver Phone Number: </strong> {item.driverDetail.phone}
-                  </p>
+                  {item.D_ID === null ?
+                    <p>
+                      <strong>Driver: </strong> No
+                    </p> : (
+                      <p>
+                        <strong>Driver: </strong> {item.driverDetail.full_name}
+                      </p>
+                    )}
+                  {item.D_ID === null ? "" : (
+                    <p>
+                      <strong>Driver Phone Number: </strong> {item.driverDetail.phone}
+                    </p>
                   )}
                 </div>
               </div>
@@ -600,18 +600,18 @@ const MyReservation = () => {
                   <p>
                     <strong>Refund:</strong> {item.Refund || 0} birr
                   </p>
-                  {item.D_ID === null ? 
-                   <p>
-                    <strong>Driver: </strong> No
-                  </p> : (
-                  <p>
-                    <strong>Driver: </strong> {item.driverDetail.full_name}
-                  </p>
-                  )}
-                   {item.D_ID === null ? "" : (
-                  <p>
-                    <strong>Driver Phone Number: </strong> {item.driverDetail.phone}
-                  </p>
+                  {item.D_ID === null ?
+                    <p>
+                      <strong>Driver: </strong> No
+                    </p> : (
+                      <p>
+                        <strong>Driver: </strong> {item.driverDetail.full_name}
+                      </p>
+                    )}
+                  {item.D_ID === null ? "" : (
+                    <p>
+                      <strong>Driver Phone Number: </strong> {item.driverDetail.phone}
+                    </p>
                   )}
                 </div>
               </div>
