@@ -81,7 +81,6 @@ exports.vehicleReservationService = async ({
       vehicleId,
       reservationData.vehicleDriver == "NoDriver" ? null : reservationData.vehicleDriver,
       vehicle[0].A_ID,
-      reservationData.vehicleDriver == "NoDriver" ? null : reservationData.vehicleDriver,
       "created",
       "No status",
       "pending",
