@@ -1,78 +1,206 @@
-import React from 'react'
+import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 const DigitalID = () => {
+  const { id } = useParams();
+  const navigate = useNavigate()
+
+  const [previews, setPreviews] = useState({
+    digital_id: null,
+    driver_license: null,
+    collateral_doc: null,
+    bank_check: null,
+  });
+ const [form, setForm] = useState({
+    digital_id: null,
+    driver_license: null,
+    collateral_doc: null,
+    bank_check: null,
+  });
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+
+    if (files && files[0]) {
+      setPreviews((prev) => ({
+        ...prev,
+        [name]: URL.createObjectURL(files[0]),
+      }));
+
+      setForm((prev)=>({
+        ...prev,
+        [name] : files[0]
+      }))
+
+    }
+  };
+
+  const handleSubmit =async (e) => {
+    e.preventDefault();
+
+    console.log(previews)
+    const formData = new FormData()
+    formData.append("reservation_id", id);
+    formData.append("digital_id", form.digital_id)
+    formData.append("driver_license", form.driver_license)
+    formData.append("collateral_doc", form.collateral_doc)
+    formData.append("bank_check", form.bank_check)
+
+    console.log("Submitting documents...");
+    const response = await fetch(`http://localhost:3000/api/user/upload/document/${id}`, {
+        method: "POST",
+        body: formData,
+    })
+    if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error)
+      }
+      const successData = await response.json()
+      // alert(successData.message)
+      console.log(successData)
+      navigate("/")
+
+  };
+
+  const Preview = ({ src }) => {
+    if (!src) return null;
+
+    return (
+      <div className="mt-3">
+        <img
+          src={src}
+          alt="Preview"
+          className="max-h-48 rounded-md border bg-gray-50 object-contain"
+        />
+      </div>
+    );
+  };
 
   return (
-    <div className="max-w-lg mx-auto mt-20 p-6 bg-white rounded-2xl shadow-lg">
-      <h2 className="text-2xl font-semibold mb-2">Digital ID — Photo Upload</h2>
-      <p className="text-sm text-gray-500 mb-4">
-        Take a clear photo of your ID. Camera-only upload.
+    <form
+      onSubmit={handleSubmit}
+      encType="multipart/form-data"
+      className="w-full max-w-5xl mx-auto my-20 px-6"
+    >
+      {/* Header */}
+      <h1 className="text-2xl font-semibold text-gray-900">
+        Document Verification
+      </h1>
+      <p className="text-sm text-gray-500 mt-1">
+        Upload the required documents to proceed.
       </p>
 
-      <div className="relative bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg p-4 flex flex-col items-center">
+      <div className="h-px bg-gray-200 my-6" />
 
-        {/* Preview box (no JS yet) */}
-        <div className="w-full h-56 rounded-md overflow-hidden bg-black hidden">
-          <img className="object-contain w-full h-full" />
-        </div>
+      <div className="space-y-8">
 
-        {/* Camera frame placeholder */}
-        <div className="w-full h-56 rounded-md overflow-hidden relative flex items-center justify-center">
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-11/12 h-3/5 border-2 border-white/80 rounded-md shadow-inner backdrop-blur-sm"></div>
-          </div>
-          <p className="text-gray-400 text-sm text-center px-4">
-            Align your ID inside the rectangle and take a photo.
-          </p>
-        </div>
-
-        {/* Inputs */}
-        <input type="file" accept="image/*" capture="environment" className="hidden" />
-        <input type="file" accept="image/*" capture="environment" className="hidden" />
-
-        {/* Buttons */}
-        <div className="mt-4 flex gap-3">
-          <label className="px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer shadow-sm text-sm">
-            <span>Open Camera</span>
-            <input
-              type="file"
-              accept="image/*"
-              capture="environment"
-              className="hidden"
-            />
+        {/* Digital ID */}
+        <div>
+          <label className="block font-medium text-gray-800">
+            Digital ID <span className="text-xs text-red-500">(Required)</span>
           </label>
 
-          <button className="px-4 py-2 bg-white border rounded-lg shadow-sm text-sm">
-            Choose Photo
-          </button>
+          <input
+            type="file"
+            name="digital_id"
+            accept="image/*,.pdf"
+            required
+            onChange={handleFileChange}
+            className="mt-2 block w-full text-sm
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-md file:border-0
+              file:bg-blue-50 file:text-blue-700
+              hover:file:bg-blue-100"
+          />
+
+          <Preview src={previews.digital_id} />
         </div>
 
-        {/* Second buttons (inactive, shown for UI only) */}
-        <div className="hidden mt-4 flex gap-3">
-          <button className="px-4 py-2 bg-green-600 text-white rounded-lg shadow-sm text-sm">
-            Upload Photo
-          </button>
-          <button className="px-4 py-2 bg-white border rounded-lg shadow-sm text-sm">
-            Retake
-          </button>
+        {/* Driver License */}
+        <div>
+          <label className="block font-medium text-gray-800">
+            Driver License{" "}
+            <span className="text-xs text-gray-500">
+              (Optional if company driver is used)
+            </span>
+          </label>
+
+          <input
+            type="file"
+            name="driver_license"
+            accept="image/*,.pdf"
+            onChange={handleFileChange}
+            className="mt-2 block w-full text-sm
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-md file:border-0
+              file:bg-gray-50 file:text-gray-700
+              hover:file:bg-gray-100"
+          />
+
+          <Preview src={previews.driver_license} />
         </div>
 
-        {/* Messages */}
-        <p className="text-sm text-red-500 mt-3 hidden">Error message</p>
-        <p className="text-sm text-green-600 mt-3 hidden">Success</p>
+        {/* Collateral */}
+        <div>
+          <label className="block font-medium text-gray-800">
+            Collateral Document{" "}
+            <span className="text-xs text-red-500">(Required)</span>
+          </label>
 
-        <div className="w-full mt-4 text-xs text-gray-400">
-          <p>Camera photos only. Max file size: 5 MB.</p>
+          <input
+            type="file"
+            name="collateral_doc"
+            accept="image/*,.pdf"
+            required
+            onChange={handleFileChange}
+            className="mt-2 block w-full text-sm
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-md file:border-0
+              file:bg-blue-50 file:text-blue-700
+              hover:file:bg-blue-100"
+          />
+
+          <Preview src={previews.collateral_doc} />
+        </div>
+
+        {/* Bank Check */}
+        <div>
+          <label className="block font-medium text-gray-800">
+            Bank Check{" "}
+            <span className="text-xs text-gray-500">(If available)</span>
+          </label>
+
+          <input
+            type="file"
+            name="bank_check"
+            accept="image/*,.pdf"
+            onChange={handleFileChange}
+            className="mt-2 block w-full text-sm
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-md file:border-0
+              file:bg-gray-50 file:text-gray-700
+              hover:file:bg-gray-100"
+          />
+
+          <Preview src={previews.bank_check} />
         </div>
       </div>
 
-      <ul className="mt-4 text-sm text-gray-500 space-y-1">
-        <li>• Use a plain background.</li>
-        <li>• Avoid glare and shadows.</li>
-        <li>• Keep the entire ID visible.</li>
-      </ul>
-    </div>
-  );
-}
+      <div className="h-px bg-gray-200 my-8" />
 
-export default DigitalID
+      <div className="flex flex-col md:flex-row md:justify-between gap-4">
+        <p className="text-xs text-gray-400">
+          JPG, PNG, PDF • Max 5MB per document
+        </p>
+
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-8 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
+        >
+          Submit Documents
+        </button>
+      </div>
+    </form>
+  );
+};
+
+export default DigitalID;

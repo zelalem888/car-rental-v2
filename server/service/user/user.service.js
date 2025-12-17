@@ -1,6 +1,8 @@
 const db = require("../../db/config");
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt");
+const fs = require("fs");
+
 
 
 
@@ -169,3 +171,48 @@ exports.usersInfoDeleteService = async (id,browser) => {
 
   return paramID;
 };
+
+// ==============================================================
+exports.UserDocumentService = async (id, files, browser) => {
+  if (!files || Object.keys(files).length === 0) {
+    throw new Error("No documents uploaded");
+  }
+
+  const documents = {
+    digital_id: files.digital_id?.[0]?.filename || null,
+    driver_license: files.driver_license?.[0]?.filename || null,
+    collateral_doc: files.collateral_doc?.[0]?.filename || null,
+    bank_check: files.bank_check?.[0]?.filename || null,
+  };
+
+  // Required validation
+  if (!documents.digital_id || !documents.collateral_doc) {
+    throw new Error("Digital ID and Collateral Document are required");
+  }
+
+  const savedPaths = {
+    digital_id: documents.digital_id
+      ? `/uploads/userDocument/${documents.digital_id}`
+      : null,
+
+    driver_license: documents.driver_license
+      ? `/uploads/userDocument/${documents.driver_license}`
+      : null,
+
+    collateral_doc: documents.collateral_doc
+      ? `/uploads/userDocument/${documents.collateral_doc}`
+      : null,
+
+    bank_check: documents.bank_check
+      ? `/uploads/userDocument/${documents.bank_check}`
+      : null,
+  };
+
+
+  const [rows] = await db.query("UPDATE customer SET Documents = ?  WHERE C_ID = ?", [JSON.stringify(savedPaths) , id])
+
+  await db.query("INSERT INTO user_logs (User_ID, Role, Action, Description,Device) VALUES (?,?,?,?,?)",[id,"customer" ,"inserted Documents", `Document inserted by userID ${id}`, browser])
+
+  return rows;
+};
+
