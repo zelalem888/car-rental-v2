@@ -14,7 +14,8 @@ const {
   VehicleDemandService,
   MonthlyReservationTrendService,
   IncomeSummaryService,
-  MonthlyIncomeTrendService
+  MonthlyIncomeTrendService,
+  UserAnalysisService
 } = require("../../service/admin/superAdmin.service");
 
 exports.getAllAdminsController = async (req, res) => {
@@ -227,7 +228,6 @@ exports.IncomeSummaryController = async (req, res) => {
   try {
     const data = await IncomeSummaryService();
     res.status(200).json(data);
-    console.log(data);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to fetch income summary" });
@@ -243,5 +243,17 @@ exports.MonthlyIncomeTrendController = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to fetch monthly income trend" });
+  }
+};
+
+// ==================================================
+
+exports.UserAnalysisController = async (req, res) => {
+  try {
+    const data = await UserAnalysisService(req.db);
+    res.status(200).json(data);
+  } catch (error) {
+    console.error("User analysis error:", error);
+    res.status(500).json({ message: "Failed to fetch user analysis" });
   }
 };
