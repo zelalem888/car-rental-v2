@@ -8,6 +8,7 @@ const AnalysisDashboard = () => {
     const [reservationTrend, setReservationTrend] = useState([]);
     const [totalIncome, setTotalIncome] = useState(0);
     const [monthlyIncome, setMonthlyIncome] = useState([]);
+    const [userAnalysis, setUserAnalysis] = useState(null);
 
 
     const [error, setError] = useState(null);
@@ -112,6 +113,25 @@ const AnalysisDashboard = () => {
     useEffect(() => {
         fetchMonthlyIncome();
     }, []);
+
+
+    const fetchUserAnalysis = async () => {
+        const res = await fetch("http://localhost:3000/api/superadmin/user-analysis");
+        if (!res.ok) throw new Error("Failed to fetch user analysis");
+        return res.json();
+    };
+
+    useEffect(() => {
+        fetchUserAnalysis()
+            .then(setUserAnalysis)
+            .catch(err => console.error(err));
+    }, []);
+
+    const userTrendData =
+        userAnalysis?.monthlyTrend?.map(item => ({
+            month: item.month,
+            users: item.users
+        })) || [];
 
 
     return (
@@ -274,6 +294,65 @@ const AnalysisDashboard = () => {
                                 </LineChart>
                             </ResponsiveContainer></>)}
                 </div>
+
+
+                {/* --- User Analysis Section --- */}
+                {userAnalysis && (
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
+                        <div className="bg-white p-5 rounded-xl shadow">
+                            <p className="text-gray-500">Total Users</p>
+                            <h2 className="text-3xl font-bold">{userAnalysis.totalUsers}</h2>
+                        </div>
+
+                        <div className="bg-white p-5 rounded-xl shadow">
+                            <p className="text-gray-500">New This Month</p>
+                            <h2 className="text-3xl font-bold">
+                                {userAnalysis.newUsersThisMonth}
+                            </h2>
+                        </div>
+
+                        <div className="bg-white p-5 rounded-xl shadow">
+                            <p className="text-gray-500">Last Month</p>
+                            <h2 className="text-3xl font-bold">
+                                {userAnalysis.newUsersLastMonth}
+                            </h2>
+                        </div>
+
+                        <div className="bg-white p-5 rounded-xl shadow">
+                            <p className="text-gray-500">Growth</p>
+                            <h2 className="text-3xl font-bold text-green-600">
+                                {userAnalysis.growthPercentage}%
+                            </h2>
+                        </div>
+                    </div>
+                )}
+
+                {/* --- Monthly User Registration Trend Line Chart --- */}
+                <div className="bg-white shadow rounded-lg p-5 mt-8">
+                    <h3 className="text-gray-700 text-lg font-semibold mb-4">
+                        Monthly User Registration Trend
+                    </h3>
+
+                    {userTrendData.length === 0 ? (
+                        <p>No user trend data available</p>
+                    ) : (
+                        <ResponsiveContainer width="100%" height={300}>
+                            <LineChart data={userTrendData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="month" />
+                                <YAxis />
+                                <Tooltip />
+                                <Line
+                                    type="monotone"
+                                    dataKey="users"
+                                    stroke="#7F00FF"
+                                    strokeWidth={3}
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    )}
+                </div>
+
 
             </div >
         </div >

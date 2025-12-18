@@ -329,3 +329,58 @@ exports.MonthlyIncomeTrendService = async () => {
   const [rows] = await db.query(query);
   return rows;
 };
+
+// ==================================================
+
+exports.UserAnalysisService = async () => {
+  // 1. Total users
+  const [[total]] = await db.query(`
+    SELECT COUNT(*) AS totalUsers
+    FROM customer
+  `);
+
+  // 2. This month users
+  const [[thisMonth]] = await db.query(`
+    SELECT COUNT(*) AS newUsersThisMonth
+    FROM customer
+    WHERE YEAR(Register_Date) = YEAR(CURRENT_DATE())
+      AND MONTH(Register_Date) = MONTH(CURRENT_DATE())
+  `);
+
+  // 3. Last month users
+  const [[lastMonth]] = await db.query(`
+    SELECT COUNT(*) AS newUsersLastMonth
+    FROM customer
+    WHERE YEAR(Register_Date) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)
+      AND MONTH(Register_Date) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH)
+  `);
+
+  // 4. Monthly trend
+  const [monthlyTrend] = await db.query(`
+    SELECT
+      DATE_FORMAT(Register_Date, '%Y-%m') AS month,
+      COUNT(*) AS users
+    FROM customer
+    GROUP BY month
+    ORDER BY month
+  `);
+
+  // 5. Growth %
+  const growth =
+    lastMonth.newUsersLastMonth === 0
+      ? 100
+      : (
+        ((thisMonth.newUsersThisMonth - lastMonth.newUsersLastMonth) /
+          lastMonth.newUsersLastMonth) *
+        100
+      ).toFixed(1);
+
+  return {
+    totalUsers: total.totalUsers,
+    newUsersThisMonth: thisMonth.newUsersThisMonth,
+    newUsersLastMonth: lastMonth.newUsersLastMonth,
+    growthPercentage: Number(growth),
+    monthlyTrend
+  };
+};
+
