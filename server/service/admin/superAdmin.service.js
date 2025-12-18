@@ -301,3 +301,31 @@ exports.MonthlyReservationTrendService = async () => {
 
   return formattedData;
 };
+
+// ==================================================
+
+exports.IncomeSummaryService = async () => {
+  const query = `
+    SELECT 
+      IFNULL(SUM(Total_paid), 0) AS totalIncome
+    FROM rent
+  `;
+  const [rows] = await db.query(query);
+  return rows[0];
+};
+
+// ==================================================
+
+exports.MonthlyIncomeTrendService = async () => {
+  const query = `
+    SELECT 
+      MONTH(Update_Date) AS monthNumber,
+      DATE_FORMAT(Update_Date, '%b') AS monthName,
+      SUM(Total_paid) AS monthlyIncome
+    FROM rent
+    GROUP BY MONTH(Update_Date), DATE_FORMAT(Update_Date, '%b')
+    ORDER BY MONTH(Update_Date);
+  `;
+  const [rows] = await db.query(query);
+  return rows;
+};

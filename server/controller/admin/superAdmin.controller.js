@@ -13,6 +13,8 @@ const {
   ReservationSummaryService,
   VehicleDemandService,
   MonthlyReservationTrendService,
+  IncomeSummaryService,
+  MonthlyIncomeTrendService
 } = require("../../service/admin/superAdmin.service");
 
 exports.getAllAdminsController = async (req, res) => {
@@ -216,5 +218,30 @@ exports.MonthlyReservationTrendController = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Failed to fetch reservation trend" });
+  }
+};
+
+// ==================================================
+
+exports.IncomeSummaryController = async (req, res) => {
+  try {
+    const data = await IncomeSummaryService();
+    res.status(200).json(data);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch income summary" });
+  }
+};
+
+// ==================================================
+
+exports.MonthlyIncomeTrendController = async (req, res) => {
+  try {
+    const data = await MonthlyIncomeTrendService();
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch monthly income trend" });
   }
 };
