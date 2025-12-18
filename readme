@@ -1,2 +1,4 @@
 netstat -ano | findstr :5173
+netstat -ano | findstr :5173
+netstat -ano | findstr :5173
 taskkill /PID 12345 /F

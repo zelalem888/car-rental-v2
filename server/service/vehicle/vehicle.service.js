@@ -30,13 +30,22 @@ exports.oneVehicleSearchService = async({paramsId , paramsName})=>{
 }
 // =============================================
 exports.vehicleByIdService = async ({ paramsId }) => {
+
   const [searchedVehicle] = await db.query(
     "SELECT V_ID,V_Name,Plate_Number,Brand_Name,Price_Per_Day,Model_Year,Seating_Capacity,Fuel_Type,Images FROM vehicle WHERE V_ID = ? ",
     paramsId
   );
 
-  if (searchedVehicle.length < 1) {
+  if (searchedVehicle.length === 0) {
     throw new Error(`there is no vehicle by this ID: ${paramsId}`);
+  }
+
+  const [check] = await db.query("SELECT Status , Pickup_Date FROM reservation WHERE V_ID = ?", paramsId)
+  if(check.length === 0){
+    return searchedVehicle
+  }else if(check[0].Status =="onHold"){
+    searchedVehicle[0].status = "onHold"
+    searchedVehicle[0].Pickup_Date = check[0].Pickup_Date
   }
   return searchedVehicle
 };

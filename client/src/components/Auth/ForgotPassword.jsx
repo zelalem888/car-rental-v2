@@ -26,7 +26,7 @@ const ForgotPassword = ({ onClose }) => {
         }
       )
       const response = await res.json();
-
+console.log(response)
       if (!response.token) {
         setMessage("Please try again later.");
         return;

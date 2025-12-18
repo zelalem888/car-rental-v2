@@ -107,7 +107,9 @@ const PendingReserve = () => {
       const confirmResult = await ConfirmResponse.json();
       alert(confirmResult.message);
     } catch (e) {
+      console.log(e)
       throw new Error(e.error);
+  
     }
     setDetail(false);
     setRefresh(!false);
