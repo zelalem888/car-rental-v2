@@ -17,6 +17,7 @@ const {
   IncomeSummaryController,
   MonthlyIncomeTrendController,
   UserAnalysisController
+
 } = require("../../controller/admin/superAdmin.controller");
 
 const router = express.Router();
@@ -90,4 +91,5 @@ router.get("/superadmin/income-monthly-trend", MonthlyIncomeTrendController);
 // ======================================================
 
 router.get("/superadmin/user-analysis", UserAnalysisController);
+
 module.exports = router;

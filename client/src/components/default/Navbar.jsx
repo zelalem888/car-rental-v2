@@ -9,17 +9,16 @@ import {
   LogOut,
   Car,
   ChevronDown,
+  Check,
 } from "lucide-react";
 
 const Navbar = () => {
-  // const { user, setUser, logout } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
-  // const location = useLocation();
-  // const [user ,setUser] = useState(null)
   const [userData, setUserData] = useState();
+  const [doc , setDoc] = useState()
 
   useEffect(
     () => {
@@ -42,7 +41,10 @@ const Navbar = () => {
             
             const result = await response.json()
             setUserData(result)
-
+           const check =  await fetch(`http://localhost:3000/api/user/document/check/${result.id}`)
+            
+           const checkComplete = await check.json()
+            setDoc(checkComplete.doc)
             // console.log(result)
 
           } catch (e) {
@@ -71,6 +73,7 @@ const Navbar = () => {
       setTimeout(()=>{
       setDropdownOpen(prev => !prev)
       },3000)
+
   }
 
   const isLinkActive = (path) => location.pathname === path;
@@ -154,11 +157,11 @@ const Navbar = () => {
                         exit={{ opacity: 0, y: 10 }}
                         className="absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-lg py-2 border border-gray-100"
                       >
-                         <button
-                          className="w-full px-4 py-2 text-left text-gray-700 hover:bg-green-50 hover:text-green-500 transition-colors flex items-center space-x-2"
+                         <p
+                          className="w-full px-4 py-2 text-left text-white bg-green-500 rounded-md flex items-center space-x-2"
                         >
                           <span>{userData.name}</span>
-                        </button>
+                        </p>
                          <Link
                           className="w-full px-4 py-2 text-left text-gray-700 hover:bg-green-50 hover:text-green-500 transition-colors flex items-center space-x-2"
                           to={`/myreservation/${userData.id}`}
@@ -171,12 +174,23 @@ const Navbar = () => {
                         >
                           <span>Profile</span>
                         </Link>
+                        { doc == true ? (
+                           <a
+                          className="w-full px-4 py-2 text-left text-gray-700 flex items-center space-x-2"
+                          
+                        >
+                          <Check /> <span>Document uploaded</span>
+                        </a>
+                        ) : (
                          <Link
                           className="w-full px-4 py-2 text-left text-gray-700 hover:bg-green-50 hover:text-green-500 transition-colors flex items-center space-x-2"
                           to={`/verifyid/${userData.id}`}
                         >
+                          
                           <span>Upload Document</span>
                         </Link>
+                          
+                        )}
 
                         <button
                           onClick={handleLogout}

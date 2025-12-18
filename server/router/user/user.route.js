@@ -1,6 +1,6 @@
 const express = require("express");
 const z = require("zod");
-const { allUsersController, usersInfoController, UsersDetailController, usersInfoUpdateController, usersInfoDeleteController,usersInfoAdminController,userUpdatePasswordController, UserDocumentController } = require("../../controller/user/user.controller");
+const { allUsersController, usersInfoController, UsersDetailController, usersInfoUpdateController, usersInfoDeleteController,usersInfoAdminController,userUpdatePasswordController, UserDocumentController, checkDocumentController } = require("../../controller/user/user.controller");
 const { verifyToken } = require("../../middleware/auth");
 const {upload}  = require("./uploadDocument")
 
@@ -46,5 +46,8 @@ router.post(
   UserDocumentController
 );
 
+// =========== check document is uploaded ===============
+
+router.get("/user/document/check/:id", checkDocumentController)
 
 module.exports = router;

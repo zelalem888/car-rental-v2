@@ -89,7 +89,7 @@ exports.confirmReservationService = async (params) => {
   );
 
   await db.query(
-    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, D_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, D_ID, Action_Type, Old_Status, New_Status, Tax_Amount, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
     [
       reservationID,
       findID[0].C_ID,
@@ -99,6 +99,7 @@ exports.confirmReservationService = async (params) => {
       "confirmed",
       findID[0].Status,
       `Reservation confirmed by AdminID ${adminID}`,
+      data[0].Tax_Amount,
       data[0].Pickup_Date,
       data[0].Return_Date,
       data[0].Rent_Day,
@@ -131,21 +132,32 @@ exports.doneReservationService = async (params) => {
   );
 
   const today = new Date();
-  const returning = new Date(findID[0].Return_Date);
+  const pickup = new Date(findID[0].Pickup_Date);
+  const returnD = new Date(findID[0].Return_Date);
+  const rentDay = parseInt(findID[0].Rent_Day);
 
-  const diffMs = returning - today;
-  const totalRentDay = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-  let overPay = 0;
   let refund = 0;
-  let payment = 0;
+  let overPay = 0;
+  let payment = rentDay * parseFloat(vehicleData[0].Price_Per_Day); // Full expected payment
 
-  if (totalRentDay < 0) {
-    overPay = Math.abs(totalRentDay) * parseFloat(vehicleData[0].Price_Per_Day);
-  } else if (totalRentDay === 0) {
-    payment = 0;
+  if (today < returnD) {
+    // Early return: refund remaining days 60%
+    const remainingMs = returnD - today;
+    const remainingDays = Math.ceil(remainingMs / (1000 * 60 * 60 * 24));
+    const remainingFee = remainingDays * parseFloat(vehicleData[0].Price_Per_Day);
+    refund = remainingFee * 0.6;
+    payment -= refund; // Customer already paid, so deduct refund
+  } else if (today > returnD) {
+    // Late return: overpayment 50% extra for overdue days
+    const overdueMs = today - returnD;
+    const overdueDays = Math.ceil(overdueMs / (1000 * 60 * 60 * 24));
+    overPay = overdueDays * parseFloat(vehicleData[0].Price_Per_Day) * 1.5;
   } else {
-    refund = totalRentDay * parseFloat(vehicleData[0].Price_Per_Day);
+    // Returned exactly on time
+    refund = 0;
+    overPay = 0;
   }
+
 
   const result = [
     findID[0].C_ID,
@@ -154,7 +166,7 @@ exports.doneReservationService = async (params) => {
     findID[0].R_ID,
     findID[0].Pickup_Date,
     findID[0].Return_Date,
-    totalRentDay,
+    findID[0].Rent_Day,
     vehicleData[0].Price_Per_Day,
     overPay,
     refund,
@@ -171,7 +183,7 @@ exports.doneReservationService = async (params) => {
 
 
   await db.query(
-    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, D_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Overpayment, Refund, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID, Admin_ID, D_ID, Action_Type, Old_Status, New_Status,Tax_Amount, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day, Total_Charge, Overpayment, Refund, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
     [
       reservationID,
       findID[0].C_ID,
@@ -181,6 +193,7 @@ exports.doneReservationService = async (params) => {
       "done",
       findID[0].Status,
       `Reservation completed by AdminID ${adminID}`,
+      findID[0].Tax_Amount,
       findID[0].Pickup_Date,
       findID[0].Return_Date,
       findID[0].Rent_Day,
@@ -246,3 +259,41 @@ exports.rejectReservationService = async (params) => {
     ]
   );
 };
+
+
+// ====================================================================
+exports.advancedSearchService = async (req) => {
+  const { type, value } = req.query;
+
+  if (!type || !value) {
+    throw new Error("Search type and value are required");
+  }
+
+  const param = `%${value}%`;
+  let query = "";
+  let params = [];
+
+  switch (type) {
+    case "name":
+      query = `SELECT C_ID , FullName, Email,PhoneNumber FROM customer WHERE FullName LIKE ?`;
+      params = [param];
+      break;
+
+    case "email":
+      query = `SELECT  C_ID , FullName, Email, PhoneNumber FROM customer WHERE Email LIKE ?`;
+      params = [param];
+      break;
+
+    case "phone":
+      query = `SELECT  C_ID, FullName, Email,PhoneNumber FROM customer WHERE PhoneNumber LIKE ?`;
+      params = [param];
+      break;
+
+    default:
+      throw new Error("Invalid search type");
+  }
+
+  const [rows] = await db.query(query, params);
+  return rows;
+};
+

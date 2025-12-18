@@ -10,6 +10,7 @@ const AnalysisDashboard = () => {
     const [monthlyIncome, setMonthlyIncome] = useState([]);
     const [userAnalysis, setUserAnalysis] = useState(null);
 
+
     const [error, setError] = useState(null);
 
     const [summary, setSummary] = useState({
@@ -113,6 +114,7 @@ const AnalysisDashboard = () => {
         fetchMonthlyIncome();
     }, []);
 
+
     const fetchUserAnalysis = async () => {
         const res = await fetch("http://localhost:3000/api/superadmin/user-analysis");
         if (!res.ok) throw new Error("Failed to fetch user analysis");
@@ -130,6 +132,7 @@ const AnalysisDashboard = () => {
             month: item.month,
             users: item.users
         })) || [];
+
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -291,6 +294,7 @@ const AnalysisDashboard = () => {
                                 </LineChart>
                             </ResponsiveContainer></>)}
                 </div>
+
 
                 {/* --- User Analysis Section --- */}
                 {userAnalysis && (

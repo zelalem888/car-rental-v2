@@ -233,7 +233,7 @@ const Models = () => {
                     {/* Car Image */}
                     <div className="aspect-[4/3] rounded-lg bg-white mb-6 overflow-hidden">
                       <a
-                        style={{ pointerEvents: car.status === "confirmed" ? "none" : car.status === "onhHold" ? "unset" : "unset" }}
+                        style={{ pointerEvents: car.status === "confirmed" ? "none" : car.status === "onhHold" ? "unset" : car.status=="pending" ? "none" : "unset" }}
                         href={`/singlemodel/${car.V_Name}/${car.V_ID}`}
                       >
                         <img
@@ -271,7 +271,6 @@ const Models = () => {
                         </div>
                         <div className="flex items-center gap-2">
                           <Briefcase className="w-5 h-5 text-gray-500" />
-                          {/* <span>{car.features.luggage} Luggage</span> */}
                         </div>
                         <div className="flex items-center gap-2">
                           <Fuel className="w-5 h-5 text-gray-500" />
@@ -308,10 +307,7 @@ const Models = () => {
 
                         <motion.a
                           style={{
-                            pointerEvents: car.status== "confirmed" ? "none" : "unset",
-                            // pointerEvents: (!car.status && car.status == "onHold") ? "none" : "onset",
-
-
+                            pointerEvents: car.status === "confirmed" ? "none" : car.status === "onhHold" ? "unset" : car.status=="pending" ? "none" : "unset"
                           }}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}

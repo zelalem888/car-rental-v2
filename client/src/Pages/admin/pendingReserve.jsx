@@ -85,6 +85,7 @@ const PendingReserve = () => {
         throw new Error(errorData.error);
       }
       const customerResult = await customerResponse.json();
+      console.log(customerResult)
       setCustomer(customerResult);
     } catch (e) {
       throw new Error(e);
@@ -228,7 +229,13 @@ const PendingReserve = () => {
                           <span className="text-red-500">City</span> :{" "}
                           {customer[0].City}{" "}
                         </p>
-                        <button
+                        {customer && customer[0].Documents === null ? (
+
+                        <p className="bg-red-400 text-white rounded-md px-4 py-2 mt-4" >
+                          There is No Document
+                        </p>
+                        ):(
+                          <button
                           onClick={() => {
                             const docs = JSON.parse(customer[0].Documents);
                             setDocuments(docs);
@@ -238,6 +245,7 @@ const PendingReserve = () => {
                         >
                           Review Documents
                         </button>
+                        )}
 
                       </>
                     )}
@@ -301,12 +309,20 @@ const PendingReserve = () => {
                   >
                     Cancel
                   </button>
+                  {customer && customer[0].Documents == null ? (
+                     <p
+                    className={`px-4 py-2 bg-red-200  text-white rounded-md`}
+                  >
+                    Document Needed
+                  </p>
+                  ):(
                   <button
                     onClick={() => confirmReserve({ id: adminID, rid: rid })}
-                    className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md"
+                    className={`px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md`}
                   >
                     Approve
                   </button>
+                  )}
                   <button
                     onClick={() => rejectReserve({ id: adminID, rid: rid })}
                     className="px-4 py-2 bg-red-500 hover:bg-green-600 text-white rounded-md"

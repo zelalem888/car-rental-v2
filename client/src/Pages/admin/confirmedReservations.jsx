@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { CheckCircle, FileStack, LoaderIcon } from "lucide-react";
 import { useParams } from "react-router-dom";
+import AdminConfirmedPrint from "../../components/printPDF/AdminConfirmedPrint";
+
 const ConfirmedReservations = () => {
   const { id } = useParams();
   const [adminID, setAdminID] = useState()
@@ -82,7 +84,6 @@ const ConfirmedReservations = () => {
   };
 
   const vehicleReturned = async ({ id, rid }) => {
-    console.log(id, rid);
     try {
       const confirmResponse = await fetch(
         `http://localhost:3000/api/reservation/done/${id}/${rid}`,
@@ -94,13 +95,14 @@ const ConfirmedReservations = () => {
       setDetail(false);
       setRefresh(!false);
 
-      console.log( await confirmResponse.json())
       if (!confirmResponse.ok) {
         const errorData = await confirmResponse.json();
         throw new Error(errorData);
       }
       const confirmResult = await confirmResponse.json();
+      console.log(confirmResult)
       alert("The vehicle Available from now.");
+      AdminConfirmedPrint(confirmResult)
     } catch (e) {
       throw new Error(e);
     }

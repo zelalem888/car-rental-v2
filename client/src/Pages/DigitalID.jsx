@@ -1,9 +1,21 @@
-import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 
 const DigitalID = () => {
+  const [doc , setDoc] = useState()
   const { id } = useParams();
   const navigate = useNavigate()
+
+useEffect(()=>{
+  const fetchData = async ()=>{
+  const check =  await fetch(`http://localhost:3000/api/user/document/check/${id}`)
+  const checkComplete = await check.json()
+  if(checkComplete.doc === true){
+    navigate(`/myreservation/${id}`)
+  }
+  }
+  fetchData()
+},[])
 
   const [previews, setPreviews] = useState({
     digital_id: null,
@@ -191,13 +203,23 @@ const DigitalID = () => {
         <p className="text-xs text-gray-400">
           JPG, PNG, PDF • Max 5MB per document
         </p>
-
+        <div className="flex gap-4">
+         <Link
+        to={navigate("/")}>
+        <button
+          className="bg-red-600 text-white px-8 py-2 rounded-md text-sm font-medium hover:bg-red-700 transition"
+        >
+          Later
+        </button>
+        </Link>
         <button
           type="submit"
           className="bg-blue-600 text-white px-8 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
         >
           Submit Documents
         </button>
+       
+      </div>
       </div>
     </form>
   );
