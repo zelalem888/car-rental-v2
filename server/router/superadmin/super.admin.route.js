@@ -13,7 +13,9 @@ const {
   adminActiviyController,
   reservationSummeryController,
   vehicleDemandController,
-  MonthlyReservationTrendController
+  MonthlyReservationTrendController,
+  IncomeSummaryController,
+  MonthlyIncomeTrendController
 } = require("../../controller/admin/superAdmin.controller");
 
 const router = express.Router();
@@ -74,4 +76,11 @@ router.get("/superadmin/vehicle-demand", vehicleDemandController)
 
 router.get("/superadmin/reservation-trend", MonthlyReservationTrendController)
 
+// =================income Summery===========================
+
+router.get("/superadmin/income-summary", IncomeSummaryController);
+
+// ==================Monthly Income Trend======================
+
+router.get("/superadmin/income-monthly-trend", MonthlyIncomeTrendController);
 module.exports = router;

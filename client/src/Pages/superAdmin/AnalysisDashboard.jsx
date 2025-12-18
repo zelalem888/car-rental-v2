@@ -6,6 +6,9 @@ const AnalysisDashboard = () => {
     const [loadingAdmins, setLoadingAdmins] = useState(true);
     const [vehicleDemand, setVehicleDemand] = useState([]);
     const [reservationTrend, setReservationTrend] = useState([]);
+    const [totalIncome, setTotalIncome] = useState(0);
+    const [monthlyIncome, setMonthlyIncome] = useState([]);
+
 
     const [error, setError] = useState(null);
 
@@ -38,7 +41,6 @@ const AnalysisDashboard = () => {
 
                 const data = await res.json();
 
-                console.log("Admin Activity Data:", data.data);
                 setAdminActivity(data.data);
             } catch (err) {
                 console.error(err);
@@ -57,7 +59,6 @@ const AnalysisDashboard = () => {
                 const data = await res.json();
                 if (data.success) {
                     setVehicleDemand(data.data);
-                    console.log("Vehicle Demand Data:", data.data);
                 }
             } catch (err) {
                 console.error(err);
@@ -79,6 +80,37 @@ const AnalysisDashboard = () => {
         };
 
         fetchReservationTrend();
+    }, []);
+
+
+    const fetchIncomeSummary = async () => {
+        try {
+            const res = await fetch("http://localhost:3000/api/superadmin/income-summary");
+            const data = await res.json();
+
+            setTotalIncome(data.totalIncome);
+        } catch (error) {
+            console.error("Failed to fetch income summary");
+        }
+    };
+
+    useEffect(() => {
+        fetchIncomeSummary();
+    }, []);
+
+
+    const fetchMonthlyIncome = async () => {
+        try {
+            const res = await fetch("http://localhost:3000/api/superadmin/income-monthly-trend");
+            const data = await res.json();
+            setMonthlyIncome(data);
+        } catch (error) {
+            console.error("Failed to fetch monthly income");
+        }
+    };
+
+    useEffect(() => {
+        fetchMonthlyIncome();
     }, []);
 
 
@@ -111,7 +143,7 @@ const AnalysisDashboard = () => {
                 {/* --- Reservation Trend Line Chart --- */}
                 <div className="bg-white shadow rounded-lg p-5 mb-8">
                     <h3 className="text-gray-700 text-lg font-semibold mb-4">Monthly Reservation Trend</h3>
-                    {reservationTrend.length < 0 ? (
+                    {reservationTrend.length === 0 ? (
                         <div>No reservation trend data available</div>
                     ) : (
                         <ResponsiveContainer width="100%" height={300}>
@@ -146,7 +178,7 @@ const AnalysisDashboard = () => {
                         <tbody>
                             {loadingAdmins ? (
                                 <tr>
-                                    <td colSpan="4" className="text-center py-6">
+                                    <td colSpan="8" className="text-center py-6">
                                         <div className="absolute inset-0 bg-white/0 flex items-center justify-center z-40">
                                             <div className="w-14 h-14 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                                         </div>
@@ -154,7 +186,7 @@ const AnalysisDashboard = () => {
                                 </tr>
                             ) : adminActivity.length === 0 ? (
                                 <tr>
-                                    <td colSpan="4" className="text-center py-6">
+                                    <td colSpan="8" className="text-center py-6">
                                         No admin activity found
                                     </td>
                                 </tr>
@@ -198,6 +230,49 @@ const AnalysisDashboard = () => {
                         </ResponsiveContainer>
                     )}
 
+                </div>
+
+                {/* --- Total Income Card --- */}
+                <div className="bg-white shadow rounded-lg p-5 mb-8">
+                    {totalIncome === 0 ? (
+                        <><div className="bg-white p-5 rounded-xl shadow mb-8">
+                            <h3 className="text-gray-700 text-lg font-semibold mb-4">Total Income</h3>
+
+                            No income data available
+                        </div></>
+                    ) : (<div className="bg-white p-5 rounded-xl shadow">
+                        <h3 className="text-gray-700 text-lg font-semibold mb-4">Total Income</h3>
+
+                        <h2 className="text-2xl font-bold text-green-600">
+                            {totalIncome.toLocaleString()} Birr
+                        </h2>
+                    </div>)}
+                </div>
+
+                {/* --- Monthly Income Trend Line Chart --- */}
+                <div className="bg-white shadow rounded-lg p-5 mb-8">
+                    {monthlyIncome && monthlyIncome.length === 0 ? (
+                        <div className="bg-white shadow rounded-lg p-5 mt-8">
+                            <h3 className="text-gray-700 text-lg font-semibold mb-4">Monthly Income Trend</h3>
+
+                            No monthly income data available
+                        </div>
+                    ) : (
+                        <>
+                            <h3 className="text-gray-700 text-lg font-semibold mb-4 mt-8">Monthly Income Trend</h3>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <LineChart data={monthlyIncome}>
+                                    <XAxis dataKey="monthName" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="monthlyIncome"
+                                        stroke="#10B981"
+                                        strokeWidth={3}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer></>)}
                 </div>
 
             </div >
