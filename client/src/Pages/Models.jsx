@@ -78,6 +78,18 @@ const Models = () => {
             if (result[i].V_ID == parseInt(reserveResult[j].V_ID)) {
               result[i].status = reserveResult[j].Status;
               result[i].availableFor = reserveResult[j].Return_Date;
+
+                if (reserveResult[j].Status === "onHold") {
+                const pickup = new Date(reserveResult[j].Pickup_Date);
+
+                // pickup date - 7 days
+                const availableUntil = new Date(pickup);
+                availableUntil.setDate(pickup.getDate() - 7);
+
+                result[i].until = availableUntil.toLocaleDateString("en-CA");
+              }
+                      
+              
             }
           }
         }
@@ -221,7 +233,7 @@ const Models = () => {
                     {/* Car Image */}
                     <div className="aspect-[4/3] rounded-lg bg-white mb-6 overflow-hidden">
                       <a
-                        style={{ pointerEvents: car.status ? "none" : "unset" }}
+                        style={{ pointerEvents: car.status === "confirmed" ? "none" : car.status === "onhHold" ? "unset" : "unset" }}
                         href={`/singlemodel/${car.V_Name}/${car.V_ID}`}
                       >
                         <img
@@ -281,18 +293,25 @@ const Models = () => {
                             {statusTitle[car.status] || "available"}
                           </span>
                           <span className={`text-sm`}>
-                            {car.status
+                            {car.status== "confirmed"
                               ? "Available on " +
                                 new Date(car.availableFor).toLocaleDateString(
                                   "en-CA"
                                 )
-                              : ""}
+                              :car.status== "onHold" ? 
+                               "Available until " +
+                                new Date(car.until).toLocaleDateString(
+                                  "en-CA"
+                                ) : ""}
                           </span>
                         </div>
 
                         <motion.a
                           style={{
-                            pointerEvents: car.status ? "none" : "unset",
+                            pointerEvents: car.status== "confirmed" ? "none" : "unset",
+                            // pointerEvents: (!car.status && car.status == "onHold") ? "none" : "onset",
+
+
                           }}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}

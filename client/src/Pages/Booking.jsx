@@ -21,8 +21,10 @@ const CarDetailPage = () => {
   const [tax, setTax] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [driverPrice, setDriverPrice] = useState(0);
+  const [pickUpDate ,  setPickupDate] = useState()
   const year = new Date().getFullYear();
   const month = new Date().getMonth();
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,10 +50,18 @@ const CarDetailPage = () => {
         const response = await fetch(`http://localhost:3000/api/vehicle/${id}`);
         if (!response.ok) {
           const errorData = await response.json();
+          console.log(errorData)
           throw new Error(errorData.message || "Something went wrong");
         }
 
+
+
         const result = await response.json();
+        console.log(result)
+        if(result[0].status == "onHold"){
+          const pickDate = new Date(result[0].Pickup_Date)
+          setPickupDate(pickDate.setDate(pickDate.getDate()- 7))
+        }
         result[0].image = JSON.parse(result[0].Images);
 
         setSelectedCar(result);
@@ -111,7 +121,7 @@ const CarDetailPage = () => {
       // console.log(result);
       alert("Booking confirmed!. redirecting to home page.");
       setTimeout(() => {
-        navigate("/models");
+        navigate(`/verifyid/${userData.id}`);
       }, 1000);
     } catch (e) {
       console.error(e);
@@ -245,7 +255,7 @@ const CarDetailPage = () => {
                   startMonth={new Date(year, month)}
                   timeZone="+03:00"
                   numerals="latn"
-                  disabled={{ before: new Date() }}
+                  disabled={{ before: new Date() , after : pickUpDate }}
                 />
                 <p className="bg-green-400 w-fit px-2 rounded-md">Gregorian</p>
                 <USDayPicker
@@ -255,7 +265,7 @@ const CarDetailPage = () => {
                   startMonth={new Date(year, month)}
                   timeZone="+03:00"
                   numerals="latn"
-                  disabled={{ before: new Date() }}
+                  disabled={{ before: new Date(), after : pickUpDate}}
                 />
               </div>
               {error && (
@@ -365,6 +375,9 @@ const CarDetailPage = () => {
                 >
                   Terms &amp; Conditions
                 </a>
+              <p className="text-sm text-red-400">
+                Please pay within 2 hours.
+               </p>
               </label>
             </div>
 

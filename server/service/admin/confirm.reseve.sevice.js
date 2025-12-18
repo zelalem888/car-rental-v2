@@ -36,9 +36,8 @@ exports.confirmedReservationService = async () => {
 exports.confirmReservationService = async (params) => {
   const adminID = params.adminid;
   const reservationID = params.reservationid;
-  const status = "confirmed";
+  let status = "confirmed";
   const date = new Date().toLocaleString();
-  const results = [status, reservationID];
 
   const [findID] = await db.query(
     "SELECT * FROM reservation WHERE R_ID = ?",
@@ -48,7 +47,18 @@ exports.confirmReservationService = async (params) => {
     throw new Error("there is no reservation in this ID to update.");
   }
 
-  await db.query("UPDATE reservation SET status = ? WHERE R_ID = ?", results);
+  const todayDate = new Date()
+  const pickup = new Date(findID[0].Pickup_Date)
+
+  const DifferenceDate = pickup - todayDate
+  const sevenDay = 1000 * 60 * 60 * 24 * 7
+
+  if(DifferenceDate > sevenDay){
+    status = "onHold"
+  }
+
+
+  await db.query("UPDATE reservation SET status = ? WHERE R_ID = ?", [status, reservationID]);
 
   const [data] = await db.query(
     "SELECT * FROM reservation WHERE R_ID = ?",
