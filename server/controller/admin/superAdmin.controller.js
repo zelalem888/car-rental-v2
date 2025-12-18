@@ -16,6 +16,7 @@ const {
   IncomeSummaryService,
   MonthlyIncomeTrendService,
   UserAnalysisService
+
 } = require("../../service/admin/superAdmin.service");
 
 exports.getAllAdminsController = async (req, res) => {
@@ -246,6 +247,7 @@ exports.MonthlyIncomeTrendController = async (req, res) => {
   }
 };
 
+
 // ==================================================
 
 exports.UserAnalysisController = async (req, res) => {
@@ -257,3 +259,4 @@ exports.UserAnalysisController = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch user analysis" });
   }
 };
+
