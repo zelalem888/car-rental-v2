@@ -1,5 +1,5 @@
 const express = require('express')
-const { allReservationService, confirmReservationService, confirmedReservationService, pendingReservationService, doneReservationService, rejectReservationService } = require("../../service/admin/confirm.reseve.sevice")
+const { allReservationService, confirmReservationService, confirmedReservationService, pendingReservationService, doneReservationService, rejectReservationService, advancedSearchService } = require("../../service/admin/confirm.reseve.sevice")
 
 
 exports.allReservationController = async (req, res) => {
@@ -63,6 +63,18 @@ exports.rejectReservationController = async (req, res) => {
     const reservation = await rejectReservationService(req.params)
 
     res.status(200).json({ message: "Reservation Rejected Success." })
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+
+}
+// ============================================================
+
+exports.advancedSearchController = async (req, res) => {
+  try {
+  
+    const searchedData = await advancedSearchService(req)
+    res.status(200).json(searchedData)
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

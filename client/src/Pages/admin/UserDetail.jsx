@@ -7,7 +7,7 @@ const UserDetail = () => {
   const { id } = useParams();
 
   const [activeTab, setActiveTab] = useState("current");
-  const [userData, setUserData] = useState()
+  const [userData, setUserData] = useState();
   const [userReservedH, setUserReservedH] = useState([]);
   const [usersLog, setUsersLog] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,22 +35,20 @@ const UserDetail = () => {
 
         setUserReservedH(data.userReservedH || []);
         setUsersLog(data.usersLog || []);
-        setUserData(data.customerName || [])
+        setUserData(data.customerName || []);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
+
     fetchData();
   }, [id, navigate]);
 
-  /* =======================
-      PRINT HELPERS
-  ======================= */
-
+  /* ======================= PRINT HELPERS ======================= */
   const printReservation = (r) => {
-   AdminPrintReservation(r)
+    AdminPrintReservation(r);
   };
 
   const printAllLogs = () => {
@@ -62,11 +60,13 @@ const UserDetail = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-bold mb-6">User - {userData[0].FullName} # Email - {userData[0].Email}</h1>
+      <h1 className="text-2xl font-bold mb-6">
+        User - {userData[0].FullName} | Email - {userData[0].Email}
+      </h1>
 
-      {/* Tabs */}
+      {/* ================= TABS ================= */}
       <div className="flex gap-6 border-b mb-6">
-        {["current", "history"].map((tab) => (
+        {["current", "history", "profile"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -76,12 +76,16 @@ const UserDetail = () => {
                 : "text-gray-500"
             }`}
           >
-            {tab === "current" ? "Current Reservations" : "Reservation Logs"}
+            {tab === "current"
+              ? "Current Reservations"
+              : tab === "history"
+              ? "Reservation Logs"
+              : "User Profile"}
           </button>
         ))}
       </div>
 
-      {/* CURRENT */}
+      {/* ================= CURRENT RESERVATIONS ================= */}
       {activeTab === "current" && (
         <div className="bg-white rounded shadow overflow-x-auto">
           <table className="w-full text-sm">
@@ -120,7 +124,7 @@ const UserDetail = () => {
         </div>
       )}
 
-      {/* LOGS */}
+      {/* ================= RESERVATION LOGS ================= */}
       {activeTab === "history" && (
         <div className="bg-white rounded shadow p-4 print-area">
           <div className="flex justify-end mb-4 print:hidden">
@@ -131,18 +135,18 @@ const UserDetail = () => {
               Print All Logs
             </button>
           </div>
-          {/* PRINT HEADER (only visible when printing) */}
-            <div className="hidden print:block text-center mb-6">
-              <h1 className="text-2xl font-bold">User Reservation Logs</h1>
-              <p className="text-sm mt-1">
-                Name: {userData[0].FullName} | Email: {userData[0].Email}
-              </p>
-              <p className="text-xs text-gray-600 mt-1">
-                Printed on: {new Date().toLocaleString()}
-              </p>
-              <hr className="mt-4" />
-            </div>
 
+          {/* PRINT HEADER */}
+          <div className="hidden print:block text-center mb-6">
+            <h1 className="text-2xl font-bold">User Reservation Logs</h1>
+            <p className="text-sm mt-1">
+              Name: {userData[0].FullName} | Email: {userData[0].Email}
+            </p>
+            <p className="text-xs text-gray-600 mt-1">
+              Printed on: {new Date().toLocaleString()}
+            </p>
+            <hr className="mt-4" />
+          </div>
 
           <table className="w-full text-sm">
             <thead className="bg-gray-100">
@@ -172,6 +176,78 @@ const UserDetail = () => {
           </table>
         </div>
       )}
+
+      {/* ================= USER PROFILE ================= */}
+      {activeTab === "profile" && userData && (
+  <div className="bg-white rounded shadow p-8 space-y-6">
+    <h2 className="text-2xl font-bold mb-6">User Profile</h2>
+
+    {/* USER BASIC INFO */}
+    <div className="grid grid-cols-2 gap-8 text-sm">
+      <div>
+        <p className="font-medium text-gray-700">Full Name</p>
+        <p className="text-gray-900">{userData[0].FullName}</p>
+      </div>
+      <div>
+        <p className="font-medium text-gray-700">Email</p>
+        <p className="text-gray-900">{userData[0].Email}</p>
+      </div>
+      <div>
+        <p className="font-medium text-gray-700">Phone Number</p>
+        <p className="text-gray-900">{userData[0].PhoneNumber}</p>
+      </div>
+      <div>
+        <p className="font-medium text-gray-700">Date of Birth</p>
+        <p className="text-gray-900">{new Date(userData[0].DoB).toLocaleDateString()}</p>
+      </div>
+      <div>
+        <p className="font-medium text-gray-700">Nationality</p>
+        <p className="text-gray-900">{userData[0].Nationality}</p>
+      </div>
+      <div>
+        <p className="font-medium text-gray-700">City</p>
+        <p className="text-gray-900">{userData[0].City}</p>
+      </div>
+      <div>
+        <p className="font-medium text-gray-700">Register Date</p>
+        <p className="text-gray-900">{new Date(userData[0].Register_Date).toLocaleDateString()}</p>
+      </div>
+      <div>
+        <p className="font-medium text-gray-700">Last Updated</p>
+        <p className="text-gray-900">{userData[0].Update_Date}</p>
+      </div>
+    </div>
+
+    {/* USER DOCUMENTS */}
+    <div>
+      <h3 className="text-xl font-semibold mb-4">Documents</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {userData[0].Documents
+          ? Object.entries(JSON.parse(userData[0].Documents)).map(([key, value]) => (
+              <div
+                key={key}
+                className="bg-gray-100 rounded shadow p-4 flex flex-col items-center"
+              >
+                <p className="text-gray-700 font-medium mb-2 capitalize">{key.replace("_", " ")}</p>
+                {value ? (
+                  <img
+                    src={`http://localhost:3000${value}`}
+                    alt={key}
+                    className="h-48 w-full object-contain rounded border"
+                  />
+                ) : (
+                  <div className="h-48 w-full flex items-center justify-center bg-gray-200 text-gray-500 rounded">
+                    No Document
+                  </div>
+                )}
+              </div>
+            ))
+          : <p className="text-gray-500">No documents uploaded</p>}
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

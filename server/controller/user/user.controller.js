@@ -5,7 +5,8 @@ const {
   usersInfoUpdateService,
   usersInfoDeleteService,
   usersUpdatePasswordService,
-  UserDocumentService
+  UserDocumentService,
+  checkDocumentService
 } = require("../../service/user/user.service");
 
 exports.allUsersController = async (req, res) => {
@@ -114,6 +115,18 @@ exports.UserDocumentController =  async (req, res) => {
     const result = await UserDocumentService(req.params.id, req.files,browser);
 
     res.status(200).json({ message: "Document add successfully."});
+  } catch (error) {
+    res.status(400).json({ message: error });
+  }
+};
+
+// ========================================================
+
+exports.checkDocumentController = async (req, res) => {
+  try {
+    const result = await checkDocumentService(req.params.id);
+
+    res.status(200).json(result);
   } catch (error) {
     res.status(400).json({ message: error });
   }

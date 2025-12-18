@@ -216,3 +216,20 @@ exports.UserDocumentService = async (id, files, browser) => {
   return rows;
 };
 
+// ================================================================
+
+exports.checkDocumentService = async (id) => {
+  const paramID = id;
+  const [findID] = await db.query(
+    "SELECT * FROM customer WHERE C_ID = ?",
+    paramID
+  );
+  if (findID.length === 0) {
+    throw new Error("there is no user in this ID");
+  }
+  if(findID[0].Documents == null){
+    return {doc : false}
+  }else{
+    return {doc : true}
+  }
+};
