@@ -244,6 +244,7 @@ const AdminPrintReservation = async (r) => {
          ["Return Date", new Date(r.Return_Date).toLocaleString()],
          ["Rent Days", r.Rent_Day],
          ["Total Payment", r.total_Payment + " birr"],
+         ["Tax", r.Tax_Amount + " birr"],
          ["Driver" , r.D_ID == null ? "No driver" : driver.driver.full_name ],
          ["Status", r.Status],
          ["Confirmation Number", r.Confirmation_Number],

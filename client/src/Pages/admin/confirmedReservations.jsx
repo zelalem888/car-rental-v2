@@ -51,6 +51,7 @@ const ConfirmedReservations = () => {
         throw new Error(errorData);
       }
       const result = await response.json();
+      console.log(result)
       setPending(result);
     };
     fetchData();

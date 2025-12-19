@@ -70,7 +70,6 @@ const MyReservation = () => {
 
         const result = await response.json();
 
-        // console.log(result)
         let allData = [];
         let historyData = [];
         let rejectData = [];
@@ -99,8 +98,9 @@ const MyReservation = () => {
 
         const pendingList = allData.filter((item) => item.Status == "pending");
         const confirmedList = allData.filter(
-          (item) => item.Status == "confirmed"
-        );
+            (item) => item.Status === "confirmed" || item.Status === "onHold"
+          );
+
 
         setPending(pendingList);
         setConfirmed(confirmedList);

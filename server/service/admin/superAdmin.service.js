@@ -90,6 +90,8 @@ exports.superAdminCreateService = async ({ adminBody }) => {
     adminResult
   );
 
+  console.log()
+
   return { message: "Admin registered successfully." };
 };
 
