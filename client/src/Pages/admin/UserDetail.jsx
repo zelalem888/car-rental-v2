@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AdminPrintReservation from "../../components/printPDF/AdminPrintReservation";
-
+import PrintLog from "../../components/printPDF/printLog";
 const UserDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -52,9 +52,6 @@ const UserDetail = () => {
     AdminPrintReservation(r);
   };
 
-  const printAllLogs = () => {
-    window.print();
-  };
 
   if (loading) return <div className="p-6">Loading...</div>;
   if (error) return <div className="p-6 text-red-600">{error}</div>;
@@ -131,12 +128,17 @@ const UserDetail = () => {
       {activeTab === "history" && (
         <div className="bg-white rounded shadow p-4 print-area">
           <div className="flex justify-end mb-4 print:hidden">
-            <button
-              onClick={printAllLogs}
-              className="bg-indigo-600 text-white px-4 py-2 rounded"
-            >
-              Print All Logs
-            </button>
+           <button
+            onClick={() =>
+              PrintLog(usersLog, {
+                FullName: userData[0].FullName,
+                Email: userData[0].Email,
+              })
+            }
+            className="bg-blue-700 text-white py-2 px-3 rounded-md" 
+          >
+            Print Logs PDF
+          </button>
           </div>
 
           {/* PRINT HEADER */}
