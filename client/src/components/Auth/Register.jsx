@@ -271,7 +271,19 @@ const Register = () => {
                 <SquareUser className="w-5 h-5 text-gray-400 absolute left-4 top-3.5" />
               </div>
             </div>
+                
+                {/* ============email already created error================ */}
 
+             {emailError && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg"
+              >
+                <AlertCircle className="w-5 h-5" />
+                {JSON.parse(emailError).some(i => i.path.includes('fullName') ) ? <p className="text-sm">'smun astekaklew'</p> : ''}
+              </motion.div>
+            )}
             {/* ==================Email=========================== */}
 
             <div className="space-y-2">
@@ -301,7 +313,7 @@ const Register = () => {
                 className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg"
               >
                 <AlertCircle className="w-5 h-5" />
-                <p className="text-sm">{emailError}</p>
+                {JSON.parse(emailError).some(i => i.path.includes('email') ) ? <p className="text-sm"> Emailun astekaklew </p> : ''}
               </motion.div>
             )}
 
