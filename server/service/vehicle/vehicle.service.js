@@ -40,7 +40,10 @@ exports.vehicleByIdService = async ({ paramsId }) => {
     throw new Error(`there is no vehicle by this ID: ${paramsId}`);
   }
 
-  const [check] = await db.query("SELECT Status , Pickup_Date FROM reservation WHERE V_ID = ?", paramsId)
+  const [check] = await db.query(`SELECT Status, Pickup_Date FROM reservation WHERE V_ID = ? ORDER BY Posting_Date DESC LIMIT 1 `,
+  [paramsId]
+);
+
   if(check.length === 0){
     return searchedVehicle
   }else if(check[0].Status =="onHold"){

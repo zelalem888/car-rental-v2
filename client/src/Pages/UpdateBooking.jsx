@@ -379,7 +379,6 @@ const UpdateBooking = () => {
                   name="driver"
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none">
                   <option value="NoDriver">No Driver</option>
-                  <option value="random" >Random</option>
                   {driver?.map((drivers) => (
                     <option key={drivers.D_ID} value={drivers.D_ID}>{drivers.full_name}</option>
                   ))}

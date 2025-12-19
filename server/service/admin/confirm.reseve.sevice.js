@@ -1,13 +1,27 @@
 const db = require("../../db/config");
 
 exports.allReservationService = async () => {
-  const [rows] = await db.query("SELECT * FROM reservation");
+  const [rows] = await db.query(`
+    SELECT r.*
+    FROM reservation r
+    INNER JOIN (
+      SELECT V_ID, MAX(Posting_Date) AS latest_date
+      FROM reservation
+      GROUP BY V_ID
+    ) latest
+      ON r.V_ID = latest.V_ID
+     AND r.Posting_Date = latest.latest_date
+    ORDER BY r.Posting_Date DESC
+  `);
+
   return rows;
 };
+
+
 // ===============================================================
 exports.pendingReservationService = async () => {
   const [rows] = await db.query(
-    "SELECT * FROM reservation WHERE status = ? ",
+    "SELECT * FROM reservation WHERE status = ?",
     "pending"
   );
 
@@ -21,8 +35,7 @@ exports.pendingReservationService = async () => {
 // ==============================================================
 exports.confirmedReservationService = async () => {
   const [rows] = await db.query(
-    "SELECT * FROM reservation WHERE status = ? ",
-    "confirmed"
+    "SELECT * FROM reservation WHERE status = 'confirmed' OR status = 'onHold'"
   );
   for(let name of rows){
     const [namedata] = await db.query("SELECT FullName FROM customer WHERE C_ID = ?", name.C_ID)
@@ -131,32 +144,56 @@ exports.doneReservationService = async (params) => {
     findID[0].V_ID
   );
 
-  const today = new Date();
-  const pickup = new Date(findID[0].Pickup_Date);
-  const returnD = new Date(findID[0].Return_Date);
-  const rentDay = parseInt(findID[0].Rent_Day);
+const today = new Date();
+const pickup = new Date(findID[0].Pickup_Date);
+const returnD = new Date(findID[0].Return_Date);
 
-  let refund = 0;
-  let overPay = 0;
-  let payment = rentDay * parseFloat(vehicleData[0].Price_Per_Day); // Full expected payment
+// Date-only comparison
+today.setHours(0, 0, 0, 0);
+pickup.setHours(0, 0, 0, 0);
+returnD.setHours(0, 0, 0, 0);
 
-  if (today < returnD) {
-    // Early return: refund remaining days 60%
-    const remainingMs = returnD - today;
-    const remainingDays = Math.ceil(remainingMs / (1000 * 60 * 60 * 24));
-    const remainingFee = remainingDays * parseFloat(vehicleData[0].Price_Per_Day);
-    refund = remainingFee * 0.6;
-    payment -= refund; // Customer already paid, so deduct refund
-  } else if (today > returnD) {
-    // Late return: overpayment 50% extra for overdue days
-    const overdueMs = today - returnD;
-    const overdueDays = Math.ceil(overdueMs / (1000 * 60 * 60 * 24));
-    overPay = overdueDays * parseFloat(vehicleData[0].Price_Per_Day) * 1.5;
-  } else {
-    // Returned exactly on time
-    refund = 0;
-    overPay = 0;
-  }
+const rentDay = parseInt(findID[0].Rent_Day);
+const pricePerDay = parseFloat(vehicleData[0].Price_Per_Day);
+
+const payment = rentDay * pricePerDay;
+let refund = 0;
+let overPay = 0;
+
+/* ===============================
+   1️⃣ Reservation not started
+================================= */
+if (pickup > today) {
+  refund = payment * 0.6; // refund 60%, cut 40%
+
+/* ===============================
+   2️⃣ Early return
+================================= */
+} else if (today < returnD) {
+  const remainingDays = Math.ceil(
+    (returnD - today) / (1000 * 60 * 60 * 24)
+  );
+
+  const remainingFee = remainingDays * pricePerDay;
+  refund = remainingFee * 0.6;
+
+/* ===============================
+   3️⃣ Late return
+================================= */
+} else if (today > returnD) {
+  const overdueDays = Math.ceil(
+    (today - returnD) / (1000 * 60 * 60 * 24)
+  );
+
+  overPay = overdueDays * pricePerDay * 1.5;
+}
+
+/* ===============================
+   4️⃣ On-time return
+================================= */
+// refund = 0
+// overPay = 0
+
 
 
   const result = [

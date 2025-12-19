@@ -63,7 +63,7 @@ const Models = () => {
         }
 
         const reserveResult = await reserveResponse.json();
-        // console.log(reserveResult);
+        console.log(reserveResult);
 
        for(let i = 0 ; i <result.length; i++){
         result[i].status = ""
@@ -307,7 +307,7 @@ const Models = () => {
 
                         <motion.a
                           style={{
-                            pointerEvents: car.status === "confirmed" ? "none" : car.status === "onhHold" ? "unset" : car.status=="pending" ? "none" : "unset"
+                            pointerEvents: car.status === "confirmed" ? "none" : car.status === "onHold" ? "unset" : car.status=="pending" ? "none" : "unset"
                           }}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}

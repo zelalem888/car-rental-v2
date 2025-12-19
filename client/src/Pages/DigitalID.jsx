@@ -2,9 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 
 const DigitalID = () => {
-  const [doc , setDoc] = useState()
   const { id } = useParams();
   const navigate = useNavigate()
+   const [previews, setPreviews] = useState({
+    digital_id: null,
+    driver_license: null,
+    collateral_doc: null,
+    bank_check: null,
+  });
+ const [form, setForm] = useState({
+    digital_id: null,
+    driver_license: null,
+    collateral_doc: null,
+    bank_check: null,
+  });
 
 useEffect(()=>{
   const fetchData = async ()=>{
@@ -17,21 +28,9 @@ useEffect(()=>{
   fetchData()
 },[])
 
-  const [previews, setPreviews] = useState({
-    digital_id: null,
-    driver_license: null,
-    collateral_doc: null,
-    bank_check: null,
-  });
- const [form, setForm] = useState({
-    digital_id: null,
-    driver_license: null,
-    collateral_doc: null,
-    bank_check: null,
-  });
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-
+    console.log(name)
     if (files && files[0]) {
       setPreviews((prev) => ({
         ...prev,
@@ -116,7 +115,7 @@ useEffect(()=>{
             name="digital_id"
             accept="image/*,.pdf"
             required
-            onChange={handleFileChange}
+            onChange={(e)=> handleFileChange(e)}
             className="mt-2 block w-full text-sm
               file:mr-4 file:py-2 file:px-4
               file:rounded-md file:border-0
@@ -140,7 +139,7 @@ useEffect(()=>{
             type="file"
             name="driver_license"
             accept="image/*,.pdf"
-            onChange={handleFileChange}
+            onChange={(e)=> handleFileChange(e)}
             className="mt-2 block w-full text-sm
               file:mr-4 file:py-2 file:px-4
               file:rounded-md file:border-0
@@ -163,7 +162,7 @@ useEffect(()=>{
             name="collateral_doc"
             accept="image/*,.pdf"
             required
-            onChange={handleFileChange}
+            onChange={(e)=> handleFileChange(e)}
             className="mt-2 block w-full text-sm
               file:mr-4 file:py-2 file:px-4
               file:rounded-md file:border-0
@@ -185,7 +184,7 @@ useEffect(()=>{
             type="file"
             name="bank_check"
             accept="image/*,.pdf"
-            onChange={handleFileChange}
+            onChange={(e)=> handleFileChange(e)}
             className="mt-2 block w-full text-sm
               file:mr-4 file:py-2 file:px-4
               file:rounded-md file:border-0
@@ -205,7 +204,7 @@ useEffect(()=>{
         </p>
         <div className="flex gap-4">
          <Link
-        to={navigate("/")}>
+        to={"/"}>
         <button
           className="bg-red-600 text-white px-8 py-2 rounded-md text-sm font-medium hover:bg-red-700 transition"
         >

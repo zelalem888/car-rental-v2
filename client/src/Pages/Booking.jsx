@@ -348,7 +348,6 @@ const CarDetailPage = () => {
               >
 
                 <option value="NoDriver">No Driver</option>
-                <option value="random" >Random</option>
                 {driver?.map((drivers) => (
                   <option key={drivers.D_ID} value={drivers.D_ID}>{drivers.full_name}</option>
                 ))}

@@ -33,6 +33,7 @@ const UserDetail = () => {
         const res = await fetch(`http://localhost:3000/api/user/detail/${id}`);
         const data = await res.json();
 
+        console.log(data)
         setUserReservedH(data.userReservedH || []);
         setUsersLog(data.usersLog || []);
         setUserData(data.customerName || []);
@@ -97,6 +98,7 @@ const UserDetail = () => {
                 <th className="p-3">Return</th>
                 <th className="p-3">Days</th>
                 <th className="p-3">Total</th>
+                <th className="p-3">Tax</th>
                 <th className="p-3">Action</th>
               </tr>
             </thead>
@@ -108,7 +110,8 @@ const UserDetail = () => {
                   <td className="p-3">{new Date(r.Pickup_Date).toLocaleDateString()}</td>
                   <td className="p-3">{new Date(r.Return_Date).toLocaleDateString()}</td>
                   <td className="p-3">{r.Rent_Day}</td>
-                  <td className="p-3 font-semibold">${r.total_Payment}</td>
+                  <td className="p-3 font-semibold">{r.total_Payment} birr</td>
+                  <td className="p-3 font-semibold">{r.Tax_Amount} birr</td>
                   <td className="p-3">
                     <button
                       onClick={() => printReservation(r)}
@@ -156,23 +159,68 @@ const UserDetail = () => {
                 <th className="p-3">Action</th>
                 <th className="p-3">Old</th>
                 <th className="p-3">New</th>
-                <th className="p-3">Date</th>
+
+                <th className="p-3">Pickup</th>
+                <th className="p-3">Return</th>
+                <th className="p-3">Days</th>
+                <th className="p-3">Price/Day</th>
+                <th className="p-3">Tax</th>
+
                 <th className="p-3">Charge</th>
+                <th className="p-3">Overpaid</th>
+                <th className="p-3">Refund</th>
+
+                <th className="p-3">Confirmation</th>
+                <th className="p-3">Date</th>
               </tr>
             </thead>
+
             <tbody className="divide-y">
               {usersLog.map((l) => (
-                <tr key={l.Log_ID}>
+                <tr key={l.Log_ID} className="hover:bg-gray-50">
                   <td className="p-3">{l.Log_ID}</td>
                   <td className="p-3">{l.Reservation_ID}</td>
-                  <td className="p-3">{l.Action_Type}</td>
+                  <td className="p-3 capitalize">{l.Action_Type}</td>
                   <td className="p-3">{l.Old_Status}</td>
                   <td className="p-3">{l.New_Status}</td>
-                  <td className="p-3">{new Date(l.Logged_At).toLocaleString()}</td>
-                  <td className="p-3">{l.Total_Charge || "—"}</td>
+
+                  <td className="p-3">
+                    {new Date(l.Pickup_Date).toLocaleDateString()}
+                  </td>
+                  <td className="p-3">
+                    {new Date(l.Return_Date).toLocaleDateString()}
+                  </td>
+                  <td className="p-3 text-center">{l.Rent_Days}</td>
+
+                  <td className="p-3">
+                    {Number(l.Price_Per_Day).toLocaleString()}
+                  </td>
+
+                  <td className="p-3">
+                    {l.Tax_Amount ? Number(l.Tax_Amount).toLocaleString() : "—"}
+                  </td>
+
+                  <td className="p-3 font-medium">
+                    {Number(l.Total_Charge).toLocaleString()}
+                  </td>
+
+                  <td className="p-3 text-green-600">
+                    {l.Overpayment ? Number(l.Overpayment).toLocaleString() : "—"}
+                  </td>
+
+                  <td className="p-3 text-red-600">
+                    {l.Refund ? Number(l.Refund).toLocaleString() : "—"}
+                  </td>
+
+                  <td className="p-3">{l.Confirmation_Number}</td>
+
+                  <td className="p-3 text-xs text-gray-600">
+                    {new Date(l.Logged_At).toLocaleString()}
+                  </td>
                 </tr>
               ))}
             </tbody>
+
           </table>
         </div>
       )}
