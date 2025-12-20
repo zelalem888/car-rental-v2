@@ -25,7 +25,7 @@ exports.pendingReservationService = async () => {
     "pending"
   );
 
-  for(let name of rows){
+  for (let name of rows) {
     const [namedata] = await db.query("SELECT FullName FROM customer WHERE C_ID = ?", name.C_ID)
     name.userName = namedata[0].FullName
   }
@@ -37,11 +37,11 @@ exports.confirmedReservationService = async () => {
   const [rows] = await db.query(
     "SELECT * FROM reservation WHERE status = 'confirmed' OR status = 'onHold'"
   );
-  for(let name of rows){
+  for (let name of rows) {
     const [namedata] = await db.query("SELECT FullName FROM customer WHERE C_ID = ?", name.C_ID)
     name.userName = namedata[0].FullName
   }
- 
+
   return rows;
 };
 // ===============================================================
@@ -66,10 +66,51 @@ exports.confirmReservationService = async (params) => {
   const DifferenceDate = pickup - todayDate
   const sevenDay = 1000 * 60 * 60 * 24 * 7
 
-  if(DifferenceDate > sevenDay){
+  if (DifferenceDate > sevenDay) {
     status = "onHold"
   }
 
+  // assign driver logic
+  let driverIdToAssign = findID[0].D_ID;
+
+  // Check if the originally selected driver is still active
+  const [driverAllowed] = await db.query(
+    "SELECT * FROM driver WHERE D_ID = ? AND status = 'active'",
+    [driverIdToAssign]
+  );
+
+  if (driverAllowed.length !== 0) {
+    // Try to assign the selected driver safely
+    const [assignResult] = await db.query(
+      "UPDATE driver SET status = ? WHERE D_ID = ? AND status = 'active'",
+      ["busy", driverIdToAssign]
+    );
+
+    if (assignResult.affectedRows === 0) {
+      throw new Error("Driver assignment failed, please try again.");
+    }
+  } else {
+    // Original driver is busy, pick the first free driver
+    const [freeDrivers] = await db.query(
+      "SELECT * FROM driver WHERE status = 'active'"
+    );
+
+    if (freeDrivers.length === 0) {
+      throw new Error("No available drivers to assign.");
+    }
+
+    driverIdToAssign = freeDrivers[0].D_ID;
+
+    // Assign the new driver safely
+    const [assignResult] = await db.query(
+      "UPDATE driver SET status = ? WHERE D_ID = ? AND status = 'active'",
+      ["busy", driverIdToAssign]
+    );
+
+    if (assignResult.affectedRows === 0) {
+      throw new Error("Driver assignment failed, please try again.");
+    }
+  }
 
   await db.query("UPDATE reservation SET status = ? WHERE R_ID = ?", [status, reservationID]);
 
@@ -144,55 +185,55 @@ exports.doneReservationService = async (params) => {
     findID[0].V_ID
   );
 
-const today = new Date();
-const pickup = new Date(findID[0].Pickup_Date);
-const returnD = new Date(findID[0].Return_Date);
+  const today = new Date();
+  const pickup = new Date(findID[0].Pickup_Date);
+  const returnD = new Date(findID[0].Return_Date);
 
-// Date-only comparison
-today.setHours(0, 0, 0, 0);
-pickup.setHours(0, 0, 0, 0);
-returnD.setHours(0, 0, 0, 0);
+  // Date-only comparison
+  today.setHours(0, 0, 0, 0);
+  pickup.setHours(0, 0, 0, 0);
+  returnD.setHours(0, 0, 0, 0);
 
-const rentDay = parseInt(findID[0].Rent_Day);
-const pricePerDay = parseFloat(vehicleData[0].Price_Per_Day);
+  const rentDay = parseInt(findID[0].Rent_Day);
+  const pricePerDay = parseFloat(vehicleData[0].Price_Per_Day);
 
-const payment = rentDay * pricePerDay;
-let refund = 0;
-let overPay = 0;
+  const payment = rentDay * pricePerDay;
+  let refund = 0;
+  let overPay = 0;
 
-/* ===============================
-   1️⃣ Reservation not started
-================================= */
-if (pickup > today) {
-  refund = payment * 0.6; // refund 60%, cut 40%
+  /* ===============================
+     1️⃣ Reservation not started
+  ================================= */
+  if (pickup > today) {
+    refund = payment * 0.6; // refund 60%, cut 40%
 
-/* ===============================
-   2️⃣ Early return
-================================= */
-} else if (today < returnD) {
-  const remainingDays = Math.ceil(
-    (returnD - today) / (1000 * 60 * 60 * 24)
-  );
+    /* ===============================
+       2️⃣ Early return
+    ================================= */
+  } else if (today < returnD) {
+    const remainingDays = Math.ceil(
+      (returnD - today) / (1000 * 60 * 60 * 24)
+    );
 
-  const remainingFee = remainingDays * pricePerDay;
-  refund = remainingFee * 0.6;
+    const remainingFee = remainingDays * pricePerDay;
+    refund = remainingFee * 0.6;
 
-/* ===============================
-   3️⃣ Late return
-================================= */
-} else if (today > returnD) {
-  const overdueDays = Math.ceil(
-    (today - returnD) / (1000 * 60 * 60 * 24)
-  );
+    /* ===============================
+       3️⃣ Late return
+    ================================= */
+  } else if (today > returnD) {
+    const overdueDays = Math.ceil(
+      (today - returnD) / (1000 * 60 * 60 * 24)
+    );
 
-  overPay = overdueDays * pricePerDay * 1.5;
-}
+    overPay = overdueDays * pricePerDay * 1.5;
+  }
 
-/* ===============================
-   4️⃣ On-time return
-================================= */
-// refund = 0
-// overPay = 0
+  /* ===============================
+     4️⃣ On-time return
+  ================================= */
+  // refund = 0
+  // overPay = 0
 
 
 
@@ -215,6 +256,7 @@ if (pickup > today) {
     "UPDATE rent SET C_ID =? , V_ID =?, A_ID=?,Reservation_R_ID=?, Pickup_Date=?,Return_Date=?,Total_Rent_Day=? ,Daily_Fee=?,over_payment=?, Refund=? ,Confirmation_Number=? WHERE Reservation_R_ID=?",
     result
   );
+  await db.query("UPDATE driver SET status = ? WHERE D_ID = ?", ["active", findID[0].D_ID]);
 
   await db.query("DELETE FROM reservation WHERE R_ID=?", reservationID);
 

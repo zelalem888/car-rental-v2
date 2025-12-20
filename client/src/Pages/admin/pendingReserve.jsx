@@ -110,7 +110,7 @@ const PendingReserve = () => {
     } catch (e) {
       console.log(e)
       throw new Error(e.error);
-  
+
     }
     setDetail(false);
     setRefresh(!false);
@@ -173,7 +173,7 @@ const PendingReserve = () => {
                   <td className="py-2 px-4 font-medium text-gray-800">
                     {r.Posting_Date.slice(0, 10)}
                   </td>
-                  
+
                   <td className="py-2 px-4">
                     {new Date(r.Pickup_Date).toLocaleDateString("en-CA")}
                   </td>
@@ -231,20 +231,20 @@ const PendingReserve = () => {
                         </p>
                         {customer && customer[0].Documents === null ? (
 
-                        <p className="bg-red-400 text-white rounded-md px-4 py-2 mt-4" >
-                          There is No Document
-                        </p>
-                        ):(
+                          <p className="bg-red-400 text-white rounded-md px-4 py-2 mt-4" >
+                            There is No Document
+                          </p>
+                        ) : (
                           <button
-                          onClick={() => {
-                            const docs = JSON.parse(customer[0].Documents);
-                            setDocuments(docs);
-                            setShowDocs(true);
-                          }}
-                          className="bg-blue-600 text-white rounded-md px-4 py-2 mt-4 hover:bg-blue-700"
-                        >
-                          Review Documents
-                        </button>
+                            onClick={() => {
+                              const docs = JSON.parse(customer[0].Documents);
+                              setDocuments(docs);
+                              setShowDocs(true);
+                            }}
+                            className="bg-blue-600 text-white rounded-md px-4 py-2 mt-4 hover:bg-blue-700"
+                          >
+                            Review Documents
+                          </button>
                         )}
 
                       </>
@@ -309,19 +309,19 @@ const PendingReserve = () => {
                   >
                     Cancel
                   </button>
-                  {customer && customer[0].Documents == null ? (
-                     <p
-                    className={`px-4 py-2 bg-red-200  text-white rounded-md`}
-                  >
-                    Document Needed
-                  </p>
-                  ):(
-                  <button
-                    onClick={() => confirmReserve({ id: adminID, rid: rid })}
-                    className={`px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md`}
-                  >
-                    Approve
-                  </button>
+                  {customer && customer[0].Documents === null ? (
+                    <p
+                      className={`px-4 py-2 bg-red-200  text-white rounded-md`}
+                    >
+                      Document Needed
+                    </p>
+                  ) : (
+                    <button
+                      onClick={() => confirmReserve({ id: adminID, rid: rid })}
+                      className={`px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md`}
+                    >
+                      Approve
+                    </button>
                   )}
                   <button
                     onClick={() => rejectReserve({ id: adminID, rid: rid })}
@@ -336,57 +336,57 @@ const PendingReserve = () => {
         )}
       </div>
       {showDocs && documents && (
-  <div className="fixed inset-0 z-50 bg-black bg-opacity-70 flex justify-center items-center">
-    <div className="bg-white rounded-lg w-[90%] max-h-[90vh] overflow-y-auto p-6">
-      
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Customer Documents</h2>
-        <button
-          onClick={() => setShowDocs(false)}
-          className="text-gray-600 hover:text-black text-lg"
-        >
-          ✕
-        </button>
-      </div>
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-70 flex justify-center items-center">
+          <div className="bg-white rounded-lg w-[90%] max-h-[90vh] overflow-y-auto p-6">
 
-      {/* Documents */}
-      <div className="space-y-10">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Customer Documents</h2>
+              <button
+                onClick={() => setShowDocs(false)}
+                className="text-gray-600 hover:text-black text-lg"
+              >
+                ✕
+              </button>
+            </div>
 
-        {documents.digital_id && (
-          <DocumentPreview
-            title="Digital ID"
-            src={`http://localhost:3000${documents.digital_id}`}
-          />
-        )}
+            {/* Documents */}
+            <div className="space-y-10">
 
-        {documents.driver_license && (
-          <DocumentPreview
-            title="Driver License"
-            src={`http://localhost:3000${documents.driver_license}`}
-          />
-        )}
+              {documents.digital_id && (
+                <DocumentPreview
+                  title="Digital ID"
+                  src={`http://localhost:3000${documents.digital_id}`}
+                />
+              )}
 
-        {documents.collateral_doc && (
-          <DocumentPreview
-            title="Collateral Document"
-            src={`http://localhost:3000${documents.collateral_doc}`}
-          />
-        )}
+              {documents.driver_license && (
+                <DocumentPreview
+                  title="Driver License"
+                  src={`http://localhost:3000${documents.driver_license}`}
+                />
+              )}
 
-        {documents.bank_check && (
-          <DocumentPreview
-            title="Bank Check"
-            src={`http://localhost:3000${documents.bank_check}`}
-          />
-        )}
-      </div>
+              {documents.collateral_doc && (
+                <DocumentPreview
+                  title="Collateral Document"
+                  src={`http://localhost:3000${documents.collateral_doc}`}
+                />
+              )}
+
+              {documents.bank_check && (
+                <DocumentPreview
+                  title="Bank Check"
+                  src={`http://localhost:3000${documents.bank_check}`}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
-  </div>
-)}
 
-    </div>
-    
   );
 };
 
