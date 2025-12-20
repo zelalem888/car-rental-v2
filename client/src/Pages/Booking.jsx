@@ -22,6 +22,9 @@ const CarDetailPage = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [driverPrice, setDriverPrice] = useState(0);
   const [pickUpDate ,  setPickupDate] = useState()
+  const [showDriverLicense, setShowDriverLicense] = useState(true)
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [driverLicensePhoto,setDriverLicensePhoto ] = useState("null")
   const year = new Date().getFullYear();
   const month = new Date().getMonth();
 
@@ -103,12 +106,24 @@ const CarDetailPage = () => {
       return;
     }
     try {
+
+      const formData = new FormData();
+    formData.append("pickUpDate", rentalDetails.pickUpDate);
+    formData.append("returnDate", rentalDetails.returnDate);
+    formData.append("rentDay", rentalDetails.rentDay);
+    formData.append("vehicleDriver", rentalDetails.vehicleDriver);
+    formData.append("Payment", pay);
+    formData.append("tax", tax);
+    formData.append("TotalPayment", totalPrice);
+    if (driverLicensePhoto) {
+      formData.append("driverLicensePhoto", driverLicensePhoto);
+    }
+
       const response = await fetch(
         `http://localhost:3000/api/user/reservation/${userData.id}/${id}`,
         {
           method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify(rentalDetails),
+          body: formData
         }
       );
 
@@ -128,9 +143,10 @@ const CarDetailPage = () => {
     }
   };
 
-  const DRIVER_FEE_PER_DAY = 100;
+  const DRIVER_FEE_PER_DAY = 400;
 
   const selectHandler = (range) => {
+    // console.log(selectedFile)
     setSelected(range);
 
     const pickUpDate = new Date(range.from.toLocaleDateString("en-CA"));
@@ -287,7 +303,7 @@ const CarDetailPage = () => {
                   </tr>
                   {driverPrice > 0 && (
                     <tr>
-                      <td className="p-3 text-green-900 font-semibold">Driver</td>
+                      <td className="p-3 text-green-900 font-semibold">Driver(400 per/Day)</td>
                       <td className="p-3 text-xl">{driverPrice} Birr</td>
                     </tr>
                   )}
@@ -325,9 +341,14 @@ const CarDetailPage = () => {
                   let newDriverPrice = 0;
 
                   if (value !== "NoDriver") {
+                    setShowDriverLicense(false);
+                    setDriverLicensePhoto(null);
+                    setSelectedFile(null);
                     newDriverPrice = DRIVER_FEE_PER_DAY * dateDiff;
+                  
+                  }else{
+                  setShowDriverLicense(true)
                   }
-
                   setDriverPrice(newDriverPrice);
 
                   setRentalDetails((prev) => ({
@@ -353,6 +374,35 @@ const CarDetailPage = () => {
                 ))}
               </select>
             </div>
+                {showDriverLicense &&  (
+
+            <div className="flex flex-col mt-4 max-w-md mx-auto">
+              <label className="text-sm text-gray-600 mb-2 font-medium">
+                Driver License
+              </label>
+
+              <input
+                type="file"
+                accept="image/*"
+                required
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  setDriverLicensePhoto(file)
+                  if (file) setSelectedFile(URL.createObjectURL(file));
+                }}
+                className="border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+
+              {selectedFile && (
+                <img
+                  src={selectedFile}
+                  alt="Driver License Preview"
+                  className="mt-4 w-full h-48 object-contain rounded-md"
+                />
+              )}
+            </div>
+                )}
+
 
             <div className="mt-4 flex items-start gap-3">
               <input

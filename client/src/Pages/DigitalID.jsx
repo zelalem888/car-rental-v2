@@ -6,15 +6,9 @@ const DigitalID = () => {
   const navigate = useNavigate()
    const [previews, setPreviews] = useState({
     digital_id: null,
-    driver_license: null,
-    collateral_doc: null,
-    bank_check: null,
   });
  const [form, setForm] = useState({
     digital_id: null,
-    driver_license: null,
-    collateral_doc: null,
-    bank_check: null,
   });
 
 useEffect(()=>{
@@ -48,13 +42,9 @@ useEffect(()=>{
   const handleSubmit =async (e) => {
     e.preventDefault();
 
-    console.log(previews)
     const formData = new FormData()
     formData.append("reservation_id", id);
     formData.append("digital_id", form.digital_id)
-    formData.append("driver_license", form.driver_license)
-    formData.append("collateral_doc", form.collateral_doc)
-    formData.append("bank_check", form.bank_check)
 
     console.log("Submitting documents...");
     const response = await fetch(`http://localhost:3000/api/user/upload/document/${id}`, {
@@ -113,7 +103,7 @@ useEffect(()=>{
           <input
             type="file"
             name="digital_id"
-            accept="image/*,.pdf"
+            accept="image/*"
             required
             onChange={(e)=> handleFileChange(e)}
             className="mt-2 block w-full text-sm
@@ -125,82 +115,14 @@ useEffect(()=>{
 
           <Preview src={previews.digital_id} />
         </div>
-
-        {/* Driver License */}
-        <div>
-          <label className="block font-medium text-gray-800">
-            Driver License{" "}
-            <span className="text-xs text-gray-500">
-              (Optional if company driver is used)
-            </span>
-          </label>
-
-          <input
-            type="file"
-            name="driver_license"
-            accept="image/*,.pdf"
-            onChange={(e)=> handleFileChange(e)}
-            className="mt-2 block w-full text-sm
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-md file:border-0
-              file:bg-gray-50 file:text-gray-700
-              hover:file:bg-gray-100"
-          />
-
-          <Preview src={previews.driver_license} />
-        </div>
-
-        {/* Collateral */}
-        <div>
-          <label className="block font-medium text-gray-800">
-            Collateral Document{" "}
-            <span className="text-xs text-red-500">(Required)</span>
-          </label>
-
-          <input
-            type="file"
-            name="collateral_doc"
-            accept="image/*,.pdf"
-            required
-            onChange={(e)=> handleFileChange(e)}
-            className="mt-2 block w-full text-sm
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-md file:border-0
-              file:bg-blue-50 file:text-blue-700
-              hover:file:bg-blue-100"
-          />
-
-          <Preview src={previews.collateral_doc} />
-        </div>
-
-        {/* Bank Check */}
-        <div>
-          <label className="block font-medium text-gray-800">
-            Bank Check{" "}
-            <span className="text-xs text-gray-500">(If available)</span>
-          </label>
-
-          <input
-            type="file"
-            name="bank_check"
-            accept="image/*,.pdf"
-            onChange={(e)=> handleFileChange(e)}
-            className="mt-2 block w-full text-sm
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-md file:border-0
-              file:bg-gray-50 file:text-gray-700
-              hover:file:bg-gray-100"
-          />
-
-          <Preview src={previews.bank_check} />
-        </div>
+  
       </div>
 
       <div className="h-px bg-gray-200 my-8" />
 
       <div className="flex flex-col md:flex-row md:justify-between gap-4">
         <p className="text-xs text-gray-400">
-          JPG, PNG, PDF • Max 5MB per document
+          JPG, PNG, • Max 5MB per document
         </p>
         <div className="flex gap-4">
          <Link

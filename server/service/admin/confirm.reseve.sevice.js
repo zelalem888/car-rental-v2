@@ -71,7 +71,7 @@ exports.confirmReservationService = async (params) => {
   }
 
 
-  await db.query("UPDATE reservation SET status = ? WHERE R_ID = ?", [status, reservationID]);
+  await db.query("UPDATE reservation SET status = ?  WHERE R_ID = ?", [status ,reservationID]);
 
   const [data] = await db.query(
     "SELECT * FROM reservation WHERE R_ID = ?",

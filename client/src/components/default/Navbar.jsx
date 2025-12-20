@@ -179,7 +179,7 @@ const Navbar = () => {
                           className="w-full px-4 py-2 text-left text-gray-700 flex items-center space-x-2"
                           
                         >
-                          <Check /> <span>Document uploaded</span>
+                          <Check /> <span>Digital ID</span>
                         </a>
                         ) : (
                          <Link
@@ -187,7 +187,7 @@ const Navbar = () => {
                           to={`/verifyid/${userData.id}`}
                         >
                           
-                          <span>Upload Document</span>
+                          <span>upload Digital ID</span>
                         </Link>
                           
                         )}

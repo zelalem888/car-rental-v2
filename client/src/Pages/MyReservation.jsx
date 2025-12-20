@@ -18,6 +18,12 @@ const MyReservation = () => {
   const [reject, setReject] = useState([]);
   const [findDriver, setFindDriver] = useState()
   const [history, setHistory] = useState("pending");
+  const [showPaymentPopup, setShowPaymentPopup] = useState(false);
+  const [paymentImage, setPaymentImage] = useState(null);
+  const [paymentPreview, setPaymentPreview] = useState(null);
+  const [selectedReservation, setSelectedReservation] = useState(null);
+  const [doc , setDoc] = useState()
+  
 
   const navigate = useNavigate();
 
@@ -42,6 +48,13 @@ const MyReservation = () => {
           }
           const result = await response.json();
           setTokenId(result);
+
+          const check =  await fetch(`http://localhost:3000/api/user/document/check/${result.id}`)
+            
+           const checkComplete = await check.json()
+            setDoc(checkComplete.doc)
+            // console.log(result)
+
         } catch (e) {
           console.log("network Error", e);
         }
@@ -196,6 +209,51 @@ const MyReservation = () => {
     printHistory(historyResult)
   }
 
+  const handlePaymentImageChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setPaymentImage(file);
+  setPaymentPreview(URL.createObjectURL(file));
+};
+
+const handleSubmitPayment = async () => {
+  if (!paymentImage || !selectedReservation) return;
+
+  const formData = new FormData();
+  formData.append("payment", paymentImage);
+  formData.append("reservationId", selectedReservation);
+
+  try {
+    const token = localStorage.getItem("jwt-token");
+    const response = await fetch(
+      "http://localhost:3000/api/payment/upload",
+      {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      alert("Upload failed");
+      return;
+    }
+
+    alert("Payment proof uploaded successfully");
+
+    setShowPaymentPopup(false);
+    setPaymentImage(null);
+    setPaymentPreview(null);
+  } catch (error) {
+    console.error(error);
+    alert("Network error");
+  }
+};
+
+
   return (
     <>
       <h2 className="text-3xl w-[96%] mx-auto font-bold mt-20 text-gray-800">
@@ -337,6 +395,26 @@ const MyReservation = () => {
                     Cost of rental daily
                   </p>
                 </div>
+                <div className="flex gap-3 items-center">
+                {doc && doc === true ? (
+                    <button
+                      onClick={() => {
+                        setSelectedReservation(item.R_ID);
+                        setShowPaymentPopup(true);
+                      }}
+                      className="mt-4 bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-md"
+                    >
+                      Add Payment Picture
+                    </button>
+
+                
+                ): (
+                    <a
+                  className="text-sm"
+                >
+                  Please add Digital ID before making any payment.
+                </a>
+                )}
 
                 <button
                   onClick={() => navigate(`/booking/update/${item.R_ID}`)}
@@ -344,6 +422,7 @@ const MyReservation = () => {
                 >
                   Edit
                 </button>
+                </div>
               </div>
             </div>
 
@@ -640,8 +719,60 @@ const MyReservation = () => {
         <p>There is no reservation</p>
 
       )}
+      {showPaymentPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-[400px] relative">
+
+            <h2 className="text-xl font-semibold mb-4">
+              Upload Payment Proof
+            </h2>
+
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handlePaymentImageChange}
+              className="mb-4"
+            />
+
+            {paymentPreview && (
+              <div className="mb-4">
+                <img
+                  src={paymentPreview}
+                  alt="Payment Preview"
+                  className="w-full h-48 object-cover rounded border"
+                />
+              </div>
+            )}
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowPaymentPopup(false);
+                  setPaymentImage(null);
+                  setPaymentPreview(null);
+                }}
+                className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => handleSubmitPayment()}
+                disabled={!paymentImage}
+                className="px-4 py-2 rounded bg-green-600 hover:bg-green-700 text-white disabled:opacity-50"
+              >
+                Submit
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </>
+    
   );
+  
 };
 
 export default MyReservation;

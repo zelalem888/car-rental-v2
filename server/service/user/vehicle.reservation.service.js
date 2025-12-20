@@ -1,5 +1,4 @@
 const db = require("../../db/config");
-// const { v4: uuidv4, v4 } = require("uuid");
 const { v4 : uuidv4 } = require('uuid')
 
 
@@ -35,6 +34,7 @@ exports.vehicleReservationService = async ({
     "SELECT * FROM vehicle WHERE V_ID = ?",
     vehicleId
   );
+  const driverLicensePath = reservationData.driverLicenseFilePath || null;
 
   const values = [
     userId,
@@ -45,12 +45,13 @@ exports.vehicleReservationService = async ({
     reservationData.rentDay,
     reservationData.tax,
     reservationData.TotalPayment,
+    driverLicensePath,
     status,
     uuid,
   ];
 
   const [rows] = await db.query(
-    "INSERT INTO reservation (C_ID, V_ID, D_ID, Pickup_Date, Return_Date, Rent_Day, Tax_Amount, total_Payment, Status, Confirmation_Number) VALUES(?,?,?,?,?,?,?,?,?,?) ",
+    "INSERT INTO reservation (C_ID, V_ID, D_ID, Pickup_Date, Return_Date, Rent_Day, Tax_Amount, total_Payment, Driver_License, Status, Confirmation_Number) VALUES(?,?,?,?,?,?,?,?,?,?,?) ",
     values
   );
   await db.query(
@@ -279,4 +280,31 @@ exports.singleRentedService = async ({ rid }) => {
   );
   return rows;
 
+};
+
+// =============================================================
+
+exports.addPaymentPictureService = async ({ rid, imagePath }) => {
+  const [rows] = await db.query(
+    "SELECT R_ID, Payment_Photo FROM reservation WHERE R_ID = ?",
+    [rid]
+  );
+
+  if (rows.length === 0) {
+    throw new Error("Reservation not found");
+  }
+
+  const [result] = await db.query(
+    `UPDATE reservation SET Payment_Photo = ? WHERE R_ID = ?`,
+    [imagePath, rid]
+  );
+
+  if (result.affectedRows === 0) {
+    throw new Error("Failed to save payment image");
+  }
+  return {
+    message: "Payment proof uploaded successfully",
+    reservationId: rid,
+    image: imagePath,
+  };
 };

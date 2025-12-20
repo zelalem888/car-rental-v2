@@ -7,6 +7,7 @@ const {
   rentedVehicleService,
   singleRentedService,
   rejectedVehicleService,
+  addPaymentPictureService
 } = require("../../service/user/vehicle.reservation.service");
 
 exports.allVehicleReservationController = async (req, res) => {
@@ -29,8 +30,14 @@ exports.allVehicleReservationController = async (req, res) => {
 exports.vehicleReservationController = async (req, res) => {
   try {
     const browser = req.headers["user-agent"];
+
+    const reservationData = { ...req.body };
+    if (req.file) {
+      reservationData.driverLicenseFilePath = `/uploads/userLicense/${req.file.filename}`;
+    }
+
     const result = await vehicleReservationService({
-      reservationData: req.body,
+      reservationData,
       userId: req.params.id,
       vehicleId: req.params.vehicleid,
       browser: browser
@@ -127,5 +134,30 @@ exports.singleRentedController = async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     res.send({ message: error });
+  }
+};
+
+// ===========================================================
+
+exports.addPaymentPictureController = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Payment image is required" });
+    }
+    const { reservationId } = req.body;
+
+    if (!reservationId) {
+      return res.status(400).json({ message: "Reservation ID is required" });
+    }
+
+    const result = await addPaymentPictureService({
+      rid: reservationId,
+      imagePath: `/uploads/userPayment/${req.file.filename}`,
+    });
+
+    return res.status(201).json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };

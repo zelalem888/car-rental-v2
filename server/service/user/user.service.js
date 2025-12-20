@@ -42,6 +42,15 @@ exports.UsersDetailService = async (id) => {
     throw new Error("there is no user in this ID.");
   }
 const [userReservationHistory] = await db.query("SELECT * FROM reservation WHERE C_ID = ? ", paramID)
+for (let userH of userReservationHistory){
+  let adminN = null
+  const [adminID] = await db.query("SELECT A_ID FROM rent WHERE Reservation_R_ID  = ?" , [userH.R_ID])
+  for(let admin of adminID){
+    const [adminName] = await db.query("SELECT FullName FROM admin WHERE A_ID = ?" , [admin.A_ID])
+    adminN = adminName[0].FullName
+  }
+  userH.adminName = adminN
+}
 
 const [userLog] = await db.query("SELECT * FROM reservation_logs WHERE C_ID = ? ", paramID)
 
@@ -180,32 +189,17 @@ exports.UserDocumentService = async (id, files, browser) => {
 
   const documents = {
     digital_id: files.digital_id?.[0]?.filename || null,
-    driver_license: files.driver_license?.[0]?.filename || null,
-    collateral_doc: files.collateral_doc?.[0]?.filename || null,
-    bank_check: files.bank_check?.[0]?.filename || null,
   };
 
   // Required validation
-  if (!documents.digital_id || !documents.collateral_doc) {
-    throw new Error("Digital ID and Collateral Document are required");
+  if (!documents.digital_id) {
+    throw new Error("Digital ID is required");
   }
 
   const savedPaths = {
     digital_id: documents.digital_id
       ? `/uploads/userDocument/${documents.digital_id}`
-      : null,
-
-    driver_license: documents.driver_license
-      ? `/uploads/userDocument/${documents.driver_license}`
-      : null,
-
-    collateral_doc: documents.collateral_doc
-      ? `/uploads/userDocument/${documents.collateral_doc}`
-      : null,
-
-    bank_check: documents.bank_check
-      ? `/uploads/userDocument/${documents.bank_check}`
-      : null,
+      : null
   };
 
 
