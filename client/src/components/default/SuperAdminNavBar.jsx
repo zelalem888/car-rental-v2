@@ -31,7 +31,7 @@ const SuperAdminNavBar = () => {
 
                 setSuperAdmin(data.user);
             } catch (err) {
-                console.log(err);
+                // console.log(err);
             }
         };
         verify();

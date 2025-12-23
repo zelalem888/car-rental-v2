@@ -101,7 +101,7 @@ const UpdateAdmin = () => {
             alert(data.message)
             navigate("/superadmin/manage-admins");
         } catch (e) {
-            console.log(e);
+            console.log("internal error");
         }
     };
 

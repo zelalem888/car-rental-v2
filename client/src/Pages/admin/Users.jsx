@@ -50,7 +50,7 @@ const Users = () => {
 
         const data = await response.json();
         setUserData(data);
-        console.log(data)
+        // console.log(data)
 
       } catch (e) {
         throw new Error(e);

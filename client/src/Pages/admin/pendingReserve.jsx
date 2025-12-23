@@ -59,11 +59,11 @@ const PendingReserve = () => {
         );
         if (!response.ok) {
           const errorData = await response.json();
-          console.log(errorData)
+          // console.log(errorData)
           throw new Error(errorData);
         }
         const result = await response.json();
-        console.log(result)
+        // console.log(result)
         setPending(result);
       } catch (e) {
         throw new Error(e);
@@ -93,7 +93,7 @@ const PendingReserve = () => {
         throw new Error(errorData.error);
       }
       const customerResult = await customerResponse.json();
-      console.log(customerResult)
+      // console.log(customerResult)
       setCustomer(customerResult);
     } catch (e) {
       throw new Error(e);
@@ -116,8 +116,8 @@ const PendingReserve = () => {
       const confirmResult = await ConfirmResponse.json();
       alert(confirmResult.message);
     } catch (e) {
-      console.log(e)
-      throw new Error(e.error);
+      console.log("internal error")
+      // throw new Error(e.error);
   
     }
     setDetail(false);

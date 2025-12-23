@@ -1,6 +1,31 @@
 import React from "react";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
+// Helper: embed any image type as PNG
+const embedAnyImage = async (pdfDoc, url) => {
+  const img = new Image();
+  img.crossOrigin = "anonymous"; // prevent CORS issues
+  img.src = url;
+
+  await new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = reject;
+  });
+
+  // Draw image to canvas
+  const canvas = document.createElement("canvas");
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0);
+
+  // Convert to PNG
+  const dataUrl = canvas.toDataURL("image/png");
+  const imgBytes = await fetch(dataUrl).then((r) => r.arrayBuffer());
+
+  return await pdfDoc.embedPng(imgBytes);
+};
+
 const printHistory = async (result) => {
   try {
     const r = result[0];
@@ -8,18 +33,14 @@ const printHistory = async (result) => {
     // -----------------------------
     // FETCH VEHICLE
     // -----------------------------
-    const vehicleResponse = await fetch(
-      `http://localhost:3000/api/vehicle/${r.V_ID}`
-    );
+    const vehicleResponse = await fetch(`http://localhost:3000/api/vehicle/${r.V_ID}`);
     const vehicleResult = await vehicleResponse.json();
     const vehicle = vehicleResult[0];
 
     // -----------------------------
     // FETCH CUSTOMER
     // -----------------------------
-    const customerResponse = await fetch(
-      `http://localhost:3000/api/user/admin/${r.C_ID}`
-    );
+    const customerResponse = await fetch(`http://localhost:3000/api/user/admin/${r.C_ID}`);
     const customerResult = await customerResponse.json();
     const customer = customerResult[0];
 
@@ -34,14 +55,14 @@ const printHistory = async (result) => {
     const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
     // -----------------------------
-    // TITLE ABOVE LOGO: SAMI Car Rental (Gradient)
+    // TITLE ABOVE LOGO
     // -----------------------------
     const title = "SAMI Car Rental";
     const titleFontSize = 24;
 
-    const segment1 = title.slice(0, 4); // "SAMI"
-    const segment2 = title.slice(4, 8); // " Car"
-    const segment3 = title.slice(8); // " Rental"
+    const segment1 = title.slice(0, 4);
+    const segment2 = title.slice(4, 8);
+    const segment3 = title.slice(8);
 
     const titleWidth1 = bold.widthOfTextAtSize(segment1, titleFontSize);
     const titleWidth2 = bold.widthOfTextAtSize(segment2, titleFontSize);
@@ -49,85 +70,47 @@ const printHistory = async (result) => {
     const totalWidth = titleWidth1 + titleWidth2 + titleWidth3;
 
     let startX = width / 2 - totalWidth / 2;
-    const logoY = 750; 
-    const titleY = logoY + 50; 
+    const logoY = 750;
+    const titleY = logoY + 50;
 
-    page.drawText(segment1, {
-      x: startX,
-      y: titleY,
-      size: titleFontSize,
-      font: bold,
-      color: rgb(0, 0.5, 0),
-    });
+    page.drawText(segment1, { x: startX, y: titleY, size: titleFontSize, font: bold, color: rgb(0, 0.5, 0) });
     startX += titleWidth1;
-    page.drawText(segment2, {
-      x: startX,
-      y: titleY,
-      size: titleFontSize,
-      font: bold,
-      color: rgb(0.9, 0.8, 0),
-    });
+    page.drawText(segment2, { x: startX, y: titleY, size: titleFontSize, font: bold, color: rgb(0.9, 0.8, 0) });
     startX += titleWidth2;
-    page.drawText(segment3, {
-      x: startX,
-      y: titleY,
-      size: titleFontSize,
-      font: bold,
-      color: rgb(0.8, 0, 0),
-    });
+    page.drawText(segment3, { x: startX, y: titleY, size: titleFontSize, font: bold, color: rgb(0.8, 0, 0) });
 
     // -----------------------------
     // LOGO
     // -----------------------------
     const logoUrl = "/11111.png";
-    const logoBytes = await fetch(logoUrl).then((r) => r.arrayBuffer());
-    const logo = await pdfDoc.embedPng(logoBytes);
+    const logo = await embedAnyImage(pdfDoc, logoUrl);
 
     const logoW = 60;
     const logoH = (logo.height / logo.width) * logoW;
 
-    page.drawImage(logo, {
-      x: width / 2 - logoW / 2,
-      y: logoY,
-      width: logoW,
-      height: logoH,
-    });
+    page.drawImage(logo, { x: width / 2 - logoW / 2, y: logoY, width: logoW, height: logoH });
 
     // -----------------------------
     // WATERMARK (Subtle)
     // -----------------------------
     const wmW = 200;
-    const wmH = (logo.height / logo.width) * wmW;
-    page.drawImage(logo, {
-      x: width / 2 - wmW / 2,
-      y: 350,
-      width: wmW,
-      height: wmH,
-      opacity: 0.07,
-    });
+    const wmImage = await embedAnyImage(pdfDoc, logoUrl);
+    const wmH = (wmImage.height / wmImage.width) * wmW;
+    page.drawImage(wmImage, { x: width / 2 - wmW / 2, y: 350, width: wmW, height: wmH, opacity: 0.07 });
 
     // -----------------------------
-    // VEHICLE IMAGE (Small, aligned, border)
+    // VEHICLE IMAGE
     // -----------------------------
     let imageY = logoY - 10;
     if (vehicle.Images) {
       const imagesArray = JSON.parse(vehicle.Images);
       if (imagesArray.length > 0) {
         const imgUrl = `http://localhost:3000${imagesArray[0]}`;
-        const imgBytes = await fetch(imgUrl).then((r) => r.arrayBuffer());
         let vehicleImage;
-
-        if (imagesArray[0].endsWith(".webp")) {
-          vehicleImage = await pdfDoc.embedJpg(imgBytes).catch(async () => {
-            vehicleImage = await pdfDoc.embedPng(imgBytes);
-          });
-        } else if (
-          imagesArray[0].endsWith(".jpg") ||
-          imagesArray[0].endsWith(".jpeg")
-        ) {
-          vehicleImage = await pdfDoc.embedJpg(imgBytes);
-        } else if (imagesArray[0].endsWith(".png")) {
-          vehicleImage = await pdfDoc.embedPng(imgBytes);
+        try {
+          vehicleImage = await embedAnyImage(pdfDoc, imgUrl);
+        } catch (err) {
+          console.log("Failed to embed vehicle image:", err);
         }
 
         if (vehicleImage) {
@@ -137,98 +120,41 @@ const printHistory = async (result) => {
           const tableWidth = width - 2 * tableMargin;
           const imgX = tableMargin + tableWidth / 2 - imgW / 2;
 
-          // Border
-          page.drawRectangle({
-            x: imgX - 2,
-            y: imageY - imgH - 2,
-            width: imgW + 4,
-            height: imgH + 4,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-          });
-
-          page.drawImage(vehicleImage, {
-            x: imgX,
-            y: imageY - imgH,
-            width: imgW,
-            height: imgH,
-          });
-
+          page.drawRectangle({ x: imgX - 2, y: imageY - imgH - 2, width: imgW + 4, height: imgH + 4, borderColor: rgb(0,0,0), borderWidth: 1 });
+          page.drawImage(vehicleImage, { x: imgX, y: imageY - imgH, width: imgW, height: imgH });
           imageY = imageY - imgH - 15;
         }
       }
     }
 
     // -----------------------------
-    // DRAW TABLE FUNCTION (Full width, professional)
+    // DRAW TABLE
     // -----------------------------
     const drawTable = (startY, rows, fontSize = 11, padding = 4) => {
       const tableMargin = 40;
       const tableWidth = width - 2 * tableMargin;
       const col1 = tableWidth * 0.35;
-      const col2 = tableWidth * 0.65;
       const rowH = 20 + padding;
       const tableHeight = rows.length * rowH;
-
       const startX = tableMargin;
 
-      // Outer border
-      page.drawRectangle({
-        x: startX,
-        y: startY - tableHeight,
-        width: tableWidth,
-        height: tableHeight,
-        borderWidth: 1,
-        borderColor: rgb(0, 0, 0),
-      });
+      page.drawRectangle({ x: startX, y: startY - tableHeight, width: tableWidth, height: tableHeight, borderWidth: 1, borderColor: rgb(0,0,0) });
 
-      // Horizontal lines & row background
       rows.forEach((row, i) => {
         const y = startY - i * rowH;
-        page.drawLine({
-          start: { x: startX, y },
-          end: { x: startX + tableWidth, y },
-          thickness: 1,
-          color: rgb(0, 0, 0),
-        });
+        page.drawLine({ start: { x: startX, y }, end: { x: startX + tableWidth, y }, thickness: 1, color: rgb(0,0,0) });
 
-        // Alternate row shading
         if (i % 2 === 0) {
-          page.drawRectangle({
-            x: startX,
-            y: y - rowH,
-            width: tableWidth,
-            height: rowH,
-            color: rgb(0.95, 0.95, 0.95), // light grey
-          });
+          page.drawRectangle({ x: startX, y: y - rowH, width: tableWidth, height: rowH, color: rgb(0.95,0.95,0.95) });
         }
       });
 
-      // Vertical divider
-      page.drawLine({
-        start: { x: startX + col1, y: startY },
-        end: { x: startX + col1, y: startY - tableHeight },
-        thickness: 1,
-        color: rgb(0, 0, 0),
-      });
+      page.drawLine({ start: { x: startX + col1, y: startY }, end: { x: startX + col1, y: startY - tableHeight }, thickness: 1, color: rgb(0,0,0) });
 
-      // Text with color
       let yText = startY - rowH + padding;
-      rows.forEach(([key, value], idx) => {
-        page.drawText(key, {
-          x: startX + 10,
-          y: yText,
-          size: fontSize,
-          font: bold,
-          color: rgb(0.0, 0.5, 0),
-        });
-        page.drawText(String(value), {
-          x: startX + col1 + 10,
-          y: yText,
-          size: fontSize,
-          font,
-          color: rgb(0.1, 0.1, 0.1),
-        });
+      rows.forEach(([key, value]) => {
+        page.drawText(key, { x: startX + 10, y: yText, size: fontSize, font: bold, color: rgb(0.0, 0.5, 0) });
+        page.drawText(String(value), { x: startX + col1 + 10, y: yText, size: fontSize, font, color: rgb(0.1,0.1,0.1) });
         yText -= rowH;
       });
 
@@ -265,13 +191,7 @@ const printHistory = async (result) => {
     // -----------------------------
     // FOOTER
     // -----------------------------
-    page.drawText("Generated by SAMI Rental System", {
-      x: 40,
-      y: nextY - 20,
-      size: 9,
-      font,
-      color: rgb(0.5, 0.5, 0.5),
-    });
+    page.drawText("Generated by SAMI Rental System", { x: 40, y: nextY - 20, size: 9, font, color: rgb(0.5,0.5,0.5) });
 
     // -----------------------------
     // DOWNLOAD PDF
@@ -282,6 +202,7 @@ const printHistory = async (result) => {
     a.href = URL.createObjectURL(blob);
     a.download = "Reservation_History.pdf";
     a.click();
+
   } catch (err) {
     console.log("Printable ERROR →", err);
   }

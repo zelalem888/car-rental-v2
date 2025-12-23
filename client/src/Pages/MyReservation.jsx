@@ -77,12 +77,13 @@ const MyReservation = () => {
           }
         );
         if (!response.ok) {
-          console.log("there is no reservation.", tokenId);
+          // console.log("there is no reservation.", tokenId);
           navigate(`/myreservation/${tokenId.id}`);
         }
 
         const result = await response.json();
 
+        // console.log(result)
         let allData = [];
         let historyData = [];
         let rejectData = [];
@@ -196,7 +197,7 @@ const MyReservation = () => {
 
   const printHistoryHandler = async (id) => {
 
-    console.log(id)
+    // console.log(id)
     const historyResponse = await fetch(
       `http://localhost:3000/api/history/single/${id}`
     );
@@ -204,8 +205,8 @@ const MyReservation = () => {
       console.log("there is no rent.");
     }
     const historyResult = await historyResponse.json();
-    console.log(historyResult)
-    console.log(historyResponse)
+    // console.log(historyResult)
+    // console.log(historyResponse)
     printHistory(historyResult)
   }
 
@@ -380,6 +381,7 @@ const handleSubmitPayment = async () => {
                     <strong>Posted:</strong>{" "}
                     {new Date(item.Posting_Date).toLocaleDateString("en-CA")}
                   </p>
+                  
                 </div>
               </div>
               {/* RIGHT SIDE PRICE & BUTTON */}
@@ -394,6 +396,12 @@ const handleSubmitPayment = async () => {
                   <p className="text-sm text-gray-700 -mt-1">
                     Cost of rental daily
                   </p>
+                  <p className="text-1xl font-bold text-gray-900">
+                    Account Number
+                  </p>
+                  <p className="text-lg text-gray-700 -mt-1">
+                   CBE - 1000297982781
+                  </p>
                 </div>
                 <div className="flex gap-3 items-center">
                 {doc && doc === true ? (
@@ -404,7 +412,7 @@ const handleSubmitPayment = async () => {
                       }}
                       className="mt-4 bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-md"
                     >
-                      Add Payment Picture
+                      Add Payment photo
                     </button>
 
                 

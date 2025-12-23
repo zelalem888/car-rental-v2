@@ -63,16 +63,29 @@ exports.vehicleReservationController = async (req, res) => {
 exports.vehicleReservationUpdateController = async (req, res) => {
   try {
     const browser = req.headers["user-agent"];
-    const result = await vehicleReservationUpdateService({
+    const updatingData = { ...req.body };
+    console.log(updatingData)
+    if (req.file) {
+      updatingData.driverLicensePhoto =
+        `/uploads/userLicense/${req.file.filename}`;
+    }
+
+    await vehicleReservationUpdateService({
       reservationID: req.params.reservationid,
-      updatingData: req.body,
-      browser: browser
+      updatingData,
+      browser,
     });
+
     res.send({ message: "Update Success." });
   } catch (error) {
-    res.send({ message: error });
+    console.error(error);
+    res.status(500).send({
+      message: error.message || "Something went wrong.",
+    });
   }
 };
+
+
 
 // ======================================================
 exports.vehicleReservationDeleteController = async (req, res) => {

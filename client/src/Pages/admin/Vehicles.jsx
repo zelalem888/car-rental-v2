@@ -52,7 +52,7 @@ const AdminVehicle = () => {
 
         const data = await response.json();
         setAdminData(data);
-        console.log(data)
+        // console.log(data)
 
         const allVehicle = await fetch(`http://localhost:3000/api/vehicles`);
 

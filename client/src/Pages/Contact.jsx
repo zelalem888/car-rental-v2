@@ -38,7 +38,7 @@ const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitted(true);
-    console.log("Form submitted:", formData);
+    // console.log("Form submitted:", formData);
     // Reset form after submission
     setTimeout(() => {
       setIsSubmitted(false);
@@ -77,8 +77,8 @@ const Contact = () => {
       icon: Clock,
       title: "Business Hours",
       details: [
-        "Monday - Friday: 9:00 AM - 6:00 PM",
-        "Saturday: 10:00 AM - 4:00 PM",
+        "Monday - Friday: 2:00 AM - 11:00 AM",
+        "Saturday: 2:00 AM - 10:00 AM",
         "Sunday: Closed",
       ],
       color: "text-purple-500",

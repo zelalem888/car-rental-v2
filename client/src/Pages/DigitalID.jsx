@@ -24,7 +24,7 @@ useEffect(()=>{
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    console.log(name)
+    // console.log(name)
     if (files && files[0]) {
       setPreviews((prev) => ({
         ...prev,
@@ -46,7 +46,7 @@ useEffect(()=>{
     formData.append("reservation_id", id);
     formData.append("digital_id", form.digital_id)
 
-    console.log("Submitting documents...");
+    // console.log("Submitting documents...");
     const response = await fetch(`http://localhost:3000/api/user/upload/document/${id}`, {
         method: "POST",
         body: formData,
@@ -57,7 +57,7 @@ useEffect(()=>{
       }
       const successData = await response.json()
       // alert(successData.message)
-      console.log(successData)
+      // console.log(successData)
       navigate("/")
 
   };

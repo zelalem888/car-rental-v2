@@ -53,14 +53,14 @@ const CarDetailPage = () => {
         const response = await fetch(`http://localhost:3000/api/vehicle/${id}`);
         if (!response.ok) {
           const errorData = await response.json();
-          console.log(errorData)
+          // console.log(errorData)
           throw new Error(errorData.message || "Something went wrong");
         }
 
 
 
         const result = await response.json();
-        console.log(result)
+        // console.log(result)
         if(result[0].status == "onHold"){
           const pickDate = new Date(result[0].Pickup_Date)
           setPickupDate(pickDate.setDate(pickDate.getDate()- 7))

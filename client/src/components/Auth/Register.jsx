@@ -86,7 +86,7 @@ const [confirmPassword, setConfirmPassword] = useState("");
 
         case "phoneNumber":
           if (!/^\d{10}$/.test(value))
-            return "Phone number incorrect. ex: 0912345678";
+            return "Phone number must have 10 characters";
           return null;
 
         default:
@@ -182,7 +182,7 @@ const [confirmPassword, setConfirmPassword] = useState("");
       localStorage.setItem("jwt-token", data); 
       navigate("/");
     } catch (error) {
-      console.log(error);
+      console.log("Internal Error");
     }
   };
 
@@ -337,6 +337,7 @@ const [confirmPassword, setConfirmPassword] = useState("");
                   onChange={(e) =>
                     handleChange(e)
                   }
+                  autoComplete="off"
                   name="fullName"
                   required
                   className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 

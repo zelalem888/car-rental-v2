@@ -63,7 +63,7 @@ const Models = () => {
         }
 
         const reserveResult = await reserveResponse.json();
-        console.log(reserveResult);
+        // console.log(reserveResult);
 
        for(let i = 0 ; i <result.length; i++){
         result[i].status = ""
@@ -279,7 +279,7 @@ const Models = () => {
                       </div>
 
                       {/* Rating and Book Button */}
-                      <div className="flex items-center justify-between">
+                      <div className={`flex items-center ${car.status == 'confirmed' ? "justify-center" : "justify-between"} `}>
                         <div className="flex flex-col items-center">
                           <span
                             className={`flex gap-2 font-medium ${
@@ -304,19 +304,22 @@ const Models = () => {
                                 ) : ""}
                           </span>
                         </div>
-
-                        <motion.a
+                        
+                        {car.status !== "confirmed" && (
+                           <motion.a
                           style={{
                             pointerEvents: car.status === "confirmed" ? "none" : car.status === "onHold" ? "unset" : car.status=="pending" ? "none" : "unset"
                           }}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => booking(car.V_ID)}
-                          className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 
-                                 transition-colors cursor-pointer"
+                          className={`px-6 py-2  text-white rounded-lg ${car.status == 'pending' ? 'bg-red-400/50': 'bg-green-500 hover:bg-green-600 ' } 
+                                 transition-colors cursor-pointer`}
                         >
-                          Book Now
+                          {car.status == "pending" ? "Soon" : "Book Now"}
                         </motion.a>
+                        )}
+                        
                       </div>
                     </div>
                   </div>

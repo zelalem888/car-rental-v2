@@ -30,7 +30,7 @@ const RequireRole = ({ allowed = [], children, fallbackPath = "/admin/login" }) 
                     method: "POST",
                     headers: { "jwt-token": token }
                 });
-                console.log(res);
+                // console.log(res);
                 if (!res.ok) {
                     setAllowedAccess(false);
                 } else {

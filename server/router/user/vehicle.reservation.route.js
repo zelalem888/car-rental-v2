@@ -23,7 +23,7 @@ router.post("/user/reservation/:id/:vehicleid", upload.single("driverLicensePhot
 
 // ======================user update reservation info api===========================
 
-router.put("/reservation/update/:reservationid", vehicleReservationUpdateController);
+router.put("/reservation/update/:reservationid" , upload.single("driverLicensePhoto"), vehicleReservationUpdateController);
 
 // ================user reservation delete  api =============================
 

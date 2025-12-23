@@ -71,7 +71,6 @@ const Login = () => {
       localStorage.setItem('jwt-token', result)
       navigate("/")
     } catch (error) {
-      console.log(error)
     console.log("Invalid DataType")
     }
   };

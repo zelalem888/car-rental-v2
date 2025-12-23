@@ -105,57 +105,117 @@ exports.vehicleReservationUpdateService = async ({
   updatingData,
   browser,
 }) => {
-  const date = new Date().toLocaleString();
-
-  const values = [
-    parseInt(updatingData.vehicleDriver),
-    updatingData.pickUpDate,
-    updatingData.returnDate,
-    updatingData.rentDay,
-    updatingData.totalPayment,
-    updatingData.tax,
-    reservationID,
-  ];
-
-  const [findID] = await db.query(
+  // 1. Check reservation exists
+  const [existing] = await db.query(
     "SELECT * FROM reservation WHERE R_ID = ?",
-    reservationID
+    [reservationID]
   );
-  if (findID.length === 0) {
-    throw new Error("there is no reservation in this ID to update.");
+
+  if (existing.length === 0) {
+    throw new Error("There is no reservation with this ID to update.");
   }
 
+  // 2. Normalize driver ID (NO NaN EVER)
+  let driverID = null;
+
+  if (
+    updatingData.vehicleDriver &&
+    updatingData.vehicleDriver !== "NoDriver"
+  ) {
+    driverID = Number(updatingData.vehicleDriver);
+    if (Number.isNaN(driverID)) {
+      driverID = null;
+    }
+  }
+
+  // 3. Handle driver license logic
+  let driverLicensePath = existing[0].Driver_License;
+
+  // If driver selected → remove license
+  if (driverID !== null) {
+    driverLicensePath = null;
+  }
+
+  // If no driver AND new image uploaded → update license
+  if (
+    driverID === null &&
+    updatingData.driverLicensePhoto
+  ) {
+    driverLicensePath = updatingData.driverLicensePhoto;
+  }
+
+  // 4. Update reservation
   await db.query(
-    "UPDATE reservation SET D_ID = ?, Pickup_Date = ?, Return_Date = ? , 	Rent_Day =?, total_Payment =? , Tax_Amount = ? WHERE R_ID = ?",
-    values
+    `UPDATE reservation 
+     SET 
+       D_ID = ?, 
+       Pickup_Date = ?, 
+       Return_Date = ?, 
+       Rent_Day = ?, 
+       total_Payment = ?, 
+       Tax_Amount = ?, 
+       Driver_License = ?
+     WHERE R_ID = ?`,
+    [
+      driverID,
+      updatingData.pickUpDate,
+      updatingData.returnDate,
+      updatingData.rentDay,
+      updatingData.totalPayment,
+      updatingData.tax,
+      driverLicensePath,
+      reservationID,
+    ]
   );
 
+  // 5. Insert user log
   await db.query(
-    "INSERT INTO user_logs (User_ID, Role, Action, Target_ID, Description,Device) VALUES (?,?,?,?,?,?)",
+    `INSERT INTO user_logs 
+     (User_ID, Role, Action, Target_ID, Description, Device) 
+     VALUES (?,?,?,?,?,?)`,
     [
-      findID[0].C_ID,
+      existing[0].C_ID,
       "customer",
       "Update Reservation",
       reservationID,
-      `Updated Reservation by userID ${findID[0].C_ID}`,
+      `Updated reservation by user ${existing[0].C_ID}`,
       browser,
     ]
   );
 
+  // 6. Fetch vehicle info
   const [vehicle] = await db.query(
     "SELECT * FROM vehicle WHERE V_ID = ?",
-    findID[0].V_ID
+    [existing[0].V_ID]
   );
 
+  // 7. Insert reservation log
   await db.query(
-    "INSERT INTO reservation_logs(Reservation_ID, C_ID, V_ID,D_ID, Admin_ID, Action_Type, Old_Status, New_Status, Pickup_Date, Return_Date, Rent_Days, Price_Per_Day,Tax_Amount, Total_Charge, Confirmation_Number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-    [reservationID,
-      findID[0].C_ID,
-      findID[0].V_ID,
+    `INSERT INTO reservation_logs(
+      Reservation_ID,
+      C_ID,
+      V_ID,
+      D_ID,
+      Admin_ID,
+      Action_Type,
+      Old_Status,
+      New_Status,
+      Pickup_Date,
+      Return_Date,
+      Rent_Days,
+      Price_Per_Day,
+      Tax_Amount,
+      Total_Charge,
+      Confirmation_Number
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+    [
+      reservationID,
+      existing[0].C_ID,
+      existing[0].V_ID,
+      driverID,
       vehicle[0].A_ID,
-      parseInt(updatingData.vehicleDriver),
       "updated",
-      findID[0].Status,
+      existing[0].Status,
       "pending",
       updatingData.pickUpDate,
       updatingData.returnDate,
@@ -163,12 +223,11 @@ exports.vehicleReservationUpdateService = async ({
       vehicle[0].Price_Per_Day,
       updatingData.tax,
       updatingData.totalPayment,
-      findID[0].Confirmation_Number
+      existing[0].Confirmation_Number,
     ]
   );
-
-
 };
+
 
 // ================================================================
 
