@@ -106,10 +106,9 @@ const UserAccount = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
-      String(formData.phoneNumber).length != 12 &&
       String(formData.phoneNumber).length != 10
     ) {
-      setPhoneError("phone number incorrect. ex:- 0912345678 or +251912345678");
+      setPhoneError("Phone number must have 10 characters");
       return;
     } else {
       setPhoneError(null);
@@ -129,12 +128,12 @@ const UserAccount = () => {
 
       if (!response.ok) {
         const errorData = await response.text();
-        console.log(errorData);
+        // console.log(errorData);
         setEmailCheck("Email already existed");
         return;
       }
       const result = await response.json();
-      console.log(result);
+      // console.log(result);
       localStorage.removeItem("jwt-token");
       localStorage.setItem("jwt-token", result);
       navigate("/");
@@ -152,7 +151,7 @@ const UserAccount = () => {
     } else {
       setPasswordError(null);
     }
-    console.log(formPass)
+    // console.log(formPass)
     // console.log("heelo")
     try {
       const response = await fetch(
@@ -169,11 +168,11 @@ const UserAccount = () => {
       if (!response.ok) {
         const errorData = await response.text();
         setPasswordError("Password Incorrect.")
-        console.log(errorData);
+        // console.log(errorData);
         return;
       }
       const result = await response.json();
-      console.log(result);
+      // console.log(result);
       navigate("/");
     } catch (error) {
       console.log("network error", error);
@@ -391,7 +390,6 @@ const UserAccount = () => {
                   <option defaultValue={"Ethiopian"} value={"Ethiopian"}>
                     Ethiopian
                   </option>
-                  <option value={"Non-Ethiopian"}>Non-Ethiopian</option>
                 </select>
 
                 <Globe className="w-5 h-5 text-gray-400 absolute left-4 top-3.5" />

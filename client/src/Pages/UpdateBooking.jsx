@@ -18,6 +18,9 @@ const UpdateBooking = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [driverPrice, setDriverPrice] = useState(0);
   const navigate = useNavigate();
+  const [showDriverLicense, setShowDriverLicense] = useState(true);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [driverLicensePhoto, setDriverLicensePhoto] = useState(null);
   const [rentalDetails, setRentalDetails] = useState({
     pickUpDate: "",
     returnDate: "",
@@ -54,7 +57,7 @@ const UpdateBooking = () => {
         const resultVerify = await responseVerify.json();
         setUserData(resultVerify);
 
-        console.log(resultVerify);
+        // console.log(resultVerify);
 
         const reservationResponse = await fetch(
           `http://localhost:3000/api/reservation/single/${rid}`
@@ -69,7 +72,17 @@ const UpdateBooking = () => {
           navigate("/");
           return;
         }
-        console.log(reservationResult)
+
+        const hasDriver = reservationResult[0].D_ID !== null;
+        setShowDriverLicense(!hasDriver); 
+        const licensePath = reservationResult[0].Driver_License;
+        if (reservationResult[0].D_ID === null && licensePath) {
+          setShowDriverLicense(true);
+          setSelectedFile(`http://localhost:3000${licensePath}`);
+        }
+
+
+        // console.log(reservationResult)
         // setReservedCar(reservationResult);
         setRentalDetails({
           pickUpDate: new Date(reservationResult[0].Pickup_Date).toLocaleDateString("en-CA"),
@@ -84,7 +97,7 @@ const UpdateBooking = () => {
           from: new Date(reservationResult[0].Pickup_Date).toLocaleDateString("en-CA"),
           to: new Date(reservationResult[0].Return_Date).toLocaleDateString("en-CA"),
         });
-        console.log(reservationResult);
+        // console.log(reservationResult);
 
 
         const response = await fetch(
@@ -101,7 +114,7 @@ const UpdateBooking = () => {
         setSelectedCar(result);
         setImageCount(result[0].image.length);
 
-        console.log(result);
+        // console.log(result);
 
         const driverResult = await fetch(`http://localhost:3000/api/driver/active`)
         if (!driverResult.ok) {
@@ -119,17 +132,25 @@ const UpdateBooking = () => {
 
   const handleSubmit = async (e) => {
 
-    console.log(rentalDetails)
+    // console.log(rentalDetails)
     e.preventDefault();
     try {
+      const formData = new FormData();
+      formData.append("pickUpDate", rentalDetails.pickUpDate);
+      formData.append("returnDate", rentalDetails.returnDate);
+      formData.append("rentDay", rentalDetails.rentDay);
+      formData.append("vehicleDriver", rentalDetails.vehicleDriver);
+      formData.append("Payment", rentalDetails.Payment);
+      formData.append("tax", rentalDetails.tax);
+      formData.append("totalPayment", rentalDetails.totalPayment);
+      if (driverLicensePhoto) {
+        formData.append("driverLicensePhoto", driverLicensePhoto);
+      }
       const response = await fetch(
         `http://localhost:3000/api/reservation/update/${rid}`,
         {
           method: "PUT",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify(rentalDetails),
+          body: formData,
         }
       );
       if (!response.ok) {
@@ -138,7 +159,7 @@ const UpdateBooking = () => {
       }
 
       const result = await response.json();
-      console.log(result);
+      // console.log(result);
       alert("Booking updated!");
       navigate("/");
     } catch (e) {
@@ -193,7 +214,7 @@ const UpdateBooking = () => {
       }
 
       const result = await response.json();
-      console.log(result);
+      // console.log(result);
       navigate("/");
     } catch (e) {
       throw new Error(e);
@@ -358,7 +379,12 @@ const UpdateBooking = () => {
 
                     let driverFee = 0;
                     if (value !== "NoDriver") {
+                      setShowDriverLicense(false);
+                      setDriverLicensePhoto(null);
+                      setSelectedFile(null);
                       driverFee = DRIVER_FEE_PER_DAY * rentalDetails.rentDay;
+                    } else {
+                      setShowDriverLicense(true);
                     }
 
                     const baseRent = selectedCar[0].Price_Per_Day * rentalDetails.rentDay;
@@ -374,7 +400,6 @@ const UpdateBooking = () => {
                       totalPayment: totalPayment,
                     }));
                   }}
-
                   value={rentalDetails.vehicleDriver}
                   name="driver"
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none">
@@ -384,6 +409,34 @@ const UpdateBooking = () => {
                   ))}
                 </select>
               </div>
+              {showDriverLicense && (
+                <div className="flex flex-col mt-4 max-w-md mx-auto">
+                  <label className="text-sm text-gray-600 mb-2 font-medium">
+                    Driver License
+                  </label>
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    required={showDriverLicense && !selectedFile}
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      setDriverLicensePhoto(file);
+                      if (file) setSelectedFile(URL.createObjectURL(file));
+                    }}
+                    className="border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+
+                  {selectedFile && (
+                    <img
+                      src={selectedFile}
+                      alt="Driver License Preview"
+                      className="mt-4 w-full h-48 object-contain rounded-md"
+                    />
+                  )}
+                </div>
+              )}
+
             </div>
 
             <button

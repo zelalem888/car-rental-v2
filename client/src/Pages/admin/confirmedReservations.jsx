@@ -51,7 +51,7 @@ const ConfirmedReservations = () => {
         throw new Error(errorData);
       }
       const result = await response.json();
-      console.log(result)
+      // console.log(result)
       setPending(result);
     };
     fetchData();
@@ -101,7 +101,7 @@ const ConfirmedReservations = () => {
         throw new Error(errorData);
       }
       const confirmResult = await confirmResponse.json();
-      console.log(confirmResult)
+      // console.log(confirmResult)
       alert("The vehicle Available from now.");
       AdminConfirmedPrint(confirmResult)
     } catch (e) {

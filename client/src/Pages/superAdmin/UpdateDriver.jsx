@@ -93,7 +93,7 @@ const UpdateDriver = () => {
             alert(data.message)
             navigate("/superadmin/manage-drivers");
         } catch (e) {
-            console.log(e);
+            console.log("internal error");
         }
     };
 

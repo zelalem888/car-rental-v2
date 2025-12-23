@@ -48,8 +48,7 @@ const About = () => {
 
   
   const stats = [
-    { value: "15K+", label: "Happy Customers" },
-    { value: "150+", label: "Locations" },
+    { value: "50+", label: "Happy Customers" },
     { value: "98%", label: "Satisfaction Rate" },
     { value: "24/7", label: "Customer Support" },
   ];

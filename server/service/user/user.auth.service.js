@@ -90,7 +90,20 @@ const userSchema = z.object({
 
 exports.userRegisterService = async (body, browser) => {
   const registerData = body;
-  const validateRegister = userSchema.parse(registerData);
+  const validation = userSchema.safeParse(registerData);
+   if (!validation.success) {
+    return {
+      type: "zod",
+      errors: validation.error.errors.map(err => ({
+        field: err.path[0],
+        message: err.message,
+        code: err.code,
+      })),
+    };
+  }
+console.log(1)
+
+   const validateRegister = validation.data;
   const saltRounds = 10;
   let hashedPass = await bcrypt.hash(validateRegister.password, saltRounds);
 
@@ -109,15 +122,16 @@ exports.userRegisterService = async (body, browser) => {
 
   const [checkData] = await db.query(
     "SELECT Email FROM customer WHERE Email = ?",
-    validateRegister.email
+    [validateRegister.email]
   );
 
   if (checkData.length > 0) {
-    throw new Error(
-      `there is an email already created: ${validateRegister.email}`
-    );
+      return{
+        type : "custom",
+        message : `there is an email already created: ${validateRegister.email}`
+      }
   }
-
+console.log(2)
   const [data] = await db.query(
     "INSERT INTO customer (FullName , Email, Password, PhoneNumber, DoB,Nationality, City,Update_Date) VALUES (?,?,?,?,?,?,?,?)",
     result
@@ -154,8 +168,11 @@ exports.userRegisterService = async (body, browser) => {
 
   const token = jwt.sign(jwtData, JWTSecretKey);
 
+  console.log(token)
   return token;
 };
+
+// ================================================================
 
 exports.forgotPasswordService = async (email) => {
 

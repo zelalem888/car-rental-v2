@@ -31,18 +31,15 @@ const Register = () => {
     nationality: "Ethiopian",
     city: "Addis Ababa",
   });
-  const [confirmPassword, setConfirmPassword] = useState({
-    confirmPassworder: "",
-  });
+const [confirmPassword, setConfirmPassword] = useState("");
+
 
 
   const [showPassword, setShowPassword] = useState({
     password: false,
     confirmPassword: false,
   });
-  const [emailError, setEmailError] = useState(null)
-  const [passwordError, setPasswordError] = useState(null);
-  const [phoneError, setPhoneError] = useState(null);
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
  useEffect(()=>{
@@ -71,44 +68,121 @@ const Register = () => {
       fetchData();
     },[])
 
+    const validateField = (name, value, formData, confirmPassword) => {
+      switch (name) {
+        case "fullName":
+          if (value.length <= 3) return "Full name must be greater than 3 characters";
+          return null;
+
+        case "password":
+          if (value.length < 8) return "Password must be at least 8 characters";
+          if (confirmPassword && value !== confirmPassword)
+            return "Passwords do not match";
+          return null;
+
+        case "confirmPassword":
+          if (value !== formData.password) return "Passwords do not match";
+          return null;
+
+        case "phoneNumber":
+          if (!/^\d{10}$/.test(value))
+            return "Phone number must have 10 characters";
+          return null;
+
+        default:
+          return null;
+      }
+    };
+
+   const handleChange = (e) => {
+      const { name, value } = e.target;
+
+      if (name === "confirmPassword") {
+        setConfirmPassword(value);
+
+        const error = validateField(
+          name,
+          value,
+          { ...formData, [name]: value },
+          confirmPassword
+        );
+
+
+        setErrors(prev => ({
+          ...prev,
+          confirmPassword: error,
+          password:
+            value && value !== formData.password
+              ? "Passwords do not match"
+              : null,
+        }));
+
+        return;
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+      }));
+
+      const error = validateField(
+        name,
+        value,
+        { ...formData, [name]: value },
+        confirmPassword
+      );
+
+      setErrors(prev => ({
+        ...prev,
+        [name]: error,
+      }));
+    };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password != confirmPassword.confirmPassworder) {
-      setPasswordError("Passwords do not match!");
-      return;
-    }
-    if (formData.password.length < 8) {
-      setPasswordError("length must be greeter than 8 characters.");
-      return;
-    }
-    if (
-      String(formData.phoneNumber).length != 12 &&
-      String(formData.phoneNumber).length != 10
-    ) {
-      setPhoneError("phone number incorrect. ex:- 0912345678 or +251912345678");
+    const hasErrors = Object.values(errors).some(Boolean);
+    if (hasErrors) return;
+
+    if (formData.password !== confirmPassword) {
+      setErrors(prev => ({
+        ...prev,
+        confirmPassword: "Passwords do not match",
+      }));
       return;
     }
 
     try {
       const response = await fetch("http://localhost:3000/api/user/register", {
         method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
+        headers: { "content-type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        setEmailError(errorData.error)
-        throw new Error(errorData.error);
+      const data = await response.json();  
+
+      if (!response.ok) {   
+        if (data.type === "zod") {
+          const newErrors = {};
+          data.errors.forEach(err => {
+            newErrors[err.field] = err.message;
+          });
+          setErrors(prev => ({ ...prev, ...newErrors }));
+          return;
+        }
+
+        if (data.type === "custom") {
+          setErrors(prev => ({ ...prev, email: data.message }));
+          return;
+        }
+
+        throw new Error(data.message || "Something went wrong");
       }
-      const result = await response.json();
-      localStorage.setItem("jwt-token", result)
-      console.log(result);
+
+      localStorage.setItem("jwt-token", data); 
       navigate("/");
     } catch (error) {
-      console.log(error);
+      console.log("Internal Error");
     }
   };
 
@@ -261,8 +335,10 @@ const Register = () => {
                   type="text"
                   value={formData.fullName}
                   onChange={(e) =>
-                    setFormData({ ...formData, fullName: e.target.value })
+                    handleChange(e)
                   }
+                  autoComplete="off"
+                  name="fullName"
                   required
                   className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
@@ -272,16 +348,16 @@ const Register = () => {
               </div>
             </div>
                 
-                {/* ============email already created error================ */}
+                {/* ============name error================ */}
 
-             {emailError && (
+             {errors.fullName && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg"
               >
                 <AlertCircle className="w-5 h-5" />
-                {JSON.parse(emailError).some(i => i.path.includes('fullName') ) ? <p className="text-sm">'smun astekaklew'</p> : ''}
+                 <p className="text-sm">{errors.fullName}</p>
               </motion.div>
             )}
             {/* ==================Email=========================== */}
@@ -293,8 +369,9 @@ const Register = () => {
                   type="email"
                   value={formData.email}
                   onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
+                    handleChange(e)
                   }
+                  name="email"
                   required
                   className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
@@ -306,14 +383,14 @@ const Register = () => {
 
             {/* ============email already created error================ */}
 
-             {emailError && (
+             {errors.email && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg"
               >
                 <AlertCircle className="w-5 h-5" />
-                {JSON.parse(emailError).some(i => i.path.includes('email') ) ? <p className="text-sm"> Emailun astekaklew </p> : ''}
+               <p className="text-sm"> {errors.email} </p>
               </motion.div>
             )}
 
@@ -328,8 +405,9 @@ const Register = () => {
                   type={showPassword.password ? "text" : "password"}
                   value={formData.password}
                   onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
+                    handleChange(e)
                   }
+                  name="password"
                   required
                   className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
@@ -364,12 +442,9 @@ const Register = () => {
               <div className="relative">
                 <input
                   type={showPassword.confirmPassword ? "text" : "password"}
-                  value={confirmPassword.confirmPassworder}
-                  onChange={(e) =>
-                    setConfirmPassword({
-                      confirmPassworder: e.target.value,
-                    })
-                  }
+                  value={confirmPassword}
+                  onChange={(e) => handleChange(e)}
+                  name="confirmPassword"
                   required
                   className="w-full px-4 py-3 pl-12 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
@@ -397,14 +472,14 @@ const Register = () => {
 
             {/* ==============confirm password error================= */}
 
-            {passwordError && (
+            {(errors.password || errors.confirmPassword) && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg"
               >
                 <AlertCircle className="w-5 h-5" />
-                <p className="text-sm">{passwordError}</p>
+                <p className="text-sm">{ errors.password || errors.confirmPassword}</p>
               </motion.div>
             )}
 
@@ -416,11 +491,13 @@ const Register = () => {
               </label>
               <div className="relative">
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   value={formData.phoneNumber}
                   onChange={(e) =>
-                    setFormData({ ...formData, phoneNumber: e.target.value })
+                    handleChange(e)
                   }
+                  name="phoneNumber"
                   required
                   className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
@@ -431,14 +508,14 @@ const Register = () => {
             </div>
 
             {/* ==========phone Number error============== */}
-            {phoneError && (
+            {errors.phoneNumber && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg"
               >
                 <AlertCircle className="w-5 h-5" />
-                <p className="text-sm">{phoneError}</p>
+                <p className="text-sm">{errors.phoneNumber}</p>
               </motion.div>
             )}
 
@@ -454,8 +531,9 @@ const Register = () => {
                   min={"1955-11-12"}
                   value={formData.dateOfBirth}
                   onChange={(e) =>
-                    setFormData({ ...formData, dateOfBirth: e.target.value })
+                    handleChange(e)
                   }
+                  name="dateOfBirth"
                   required
                   className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
@@ -476,39 +554,19 @@ const Register = () => {
                   className="nationality w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   onChange={(e) =>
-                    setFormData({ ...formData, nationality: e.target.value })
+                    handleChange(e)
                   }
+                  name="nationality"
                   required
                 >
                   <option defaultValue={"Ethiopian"} value={"Ethiopian"}>
                     Ethiopian
                   </option>
-                  <option value={"Non-Ethiopian"}>Non-Ethiopian</option>
                 </select>
               
                 <Globe className="w-5 h-5 text-gray-400 absolute left-4 top-3.5" />
               </div>
             </div>
-
-            {/* ===================Address====================== */}
-
-            {/* <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Address</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  required
-                  className="w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
-                           focus:border-transparent transition-all"
-                  placeholder="Enter your Address"
-                />
-                <Map className="w-5 h-5 text-gray-400 absolute left-4 top-3.5" />
-              </div>
-            </div> */}
 
             {/* ====================City======================= */}
 
@@ -519,9 +577,10 @@ const Register = () => {
                   className="city w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-green-500 
                            focus:border-transparent transition-all"
                   onChange={(e) =>
-                    setFormData({ ...formData, city: e.target.value })
+                   handleChange(e)
                   }
                   required
+                  name="city"
                 >
                   <option value={"Addis Ababa"}>Addis Ababa</option>
                   <option value={"Bahir Dar"}>Bahir Dar</option>

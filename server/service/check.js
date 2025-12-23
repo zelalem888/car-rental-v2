@@ -8,7 +8,7 @@ const checkCountDown = async () => {
     const reservationDate = new Date(time.Posting_Date);
     const diffTime = date - reservationDate;
     //    console.log(diffTime)
-    const hour2 = 1000 * 60 * 60 * 2 ;
+    const hour2 = 1000 * 30 ;
     if(diffTime > hour2){
         await db.query("DELETE FROM reservation WHERE R_ID = ? AND Status = 'pending'" , time.R_ID)
         console.log("this reservation deleted" + time.R_ID)

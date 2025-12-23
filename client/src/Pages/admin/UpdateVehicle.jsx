@@ -47,7 +47,7 @@ const UpdateVehicle = () => {
                     // localStorage.removeItem("jwt-token")
                     navigate(`/superadmin/manage-admins`)
                 }
-          console.log(data)
+          // console.log(data)
 
           // setFormdata({...formData, A_ID : data.id})
         const response = await fetch(
@@ -59,7 +59,7 @@ const UpdateVehicle = () => {
           throw new Error(errorData.message);
         }
         const waitedDate = await response.json();
-        console.log(waitedDate);
+        // console.log(waitedDate);
         setFormdata({
           A_ID : data.user.id,
           vehicleName: waitedDate[0].V_Name,
@@ -87,7 +87,7 @@ const UpdateVehicle = () => {
       setPlateError("Plate Number Must Start With ET- or et-");
       return;
     }
-    console.log(formData);
+    // console.log(formData);
 
     const form = new FormData()
 
@@ -128,7 +128,7 @@ const UpdateVehicle = () => {
 
   const deleteHandler = async(img)=>{
       try{
-        console.log(img)
+        // console.log(img)
         const response = await fetch(`http://localhost:3000/api/admin/vehicle/imagedelete/${vid}`,{
           method: "DELETE",
           headers:{

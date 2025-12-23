@@ -33,13 +33,20 @@ exports.userVerifyController = async (req, res) => {
 exports.userRegisterController = async (req, res) => {
   try {
     const browser = req.headers["user-agent"];
-    const result = await userRegisterService(req.body, browser)
+    const result = await userRegisterService(req.body, browser);
+    console.log(result)
+    if(result.type == "zod"){
+      return res.status(400).json(result); // <-- return stops execution
+    }else if(result.type == "custom"){
+      return res.status(400).json(result); // <-- return stops execution
+    }
 
-    res.status(201).json(result);
+    return res.status(201).json(result);   // only runs if no error
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    return res.status(400).json({ error: error.message });
   }
 };
+
 
 // ==============================================================
 

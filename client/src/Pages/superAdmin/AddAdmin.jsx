@@ -96,8 +96,8 @@ const AddAdmin = () => {
             const successData = await res.json();
             navigate("/superadmin/manage-admins");
         } catch (e) {
-            console.log(e.message);
-            console.error(e);
+            console.log("internal error");
+            // console.error(e);
         }
     };
 

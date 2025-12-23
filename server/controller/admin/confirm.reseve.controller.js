@@ -23,6 +23,7 @@ exports.pendingReservationController = async (req, res) => {
 exports.confirmedReservationController = async (req, res) => {
   try {
     const allReservation = await confirmedReservationService()
+    console.log(allReservation)
     res.status(200).json(allReservation)
   } catch (error) {
     res.status(400).json({ message: error })

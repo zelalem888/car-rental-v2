@@ -90,8 +90,8 @@ const AddDriver = () => {
             const successData = await res.json();
             navigate("/superadmin/manage-drivers");
         } catch (e) {
-            console.log(e.message);
-            console.error(e);
+            console.log("internal error");
+            // console.error(e);
         }
     };
 

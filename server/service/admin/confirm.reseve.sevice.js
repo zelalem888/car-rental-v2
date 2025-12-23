@@ -37,6 +37,7 @@ exports.confirmedReservationService = async () => {
   const [rows] = await db.query(
     "SELECT * FROM reservation WHERE status = 'confirmed' OR status = 'onHold'"
   );
+
   for(let name of rows){
     const [namedata] = await db.query("SELECT FullName FROM customer WHERE C_ID = ?", name.C_ID)
     name.userName = namedata[0].FullName
@@ -71,7 +72,7 @@ exports.confirmReservationService = async (params) => {
   }
 
 
-  await db.query("UPDATE reservation SET status = ? WHERE R_ID = ?", [status, reservationID]);
+  await db.query("UPDATE reservation SET status = ?  WHERE R_ID = ?", [status ,reservationID]);
 
   const [data] = await db.query(
     "SELECT * FROM reservation WHERE R_ID = ?",

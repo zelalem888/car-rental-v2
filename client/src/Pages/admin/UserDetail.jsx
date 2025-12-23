@@ -33,7 +33,7 @@ const UserDetail = () => {
         const res = await fetch(`http://localhost:3000/api/user/detail/${id}`);
         const data = await res.json();
 
-        console.log(data)
+        // console.log(data)
         setUserReservedH(data.userReservedH || []);
         setUsersLog(data.usersLog || []);
         setUserData(data.customerName || []);
@@ -90,6 +90,7 @@ const UserDetail = () => {
             <thead className="bg-gray-100">
               <tr>
                 <th className="p-3">Res ID</th>
+                <th className="p-3">Admin Name</th>
                 <th className="p-3">Status</th>
                 <th className="p-3">Pickup</th>
                 <th className="p-3">Return</th>
@@ -103,6 +104,8 @@ const UserDetail = () => {
               {userReservedH.map((r) => (
                 <tr key={r.R_ID}>
                   <td className="p-3">{r.R_ID}</td>
+                
+                  <td className="p-3">{r.adminName|| "..."}</td>
                   <td className="p-3">{r.Status}</td>
                   <td className="p-3">{new Date(r.Pickup_Date).toLocaleDateString()}</td>
                   <td className="p-3">{new Date(r.Return_Date).toLocaleDateString()}</td>

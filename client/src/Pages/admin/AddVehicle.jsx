@@ -84,7 +84,7 @@ const AddVehicle = () => {
       }
       const successData = await response.json()
       // alert(successData.message)
-      console.log(successData)
+      // console.log(successData)
       navigate(`/admin`)
 
     } catch (e) {

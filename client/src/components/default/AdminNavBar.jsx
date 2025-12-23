@@ -62,7 +62,7 @@ const AdminNavBar = () => {
       );
 
       const data = await res.json();
-      console.log(data)
+      
       setResults(data);
     } catch (err) {
       console.error(err);

@@ -15,6 +15,12 @@ const PendingReserve = () => {
   const [rid, setRId] = useState();
   const [showDocs, setShowDocs] = useState(false);
   const [documents, setDocuments] = useState(null);
+  const [showDriverLicenseModal, setShowDriverLicenseModal] = useState(false);
+  const [driverLicenseSrc, setDriverLicenseSrc] = useState(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentPhotoSrc, setPaymentPhotoSrc] = useState(null);
+
+
 
   useEffect(() => {
     const fetchAdmin = async () => {
@@ -53,9 +59,11 @@ const PendingReserve = () => {
         );
         if (!response.ok) {
           const errorData = await response.json();
+          // console.log(errorData)
           throw new Error(errorData);
         }
         const result = await response.json();
+        // console.log(result)
         setPending(result);
       } catch (e) {
         throw new Error(e);
@@ -85,7 +93,7 @@ const PendingReserve = () => {
         throw new Error(errorData.error);
       }
       const customerResult = await customerResponse.json();
-      console.log(customerResult)
+      // console.log(customerResult)
       setCustomer(customerResult);
     } catch (e) {
       throw new Error(e);
@@ -108,8 +116,8 @@ const PendingReserve = () => {
       const confirmResult = await ConfirmResponse.json();
       alert(confirmResult.message);
     } catch (e) {
-      console.log(e)
-      throw new Error(e.error);
+      console.log("internal error")
+      // throw new Error(e.error);
   
     }
     setDetail(false);
@@ -154,6 +162,8 @@ const PendingReserve = () => {
               <th className="py-3 px-4 text-left">Date</th>
               <th className="py-3 px-4 text-left">Pickup Date</th>
               <th className="py-3 px-4 text-left">Return Date</th>
+              <th className="py-3 px-4 text-left">Driver License</th>
+              <th className="py-3 px-4 text-left">payment Photo</th>
               <th className="py-3 px-4 text-left">More Details</th>
             </tr>
           </thead>
@@ -180,6 +190,38 @@ const PendingReserve = () => {
                   <td className="py-2 px-4">
                     {new Date(r.Return_Date).toLocaleDateString("en-CA")}
                   </td>
+                  <td className="py-2 px-4 text-center">
+                    {r.Driver_License ? (
+                      <button
+                        onClick={() => {
+                          setDriverLicenseSrc(`http://localhost:3000${r.Driver_License}`);
+                          setShowDriverLicenseModal(true);
+                        }}
+                        className="text-blue-600 border-blue-600 border rounded-md px-2 py-1 hover:bg-blue-200"
+                      >
+                        View Photo
+                      </button>
+                    ) : (
+                      <span className="text-gray-400">No Photo</span>
+                    )}
+                  </td>
+                  <td className="py-2 px-4 text-center">
+                    {r.Payment_Photo ? (
+                      <button
+                        onClick={() => {
+                          setPaymentPhotoSrc(`http://localhost:3000${r.Payment_Photo}`);
+                          setShowPaymentModal(true);
+                        }}
+                        className="text-green-600 border border-green-600 rounded-md px-2 py-1 hover:bg-green-200"
+                      >
+                        View Photo
+                      </button>
+                    ) : (
+                      <span className="text-gray-400">No Photo</span>
+                    )}
+                  </td>
+
+
 
                   <td className="py-2 px-4 text-center flex justify-center gap-2">
                     <button
@@ -198,6 +240,68 @@ const PendingReserve = () => {
               ))}
           </tbody>
         </table>
+        {showDriverLicenseModal && driverLicenseSrc && (
+          <div className="fixed inset-0 z-50 bg-black bg-opacity-70 flex justify-center items-center">
+            <div className="bg-white rounded-lg w-[80%] max-w-lg max-h-[80vh] overflow-auto p-4 relative">
+              <button
+                onClick={() => setShowDriverLicenseModal(false)}
+                className="absolute top-2 right-2 text-gray-600 hover:text-black text-lg font-bold"
+              >
+                ✕
+              </button>
+              <img
+                src={driverLicenseSrc}
+                alt="Driver License"
+                className="w-full h-auto object-contain rounded-md"
+              />
+            </div>
+          </div>
+        )}
+        {showPaymentModal && paymentPhotoSrc && (
+          <div className="fixed inset-0 z-50 bg-black bg-opacity-70 flex justify-center items-center">
+            <div className="bg-white rounded-lg w-[80%] max-w-lg max-h-[80vh] overflow-auto p-4 relative">
+
+              {/* Close Button */}
+              <button
+                onClick={() => setShowPaymentModal(false)}
+                className="absolute top-2 right-2 text-gray-600 hover:text-black text-lg font-bold"
+              >
+                ✕
+              </button>
+
+              {/* Image */}
+              <img
+                src={paymentPhotoSrc}
+                alt="Payment Proof"
+                className="w-full h-auto object-contain rounded-md mb-4"
+              />
+
+              {/* Actions */}
+              <div className="flex justify-end gap-3">
+                <a
+                  href={paymentPhotoSrc}
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                >
+                  Download
+                </a>
+
+                <button
+                  onClick={() => setShowPaymentModal(false)}
+                  className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md"
+                >
+                  Close
+                </button>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+
+
         {detail && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white rounded-lg shadow-lg p-6 w-[60%]">

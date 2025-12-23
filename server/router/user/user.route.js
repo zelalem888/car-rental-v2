@@ -39,9 +39,6 @@ router.post(
   "/user/upload/document/:id",
   upload.fields([
     { name: "digital_id", maxCount: 1 },
-    { name: "driver_license", maxCount: 1 },
-    { name: "collateral_doc", maxCount: 1 },
-    { name: "bank_check", maxCount: 1 },
   ]),
   UserDocumentController
 );

@@ -44,13 +44,6 @@ const About = () => {
       color: "text-green-500",
       bgColor: "bg-green-50",
     },
-    {
-      icon: CreditCard,
-      title: "Easy Payments",
-      description: "Flexible and secure payment options",
-      color: "text-purple-500",
-      bgColor: "bg-purple-50",
-    },
   ];
 
   const advancedFeatures = [
@@ -67,20 +60,6 @@ const About = () => {
       description: "Rent cars from hours to months with flexible terms",
       color: "text-pink-500",
       bgColor: "bg-pink-50",
-    },
-    {
-      icon: CreditCard,
-      title: "Integrated Payments",
-      description: "Secure payment gateway with multiple options",
-      color: "text-yellow-500",
-      bgColor: "bg-yellow-50",
-    },
-    {
-      icon: BarChart,
-      title: "Admin Analytics",
-      description: "Comprehensive dashboards with valuable insights",
-      color: "text-teal-500",
-      bgColor: "bg-teal-50",
     },
     {
       icon: PhoneCall,

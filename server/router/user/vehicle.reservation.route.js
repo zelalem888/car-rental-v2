@@ -7,7 +7,10 @@ const { SingleVehicleReservationController,
      , rentedVehicleController
      , singleRentedController
      , rejectedVehicleController
+     , addPaymentPictureController
 } = require("../../controller/user/vehicle.reservation.controller");
+const {upload} = require("./uploadDriverLicense")
+const {uploadP} = require("./uploadPayment")
 const { verifyToken } = require("../../middleware/auth");
 const router = express.Router();
 
@@ -16,11 +19,11 @@ router.get("/user/reservation/:id", verifyToken, allVehicleReservationController
 
 // ==================reservation api===========================
 
-router.post("/user/reservation/:id/:vehicleid", vehicleReservationController);
+router.post("/user/reservation/:id/:vehicleid", upload.single("driverLicensePhoto"), vehicleReservationController);
 
 // ======================user update reservation info api===========================
 
-router.put("/reservation/update/:reservationid", vehicleReservationUpdateController);
+router.put("/reservation/update/:reservationid" , upload.single("driverLicensePhoto"), vehicleReservationUpdateController);
 
 // ================user reservation delete  api =============================
 
@@ -40,5 +43,8 @@ router.get("/reject/:userid", rejectedVehicleController)
 
 router.get("/history/single/:rid", singleRentedController)
 
+// ======================payment add api======================
+
+router.post("/payment/upload", uploadP.single("payment"), addPaymentPictureController)
 
 module.exports = router;
