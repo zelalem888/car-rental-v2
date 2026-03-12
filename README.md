@@ -1,6 +1,6 @@
 # Car Rental System
 
-![Project Banner](./client/public/profile.png)
+![Project Banner](/client/public/profile.png)
 
 ---
 
