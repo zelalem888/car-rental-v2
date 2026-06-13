@@ -161,7 +161,7 @@ CREATE TABLE IF NOT EXISTS `reservation_logs` (
   `C_ID` int NOT NULL,
   `V_ID` int NOT NULL,
   `Admin_ID` int DEFAULT NULL,
-  `Action_Type` enum('created','updated','done','deleted','cancelled','overdue','confirmed') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Action_Type` enum('created','updated','done','deleted','cancelled','overdue','confirmed') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `Old_Status` varchar(50) DEFAULT NULL,
   `New_Status` varchar(50) DEFAULT NULL,
   `Pickup_Date` date DEFAULT NULL,
@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `reservation_logs` (
   `Confirmation_Number` varchar(100) DEFAULT NULL,
   `Logged_At` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Log_ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `reservation_logs`
@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `user_logs` (
   `Device` varchar(200) DEFAULT NULL,
   `Logged_At` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Log_ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_logs`
